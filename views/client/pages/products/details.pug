@@ -1,0 +1,71 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+
+block main
+  .container.my-5
+    .row
+      .col-md-6.mb-4
+        .product-image
+          if product && product.thumbnail
+            img(src=product.thumbnail alt=product.title class="img-fluid rounded" style="width: 100%; object-fit: cover;")
+          else
+            .bg-light.d-flex.align-items-center.justify-content-center.rounded(style="height: 400px;")
+              p.text-muted Không có hình ảnh
+
+      .col-md-6
+        .product-info
+          // Tiêu đề
+          h2.mb-3= product.title
+
+          // Slug
+          .mb-3
+            small.text-muted= product.slug
+
+          // Giá
+          .price-section.mb-4
+            .d-flex.align-items-center.gap-3
+              if product.discountPercentage > 0
+                - var priceNew = (product.price * (100 - product.discountPercentage) / 100).toFixed(0)
+                .price-new.text-danger
+                  h4.mb-0
+                    strong= priceNew + '$'
+                .price-old
+                  p.text-muted.text-decoration-line-through.mb-0= product.price + '$'
+                .discount-badge.badge.badge-warning
+                  | -#{product.discountPercentage}%
+              else
+                .price-new.text-success
+                  h4.mb-0
+                    strong= product.price + '$'
+
+          // Kho hàng
+          .stock-section.mb-4
+            p
+              span.font-weight-bold Tồn kho: 
+              if product.stock > 0
+                span.badge.badge-success= product.stock + ' sản phẩm'
+              else
+                span.badge.badge-danger Hết hàng
+
+          // Mô tả
+          .description-section.mb-4
+            h5.mb-3 Mô tả sản phẩm
+            .bg-light.p-4.rounded
+              p.text-dark= product.description
+
+          // Nút hành động
+          .action-section.d-flex.gap-2
+            button.btn.btn-primary.btn-lg(onclick="addToCart()") 
+              i.fas.fa-shopping-cart.me-2
+              | Thêm vào giỏ hàng
+            button.btn.btn-outline-secondary.btn-lg(onclick="addToWishlist()") 
+              i.fas.fa-heart.me-2
+              | Yêu thích
+
+    .row.mt-5
+      .col-12
+        hr
+      .col-12
+        a.btn.btn-secondary(href="/products") 
+          i.fas.fa-arrow-left.me-2
+          | Quay lại danh sách

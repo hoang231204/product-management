@@ -1,0 +1,18 @@
+mixin pagination(objectPagination)
+    nav
+    ul(class="pagination")
+
+        // Trang trước
+        if(objectPagination.currentPage>1)
+            li(class="page-item")
+            button(class="page-link" button-page = objectPagination.currentPage - 1) Trang trước
+
+        // Vòng lặp số trang
+        - for (let i = 1; i <= objectPagination.totalPage; i++)
+            li(class=`page-item ${objectPagination.currentPage == i ? "active" : ""}`)
+                button(class="page-link" button-page=i) #{i}
+
+        // Trang sau
+        if(objectPagination.currentPage != objectPagination.totalPage)
+            li(class="page-item")
+            button(class="page-link" button-page = objectPagination.currentPage + 1) Kế tiếp

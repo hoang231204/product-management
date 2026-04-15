@@ -1,0 +1,25 @@
+mixin boxChange(path)
+    .card-body
+        form(
+        action= path
+        method="POST"
+        form-change-multi
+        )
+            .d-flex.align-items-start
+                .form-group
+                select(name="type" class="form-control")
+                    option(value="active") Hoạt động
+                    option(value="inactive") Dừng hoạt động
+                    option(value="pending") Đang chờ
+                    option(value="low_stock") Sắp hết
+                    option(value="delete") Xóa
+                    option(value="change-position") Thay đổi vị trí
+                .form-group
+                input(
+                    type="text"
+                    name="ids"
+                    value=""
+                    class="form-control"
+                )
+
+                button(type="submit" class="btn btn-primary") CHỌN

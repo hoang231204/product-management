@@ -1,0 +1,50 @@
+extends ../../layouts/default.pug
+block main 
+    h1 Thùng rác
+    .card.mb-3
+        .card-header Danh sách sản phẩm
+        .card-body
+            table(class="table table-hover table-sm")
+                thead
+                    tr
+                    th STT
+                    th Hình ảnh
+                    th Tiêu đề
+                    th Giá
+                    th Trạng thái
+                    th Thời gian xóa
+                    th Hoạt động
+                tbody
+                    each item, index in products
+                        tr
+                        td #{index+1}
+                        td
+                            img( src=item.thumbnail, alt="Sản phẩm 1",width="100px",height="auto")
+                        td #{item.title}
+                        td #{item.price}$
+                        td
+                            if item.status == 'active'
+                                a(href="javascript:;" class="badge badge-success" ) Hoạt động
+                            else if item.status == 'inactive'
+                                a(href="javascript:;" class="badge badge-danger" ) Không hoạt động
+                            else if item.status == 'pending'
+                                a(href="javascript:;" class="badge badge-warning" ) Đang chờ
+                            else
+                                a(href="javascript:;" class="badge badge-secondary") Sắp hết
+                        td #{item.deleteAt}
+                        td
+                            button(class="btn btn-success btn-sm" button-restore data-id= item.id) Khôi phục
+                            button(class="btn btn-danger btn-sm ml-1" button-hard-delete data-id=item.id) Xóa
+    form(
+      action="",
+      method="POST"
+      form-hard-delete
+      data-path = `${prefixAdmin}/products/recycleBin/hardDelete`
+    )
+    form(
+      action="",
+      method="POST"
+      form-restore 
+      data-path = `${prefixAdmin}/products/recycleBin/restore`
+    )
+    script(src="/admin/js/recycleBin.js") 

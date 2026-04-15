@@ -1,0 +1,149 @@
+/* Header */
+.header {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.header .inner-logo img {
+  max-height: 50px;
+  max-width: 100%;
+}
+
+.header .inner-menu > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.header .inner-menu > ul > li {
+  margin-left: 20px;
+}
+/* End Header */
+/*Footer*/
+.footer{
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Reset cơ bản */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Box Head */
+.box-head {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.box-head .inner-title {
+    font-size: 2rem;
+    color: #333;
+    font-weight: 700;
+    position: relative;
+}
+
+.box-head .inner-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: #ff6b6b;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+/* Product Item */
+.product-item {
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Inner Image */
+.inner-image {
+    width: 100%;
+    overflow: hidden;
+}
+
+.inner-image img {
+    width: 100%;
+    display: block;
+    transition: transform 0.3s;
+}
+
+.product-item:hover .inner-image img {
+    transform: scale(1.05);
+}
+
+/* Product Title */
+.product-item h3.inner-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    padding: 10px 15px 5px 15px;
+}
+
+/* Prices */
+.inner-price-new {
+    color: green;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0 15px;
+}
+
+.inner-price-old {
+    color: #aaa;
+    text-decoration: line-through;
+    margin-left: 10px;
+    font-size: 0.9rem;
+}
+
+.inner-discount {
+    background-color:red;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 5px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .col-4 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 576px) {
+    .col-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

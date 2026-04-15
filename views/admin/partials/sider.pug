@@ -1,0 +1,11 @@
+.sider
+    .inner-menu
+        ul
+            li
+                a(href=`${prefixAdmin}/dashboard`) Tổng quan
+            li 
+                a(href=`${prefixAdmin}/products`) Sản phẩm
+                // Thêm một danh sách con (ul) bên trong li của Sản phẩm
+                ul 
+                    li
+                        a(href=`${prefixAdmin}/products/recycleBin`) Thùng rác

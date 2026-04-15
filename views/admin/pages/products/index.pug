@@ -1,0 +1,100 @@
+extends ../../layouts/default.pug
+include ../../mixins/boxFilterStatus.pug
+include ../../mixins/boxSearch.pug
+include ../../mixins/pagination.pug
+include ../../mixins/formChangeMulti.pug
+include ../../mixins/showAlert.pug
+block main
+    +alert-success(5000)
+    h1 Trang sản phẩm
+    .card.mb-3
+        .card-header Bộ lọc và Tìm kiếm
+        .card-body
+            .row
+                .col-6#filter-area
+                   +boxFilter(filterStatus)
+
+                .col-6
+                    +boxSearch(keyword)  
+
+    .card.mb-3
+    .card-header Thay đổi
+        .card-body 
+            .row
+                .col-10 
+                    +boxChange(`${prefixAdmin}/products/change-multi?_method=PATCH`)
+                .col-2
+                    a(
+                        href=`${prefixAdmin}/products/create`
+                        class="btn btn-outline-success"
+                    ) + Thêm mới
+    .card.mb-3
+        .card-header Danh sách sản phẩm
+        .card-body
+            table(class="table table-hover table-sm" check-box-multi)
+                thead
+                    tr
+                    th 
+                        input(type="checkbox" name="checkAll")
+                    th STT
+                    th Hình ảnh
+                    th Tiêu đề
+                    th Giá
+                    th Vị trí
+                    th Trạng thái
+                    th Hành động
+                tbody
+                    each item, index in products
+                        tr
+                        td
+                            input(
+                                type="checkbox"
+                                name="id"
+                                value=item.id
+                                )
+                        td #{index+1+objectPagination.skipPage}
+                        td
+                            img( src=item.thumbnail, alt="Sản phẩm 1",width="100px",height="auto")
+                        td #{item.title}
+                        td #{item.price}$
+                        td 
+                            input(
+                                type="number"
+                                value=item.position 
+                                style="width:50px"
+                                min="1"
+                                name="position"
+                            )
+                        td
+                            if item.status == 'active'
+                                a(href="javascript:;" class="badge badge-success" button-change-status id=item._id  data-status=item.status) Hoạt động
+                            else if item.status == 'inactive'
+                                a(href="javascript:;" class="badge badge-danger" button-change-status id=item._id  data-status=item.status) Không hoạt động
+                            else if item.status == 'pending'
+                                a(href="javascript:;" class="badge badge-warning" button-change-status id=item._id  data-status=item.status) Đang chờ
+                            else
+                                a(href="javascript:;" class="badge badge-secondary" button-change-status id=item._id  data-status=item.status) Sắp hết
+
+                        td
+                            a(href=`${prefixAdmin}/products/details/${item.id}` class="btn btn-info btn-sm") Chi tiết
+                            button(class="btn btn-primary btn-sm" button-edit idEdit=item.id) Sửa
+                            button(class="btn btn-danger btn-sm ml-1" button-delete idDel=item.id) Xóa
+    form(
+        action=""
+        method="POST"
+        form-change-status
+        data-path=`${prefixAdmin}/products/change-status`
+        ) 
+    form(
+        action=""
+        method="POST"
+        form-delete
+        data-path=`${prefixAdmin}/products/delete`
+         )
+    form(
+        action=""
+        form-edit 
+        data-path=`${prefixAdmin}/products/edit`
+         )
+    +pagination(objectPagination)
+    script(src="/admin/js/change-multi.js") 
