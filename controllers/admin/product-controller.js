@@ -126,9 +126,10 @@ module.exports.createPost = async (req, res)=>{
     if(req.body.position == ''){
         req.body.position = count + 1;
     }
-    if(req.file){
-         req.body.thumbnail = `/uploads/${req.file.filename}`
-    }
+    
+    // if(req.file){
+    //      req.body.thumbnail = `/uploads/${req.file.filename}`
+    // }
     const product = new Product(req.body)
     product.save();
     res.redirect(`${systemConfig.prefixAdmin}/products`)
