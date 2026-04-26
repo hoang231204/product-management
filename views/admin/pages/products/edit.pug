@@ -1,5 +1,5 @@
 extends ../../layouts/default.pug
-include ../../mixins/showAlert.pug
+include ../../mixins/show-alert.pug
 
 block main
     +alert-error(5000)
@@ -24,7 +24,7 @@ block main
         div(class="form-group")
             label(for="desc") Mô tả
             textarea(
-                class="form-control"
+                class="form-control textarea-mce"
                 id="desc"
                 name="description"
                 rows="5"

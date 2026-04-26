@@ -1,0 +1,126 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+
+block main
+    +alert-success(5000)
+    
+    .container-fluid
+        .row.mb-4
+            .col-12
+                h1 CHI TIẾT DANH MỤC SẢN PHẨM
+        
+        if category
+            .row
+                .col-lg-8.offset-lg-2
+                    .card
+                        .card-header
+                            h5.mb-0 Thông tin danh mục
+                        
+                        .card-body
+                            //- Tiêu đề
+                            .form-group
+                                label(for="title")
+                                    strong Tiêu đề
+                                input(
+                                    type="text"
+                                    class="form-control"
+                                    id="title"
+                                    value=category.title
+                                    disabled
+                                )
+                            
+                            //- Danh mục cha
+                            .form-group
+                                label(for="parent_id")
+                                    strong Danh mục cha
+                                input(
+                                    type="text"
+                                    class="form-control"
+                                    id="parent_id"
+                                    value=category.parent_id || "Danh mục gốc"
+                                    disabled
+                                )
+                            
+                            //- Mô tả
+                            .form-group
+                                label(for="description")
+                                    strong Mô tả
+                                textarea(
+                                    class="form-control"
+                                    id="description"
+                                    rows="5"
+                                    disabled
+                                )= category.description || ""
+                            
+                            //- Hình ảnh
+                            if category.thumbnail
+                                .form-group
+                                    label(for="thumbnail")
+                                        strong Hình ảnh
+                                    div.mt-2
+                                        img(
+                                            src=category.thumbnail
+                                            alt=category.title
+                                            style="max-width: 300px; max-height: 300px; object-fit: cover;"
+                                        )
+                            
+                            //- Vị trí
+                            .form-group
+                                label(for="position")
+                                    strong Vị trí
+                                input(
+                                    type="text"
+                                    class="form-control"
+                                    id="position"
+                                    value=category.position
+                                    disabled
+                                )
+                            
+                            //- Trạng thái
+                            .form-group
+                                label(for="status")
+                                    strong Trạng thái
+                                input(
+                                    type="text"
+                                    class="form-control"
+                                    id="status"
+                                    value=category.status === "active" ? "Kích hoạt" : "Vô hiệu hóa"
+                                    disabled
+                                )
+                        
+                        .card-footer
+                            .row
+                                .col-6
+                                    a(
+                                        href=`${prefixAdmin}/categories/${category._id}/edit`
+                                        class="btn btn-primary btn-block"
+                                    )
+                                        i.fa.fa-edit.mr-2
+                                        | Chỉnh sửa
+                                
+                                .col-3
+                                    a(
+                                        href=`${prefixAdmin}/categories/delete/${category._id}`
+                                        class="btn btn-danger btn-block"
+                                        onclick="return confirm('Bạn chắc chắn muốn xóa?')"
+                                    )
+                                        i.fa.fa-trash.mr-2
+                                        | Xóa
+                                
+                                .col-3
+                                    a(
+                                        href=`${prefixAdmin}/categories`
+                                        class="btn btn-secondary btn-block"
+                                    )
+                                        i.fa.fa-arrow-left.mr-2
+                                        | Quay lại
+        else
+            .alert.alert-warning
+                | Không tìm thấy danh mục này!
+            div.mt-3
+                a(
+                    href=`${prefixAdmin}/categories`
+                    class="btn btn-secondary"
+                )
+                    i.fa.fa-arrow-left.mr-2
+                    | Quay lại danh sách

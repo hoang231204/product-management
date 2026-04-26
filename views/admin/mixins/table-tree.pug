@@ -1,0 +1,43 @@
+mixin table-tree(items, level = 1)
+    if items && items.length > 0
+        each item in items
+            tr
+                td
+                    input(
+                        type="checkbox"
+                        name="id"
+                        value=item.id
+                    )
+                td #{item.index}
+                td
+                    if item.thumbnail
+                        img(
+                            src=item.thumbnail
+                            alt=item.title
+                            width="80px"
+                            height="auto"
+                        )
+                    else
+                        span.text-muted Không có ảnh
+                td
+                    - const prefix = Array(level + 1).join("-- ")
+                    |#{prefix}#{item.title}
+                td
+                    input(
+                        type="number"
+                        value=item.position
+                        style="width:60px"
+                        min="1"
+                        name="position"
+                    )
+                td
+                    if item.status == 'active'
+                        a(href="javascript:;" class="badge badge-success" button-change-status id=item._id data-status=item.status) Hoạt động
+                    else
+                        a(href="javascript:;" class="badge badge-danger" button-change-status id=item._id data-status=item.status) Không hoạt động
+                td
+                    a(href=`${prefixAdmin}/categories/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
+                    a(href=`${prefixAdmin}/categories/edit/${item._id}` class="btn btn-primary btn-sm ml-1") Sửa
+                    button(class="btn btn-danger btn-sm ml-1" button-delete idDel=item.id) Xóa
+            if item.children && item.children.length > 0
+                +table-tree(item.children, level + 1)

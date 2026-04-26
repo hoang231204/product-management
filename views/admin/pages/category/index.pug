@@ -1,0 +1,65 @@
+extends ../../layouts/default.pug
+include ../../mixins/table-tree.pug
+include ../../mixins/filter-status.pug
+include ../../mixins/search.pug
+block main
+    h1 DANH MỤC SẢN PHẨM
+    .card.mb-3
+        .card-header Bộ lọc và Tìm kiếm
+        .card-body
+            .row
+                .col-6#filter-area
+                    +boxFilter(filterStatus)
+                .col-6
+                    +boxSearch(keyword)  
+    .card.mb-3
+        .card-header Thay đổi
+        .card-body 
+            .row
+                .col-10
+                    form(action=`${prefixAdmin}/categories/change-multi?_method=PATCH` method="POST" form-change-multi)
+                        select(name="type" class="form-control")
+                            option(value="") -- Chọn hành động --
+                            option(value="active") Kích hoạt
+                            option(value="inactive") Vô hiệu hóa
+                            option(value="delete") Xóa
+                        button(type="submit" class="btn btn-primary ml-2") Áp dụng
+                .col-2
+                    a(
+                        href=`${prefixAdmin}/categories/create`
+                        class="btn btn-outline-success"
+                    ) + Thêm mới
+    .card.mb-3
+        .card-header Danh sách danh mục
+        .card-body
+            table(class="table table-hover table-sm")
+                thead
+                    tr
+                        th
+                            input(type="checkbox" name="checkAll")
+                        th STT
+                        th Hình ảnh
+                        th Tiêu đề
+                        th Vị trí
+                        th Trạng thái
+                        th Hành động
+                tbody
+                    if categories.length > 0
+                        +table-tree(categoryTree)
+                    else
+                        tr
+                            td(colspan="8" class="text-center text-muted") Không có danh mục nào
+    form(
+        action=""
+        method="POST"
+        form-change-status
+        data-path=`${prefixAdmin}/categories/change-status`
+    )
+    form(
+        action=""
+        method="POST"
+        form-delete
+        data-path=`${prefixAdmin}/categories/delete`
+    )
+    script(src="/admin/js/change-multi.js") 
+    

@@ -1,10 +1,16 @@
 extends ../../layouts/default.pug
 include ../../mixins/show-alert.pug
+include ../../mixins/select-tree.pug
 block main
-    +alert-error(5000)
-    h1(class="mb-4") Thêm mới sản phẩm
-    form(action=`${prefixAdmin}/products/create` id="form-create-product" method="POST" enctype="multipart/form-data" form-create)
-        // Tiêu đề (Title)
+    +alert-success(5000)
+    h1(class="mb-4") THÊM MỚI DANH MỤC SẢN PHẨM
+    form(
+        action=`${prefixAdmin}/categories/create` 
+        method="POST" 
+        enctype="multipart/form-data"
+        form-create
+    )
+        //- 1. Tiêu đề (Title)
         div(class="form-group")
             label(for="title") Tiêu đề
             input(
@@ -14,7 +20,18 @@ block main
                 name="title"
                 required 
             )
-        // Mô tả (Description)
+        //- 2. Danh mục cha (Parent ID) 
+        div(class="form-group")
+            label(for="parent_id") Danh mục cha
+            select(
+                name="parent_id"
+                id="parent_id"
+                class="form-control"
+            )
+                option(value="") -- Chọn danh mục cha --
+                if (categoryTree)
+                    +select-tree(categoryTree)
+        //- 3. Mô tả (Description)
         div(class="form-group")
             label(for="desc") Mô tả
             textarea(
@@ -23,40 +40,7 @@ block main
                 name="description"
                 rows="5"
             )
-        // Giá (Price)
-        div(class="form-group")
-            label(for="price") Giá
-            input(
-                type="number"
-                class="form-control"
-                id="price"
-                name="price"
-                value="0"
-                min="0"
-            )
-        // % Giảm giá (Discount Percentage)
-        div(class="form-group")
-            label(for="discount") % Giảm giá
-            input(
-                type="number"
-                class="form-control"
-                id="discount"
-                name="discountPercentage"
-                value="0"
-                min="0"
-            )
-        // Số lượng (Stock)
-        div(class="form-group")
-            label(for="stock") Số lượng
-            input(
-                type="number"
-                class="form-control"
-                id="stock"
-                name="stock"
-                value="0"
-                min="0"
-            )
-        // Ảnh (Thumbnail)
+        //- 4. Ảnh (Thumbnail)
         div(class="form-group" upload-image)
             label(for="thumbnail") Ảnh
             input(
@@ -68,18 +52,16 @@ block main
                 upload-image-input
             )
             div(class="box-image")
-              img(
-                  src=""
-                  upload-image-preview
-                  class="image-preview"
+                img(
+                    src=""
+                    upload-image-preview
+                    class="image-preview"
                 )
-              button(
-                  type="button"
-                  class="btn-remove-image"
-                  aria-label="Remove image"
+                button(
+                    type="button"
+                    class="btn-remove-image"
                 ) ×
-               
-        // Vị trí (Position)
+        //- Vị trí (Position)
         div(class="form-group")
             label(for="position") Vị trí
             input(
@@ -90,7 +72,7 @@ block main
                 placeholder="Tự động tăng"
                 min="1"
             )
-        // Trạng thái (Status)
+        //- 5. Trạng thái (Status)
         div(class="form-group form-check form-check-inline")
             input(
                 type="radio"
@@ -110,6 +92,5 @@ block main
                 value="inactive"
             )
             label(for="statusInActive" class="form-check-label") Dừng hoạt động
-        // Nút Tạo mới (Submit Button)
         div(class="form-group")
             button(type="submit" class="btn btn-primary") Tạo mới

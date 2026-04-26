@@ -17,10 +17,10 @@ if(buttonsChange.length>0){
                 statusChange = "inactive";
                 break;
             case "inactive":
-                statusChange = "pending";
+                statusChange = "active";
                 break;
             case "pending":
-                statusChange = "low_stock";
+                statusChange = "active";
                 break;
             case "low_stock":
                 statusChange = "active"; 
@@ -116,7 +116,6 @@ if(buttonsDelete.length>0){
     }
 //SỬA SẢN PHẨM
 const buttonsEdit = document.querySelectorAll("[button-edit]");
-console.log(buttonsEdit)    
 const formEdit = document.querySelector("[form-edit]");
 const pathEdit = formEdit.getAttribute("data-path");
 if(buttonsEdit.length>0){
@@ -128,4 +127,4 @@ if(buttonsEdit.length>0){
         formEdit.submit();
       })
     })
-}
+}  

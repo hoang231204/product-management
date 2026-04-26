@@ -21,7 +21,7 @@ module.exports = (query)=>{
             class:""
         },
         {
-             name: "Sắp hết",
+            name: "Sắp hết",
             status: "low_stock",
             class:""
         }

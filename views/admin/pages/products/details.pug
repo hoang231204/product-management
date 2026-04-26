@@ -1,5 +1,5 @@
 extends ../../layouts/default.pug
-include ../../mixins/showAlert.pug
+include ../../mixins/show-alert.pug
 
 block main
     +alert-error(5000)
@@ -42,7 +42,7 @@ block main
                                 i.fas.fa-align-left.me-2
                                 | Mô tả
                             .bg-light.p-3.rounded
-                                p.text-dark= product.description
+                                p.text-dark!= product.description
                         
                         // Giá và Giảm giá
                         .mb-4

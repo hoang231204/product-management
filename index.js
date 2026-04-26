@@ -5,12 +5,13 @@ const port = process.env.PORT;
 const routeClient  = require('./routes/client/index-route')
 const routeAdmin = require("./routes/admin/index-route")
 const database = require("./config/database")
-const path = require('./config/system')
+const pathAdmin = require('./config/system')
 const methodOverride = require('method-override')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser')
+const path = require('path');
 
 //Mongoose
 database.connect();
@@ -18,7 +19,7 @@ database.connect();
 app.set('views', `${__dirname}/views`)
 app.set('view engine', 'pug')
 //APP LOCAL
-app.locals.prefixAdmin = path.prefixAdmin
+app.locals.prefixAdmin = pathAdmin.prefixAdmin
 //static file
 app.use(express.static(`${__dirname}/public`));
 //method-override
@@ -45,7 +46,8 @@ app.use((req, res, next) => {
   };
   next();
 });
-
+//tinyMCE
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
 
 //routes

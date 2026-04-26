@@ -1,0 +1,118 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+include ../../mixins/select-tree.pug
+
+block main
+    +alert-success(5000)
+    h1(class="mb-4") CHỈNH SỬA DANH MỤC SẢN PHẨM
+    form(
+        action=`${prefixAdmin}/categories/edit/${category._id}` 
+        method="POST" 
+        enctype="multipart/form-data"
+        form-edit
+    )
+        //- 1. Tiêu đề (Title)
+        div(class="form-group")
+            label(for="title") Tiêu đề
+            input(
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                value=category.title
+                required 
+            )
+        
+        //- 2. Danh mục cha (Parent ID) 
+        div(class="form-group")
+            label(for="parent_id") Danh mục cha
+            select(
+                name="parent_id"
+                id="parent_id"
+                class="form-control"
+            )
+                option(value="") -- Không có danh mục cha --
+                if (categoryTree)
+                    +select-tree(categoryTree, category.parent_id)
+        
+        //- 3. Mô tả (Description)
+        div(class="form-group")
+            label(for="desc") Mô tả
+            textarea(
+                class="form-control textarea-mce"
+                id="desc"
+                name="description"
+                rows="5"
+            )= category.description
+        
+        //- 4. Ảnh (Thumbnail)
+        div(class="form-group" upload-image)
+            label(for="thumbnail") Ảnh
+            input(
+                type="file"
+                class="form-control-file"
+                id="thumbnail"
+                name="thumbnail"
+                accept="image/*"
+                upload-image-input
+            )
+            div(class="box-image")
+                if (category.thumbnail)
+                    img(
+                        src=category.thumbnail
+                        upload-image-preview
+                        class="image-preview"
+                    )
+                else
+                    img(
+                        src=""
+                        upload-image-preview
+                        class="image-preview"
+                    )
+                button(
+                    type="button"
+                    class="btn-remove-image"
+                ) ×
+        
+        //- Vị trí (Position)
+        div(class="form-group")
+            label(for="position") Vị trí
+            input(
+                type="number"
+                class="form-control"
+                id="position"
+                name="position"
+                placeholder="Tự động tăng"
+                min="1"
+                value=category.position
+            )
+        
+        //- 5. Trạng thái (Status)
+        div(class="form-group")
+            label Trạng thái
+            div(class="form-check form-check-inline")
+                input(
+                    type="radio"
+                    class="form-check-input"
+                    id="statusActive"
+                    name="status"
+                    value="active"
+                    checked=(category.status === 'active')
+                )
+                label(for="statusActive" class="form-check-label") Hoạt động
+            
+            div(class="form-check form-check-inline")
+                input(
+                    type="radio"
+                    class="form-check-input"
+                    id="statusInActive"
+                    name="status"
+                    value="inactive"
+                    checked=(category.status === 'inactive')
+                )
+                label(for="statusInActive" class="form-check-label") Dừng hoạt động
+        
+        //- Buttons
+        div(class="form-group")
+            button(type="submit" class="btn btn-primary") Cập nhật
+            a(href=`${prefixAdmin}/categories` class="btn btn-secondary ms-2") Quay lại

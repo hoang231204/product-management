@@ -68,8 +68,9 @@ if(showAlert){
 
 
 // PREVIEW IMAGE
-const uploadImage= document.querySelector("[upload-image]")
-if(uploadImage){
+const formCreate = document.querySelector("[form-create]")
+if(formCreate){
+    const uploadImage= formCreate.querySelector("[upload-image]")
     const uploadImageInput = document.querySelector("[upload-image-input]")
     const uploadImagePreview = document.querySelector("[upload-image-preview]")
 
@@ -85,4 +86,30 @@ if(uploadImage){
     uploadImagePreview.src = "";
   })
 }
-
+//SORT
+const sort = document.querySelector("[sort]");
+if(sort){
+    const sortSelect = sort.querySelector("[sort-select]");
+    let url = new URL(window.location.href);
+    sortSelect.addEventListener("change",(event)=>{
+        const value = event.target.value;
+        const [type,order] = value.split("-");
+        url.searchParams.set("sortBy",type);
+        url.searchParams.set("sortType",order);
+        window.location.href = url; 
+    })
+    const clear = sort.querySelector("[sort-clear]");
+    clear.addEventListener("click",()=>{
+        url.searchParams.delete("sortBy");
+        url.searchParams.delete("sortType");
+        window.location.href = url;
+    })
+    const sortBy = url.searchParams.get("sortBy");
+    const sortType = url.searchParams.get("sortType");
+    if(sortBy && sortType){
+        const selectedOption = sortSelect.querySelector(`option[value="${sortBy}-${sortType}"]`);
+        if(selectedOption){
+            selectedOption.selected = true;
+        }
+    }
+}

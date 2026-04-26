@@ -1,16 +1,13 @@
 const Product = require('../../models/product-model')
-const filter = require("../../helpers/fillterStatus")
+const filter = require("../../helpers/filter-status")
 const search = require("../../helpers/search")  
 const pagination = require("../../helpers/pagination") 
 const systemConfig = require("../../config/system")
 
 //DANH SÁCH SẢN PHẨM
 module.exports.index = async (req, res) => {
-    // BỘ LỌC
     const filterStatus = filter(req.query);
-    // TÌM KIẾM
     const regex = search(req.query);
-    //QUERY DATABASE
     let find = {
     };
     find.delete = false;
@@ -21,37 +18,49 @@ module.exports.index = async (req, res) => {
         find.title = regex;
     }
     
-    //PHÂN TRANG
-    const countData = await Product.countDocuments(find);
+    const countData = await Product.find(find).countDocuments(find);
     //console.log(countData)
     const objectPagination = pagination(req.query,countData)
     //console.log(objectPagination.currentPage)
-
-    const products = await Product
+    let sort={};
+    if(req.query.sortBy && req.query.sortType){
+        sort[req.query.sortBy] = req.query.sortType;
+    }
+    else{
+        sort.position = -1;
+    }
+    try {
+        const products = await Product
         .find(find)
-        .sort({position: -1})
+        .sort(sort)
         .limit(objectPagination.limitPage)
         .skip(objectPagination.skipPage);
-
-    res.render('admin/pages/products/index', {
-        pageTitle: "Danh sách sản phẩm",
-        products: products,
-        filterStatus: filterStatus,
-        keyword: req.query.keyword,
-        objectPagination: objectPagination
+        res.render('admin/pages/products/index', {
+            pageTitle: "Danh sách sản phẩm",
+            products: products,
+            filterStatus: filterStatus,
+            keyword: req.query.keyword,
+            objectPagination: objectPagination
     });
+    } catch (error) {
+        res.status(500).send("Lỗi server");
+    }
+    
 }
+//CẬP NHẬT TRẠNG THÁI
 module.exports.changeStatus =async (req,res)=>{
     const statusChange = req.params.status
     const id = req.params.id
-    await Product.updateOne({_id:id},{status:statusChange})
-    const backUrl = req.get("Referrer");
-    req.flash('success', 'Cập nhật trạng thái thành công!')
-    res.redirect(backUrl);
-  
-
+    try {
+        await Product.updateOne({_id:id},{status:statusChange})
+        const backUrl = req.get("Referrer");
+        req.flash('success', 'Cập nhật trạng thái thành công!')
+        res.redirect(backUrl);
+    } catch (error) {
+        res.status(500).send("Lỗi server");
+    }
 }
-//THAY ĐỔI NHIỀU TRẠNG THÁI
+//CẬP NHẬT NHIỀU TRẠNG THÁI
 module.exports.changeMulti = async (req, res) => {
     //console.log(req.body)
     const idsChecked = req.body.ids; 
@@ -77,7 +86,7 @@ module.exports.changeMulti = async (req, res) => {
         default:
             await Product.updateMany({ _id: { $in: ids } }, { status: typeChecked });
     }
-    
+    res.flash('success', 'Cập nhật trạng thái thành công!');
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
 }
@@ -85,6 +94,7 @@ module.exports.changeMulti = async (req, res) => {
 module.exports.delete = async (req,res)=>{
     const idDel = req.params.id;
     await Product.updateOne({_id:idDel},{$set: { delete: true, deleteAt: new Date() }})
+    req.flash('success', 'Xóa sản phẩm thành công!');
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
 }
@@ -102,6 +112,7 @@ module.exports.recycleBin = async (req, res)=>{
 module.exports.hardDelete = async (req,res)=>{
     const dataId = req.params.id;
     await Product.deleteOne({_id:dataId})
+    req.flash('success', 'Xóa sản phẩm vĩnh viễn thành công!');
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
 }
@@ -109,6 +120,7 @@ module.exports.hardDelete = async (req,res)=>{
 module.exports.restore = async (req,res)=>{
     const dataId = req.params.id;
     await Product.updateOne({_id:dataId},{delete:false, deleteAt:null})
+    req.flash('success', 'Khôi phục sản phẩm thành công!');
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
 }
@@ -126,12 +138,12 @@ module.exports.createPost = async (req, res)=>{
     if(req.body.position == ''){
         req.body.position = count + 1;
     }
-    
     // if(req.file){
     //      req.body.thumbnail = `/uploads/${req.file.filename}`
     // }
     const product = new Product(req.body)
     product.save();
+    req.flash('success', 'Tạo sản phẩm thành công!');
     res.redirect(`${systemConfig.prefixAdmin}/products`)
 }
 //GET EDIT
