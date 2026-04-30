@@ -19,5 +19,11 @@ router.patch("/change-status/:status/:id", categoryController.changeStatus);
 router.patch("/delete/:id", categoryController.delete)
 router.get("/details/:id", categoryController.details)
 router.get("/edit/:id", categoryController.edit)
-router.patch("/edit/:id", upload.single('thumbnail'), categoryValidate.edit, categoryController.editPatch);
+router.patch(
+    "/edit/:id", 
+    upload.single('thumbnail'), 
+    middleware.upload,
+    categoryValidate.edit, 
+    categoryController.editPatch);
+router.patch("/change-multi", categoryController.changeMulti)
 module.exports = router;

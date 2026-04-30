@@ -38,6 +38,6 @@ mixin table-tree(items, level = 1)
                 td
                     a(href=`${prefixAdmin}/categories/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
                     a(href=`${prefixAdmin}/categories/edit/${item._id}` class="btn btn-primary btn-sm ml-1") Sửa
-                    button(class="btn btn-danger btn-sm ml-1" button-delete idDel=item.id) Xóa
+                    button(class="btn btn-danger btn-sm ml-1" button-delete idDel=item._id) Xóa
             if item.children && item.children.length > 0
                 +table-tree(item.children, level + 1)

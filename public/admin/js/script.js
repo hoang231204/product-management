@@ -68,7 +68,7 @@ if(showAlert){
 
 
 // PREVIEW IMAGE
-const formCreate = document.querySelector("[form-create]")
+const formCreate = document.querySelector("[form-upload]")
 if(formCreate){
     const uploadImage= formCreate.querySelector("[upload-image]")
     const uploadImageInput = document.querySelector("[upload-image-input]")

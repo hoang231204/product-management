@@ -29,16 +29,15 @@ block main
                                     disabled
                                 )
                             
-                            //- Danh mục cha
-                            .form-group
+                            .form-group.mb-3
                                 label(for="parent_id")
                                     strong Danh mục cha
                                 input(
                                     type="text"
-                                    class="form-control"
+                                    class="form-control bg-light" 
                                     id="parent_id"
-                                    value=category.parent_id || "Danh mục gốc"
-                                    disabled
+                                    value=parentName
+                                    readonly 
                                 )
                             
                             //- Mô tả
@@ -63,7 +62,16 @@ block main
                                             alt=category.title
                                             style="max-width: 300px; max-height: 300px; object-fit: cover;"
                                         )
-                            
+                            else 
+                                .form-group
+                                    label(for="thumbnail")
+                                        strong Hình ảnh
+                                    div.mt-2
+                                        img(
+                                            src="/images/no-image.png"
+                                            alt="No Image"
+                                            style="max-width: 300px; max-height: 300px; object-fit: cover;"
+                                        )
                             //- Vị trí
                             .form-group
                                 label(for="position")

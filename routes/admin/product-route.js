@@ -5,6 +5,7 @@ const multer  = require('multer')
 const upload = multer();
 const middleware = require("../../middleware/admin/uploadCloud-middleware")
 const router = express.Router();
+
 router.get('/',productController.index);
 router.patch('/change-status/:status/:id',productController.changeStatus);
 router.patch('/change-multi',productController.changeMulti);
@@ -21,6 +22,12 @@ router.post(
     productController.createPost
 )
 router.get("/edit/:id",productController.edit);
-router.patch("/edit/:id",upload.single('thumbnail'),productValidate.edit,productController.editPost);
+router.patch(
+    "/edit/:id",
+    upload.single('thumbnail'),
+    middleware.upload,
+    productValidate.edit,
+    productController.editPatch
+);
 router.get("/details/:id", productController.details);
 module.exports = router;

@@ -6,7 +6,7 @@ block main
     +alert-success(5000)
     h1(class="mb-4") Chỉnh sửa sản phẩm
     
-    form(action=`${prefixAdmin}/products/edit/${product._id}?_method=PATCH` id="form-edit-product" method="POST" enctype="multipart/form-data" form-edit)
+    form(action=`${prefixAdmin}/products/edit/${product._id}?_method=PATCH` id="form-edit-product" method="POST" enctype="multipart/form-data" form-upload)
         
         // Tiêu đề (Title)
         div(class="form-group")

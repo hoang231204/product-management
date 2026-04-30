@@ -1,5 +1,5 @@
 let count = 0;
-const createTree = (categories,parentId = "")=>{
+const createTree = (categories,parentId = null)=>{
         const tree=[];
         categories.forEach((item)=>{
             if(item.parent_id == parentId){
@@ -14,7 +14,7 @@ const createTree = (categories,parentId = "")=>{
         })
         return tree;
 }
-module.exports = (categories, parentId = "") => {
+module.exports = (categories, parentId = null) => {
     count = 0;
     return createTree(categories, parentId);
 }

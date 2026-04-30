@@ -6,10 +6,10 @@ block main
     +alert-success(5000)
     h1(class="mb-4") CHỈNH SỬA DANH MỤC SẢN PHẨM
     form(
-        action=`${prefixAdmin}/categories/edit/${category._id}` 
+        action=`${prefixAdmin}/categories/edit/${category._id}?_method=PATCH` 
         method="POST" 
         enctype="multipart/form-data"
-        form-edit
+        form-upload
     )
         //- 1. Tiêu đề (Title)
         div(class="form-group")
@@ -31,9 +31,9 @@ block main
                 id="parent_id"
                 class="form-control"
             )
-                option(value="") -- Không có danh mục cha --
+                option(value=parentId) #{parentName}
                 if (categoryTree)
-                    +select-tree(categoryTree, category.parent_id)
+                    +select-tree(categoryTree)
         
         //- 3. Mô tả (Description)
         div(class="form-group")
@@ -57,23 +57,16 @@ block main
                 upload-image-input
             )
             div(class="box-image")
-                if (category.thumbnail)
-                    img(
-                        src=category.thumbnail
-                        upload-image-preview
-                        class="image-preview"
-                    )
-                else
-                    img(
-                        src=""
-                        upload-image-preview
-                        class="image-preview"
-                    )
+                img(
+                    src=category.thumbnail
+                    upload-image-preview
+                    class="image-preview"
+                )
                 button(
                     type="button"
                     class="btn-remove-image"
+                    aria-label="Remove image"
                 ) ×
-        
         //- Vị trí (Position)
         div(class="form-group")
             label(for="position") Vị trí

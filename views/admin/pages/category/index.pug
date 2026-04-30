@@ -2,7 +2,10 @@ extends ../../layouts/default.pug
 include ../../mixins/table-tree.pug
 include ../../mixins/filter-status.pug
 include ../../mixins/search.pug
+include ../../mixins/show-alert.pug
 block main
+    +alert-success(3000)
+    +alert-error(3000)
     h1 DANH MỤC SẢN PHẨM
     .card.mb-3
         .card-header Bộ lọc và Tìm kiếm
@@ -22,7 +25,9 @@ block main
                             option(value="") -- Chọn hành động --
                             option(value="active") Kích hoạt
                             option(value="inactive") Vô hiệu hóa
-                            option(value="delete") Xóa
+                            option(value="delete-all") Xóa
+                            option(value="change-position") Thay đổi vị trí 
+                        input(type="text" name="ids" value="" class="form-control")
                         button(type="submit" class="btn btn-primary ml-2") Áp dụng
                 .col-2
                     a(
@@ -32,7 +37,7 @@ block main
     .card.mb-3
         .card-header Danh sách danh mục
         .card-body
-            table(class="table table-hover table-sm")
+            table(class="table table-hover table-sm" check-box-multi)
                 thead
                     tr
                         th

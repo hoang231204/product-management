@@ -160,13 +160,13 @@ module.exports.edit= async (req,res)=>{
     }
 }
 //POST EDIT
-module.exports.editPost = async (req,res)=>{
+module.exports.editPatch = async (req,res)=>{
     req.body.price = parseInt(req.body.price);
     req.body.discountPercentage = parseInt(req.body.discountPercentage);
     req.body.stock = parseInt(req.body.stock);
-    if(req.file){
-        req.body.thumbnail = `/uploads/${req.file.filename}`
-    }
+    // if(req.file){
+    //     req.body.thumbnail = `/uploads/${req.file.filename}`
+    // }
     const id = req.params.id;
     try {
         await Product.updateOne({_id:id},req.body);

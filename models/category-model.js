@@ -10,7 +10,8 @@ const categorySchema = new mongoose.Schema({
     },
     parent_id: {
         type: String,
-        default: "" 
+        default: null,
+        ref: "Category" 
     },
     description: String,
     thumbnail: String,
