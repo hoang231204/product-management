@@ -95,36 +95,3 @@ if(formChangeMulti){
         }
     })
 }
-//XÓA SẢN PHẨM
-const buttonsDelete = document.querySelectorAll("[button-delete]")
-if(buttonsDelete.length>0){
-    const formDelete = document.querySelector("[form-delete]")
-    const pathDel = formDelete.getAttribute("data-path")
-    buttonsDelete.forEach(buttonDelete =>{
-        buttonDelete.addEventListener("click",()=>{
-                const check = confirm('Bạn chắc chắn xóa sản phẩm?')
-                if(check ==true){
-                    const id = buttonDelete.getAttribute("idDel")
-                    const action =`${pathDel}/${id}?_method=DELETE`
-                    formDelete.action = action;
-                    formDelete.submit();
-                }
-                
-            })
-            
-        })
-    }
-//SỬA SẢN PHẨM
-const buttonsEdit = document.querySelectorAll("[button-edit]");
-const formEdit = document.querySelector("[form-edit]");
-const pathEdit = formEdit.getAttribute("data-path");
-if(buttonsEdit.length>0){
-    buttonsEdit.forEach(buttonEdit=>{
-      buttonEdit.addEventListener("click",()=>{
-        const id = buttonEdit.getAttribute("idEdit");
-        const action = `${pathEdit}/${id}`;
-        formEdit.action = action;
-        formEdit.submit();
-      })
-    })
-}  

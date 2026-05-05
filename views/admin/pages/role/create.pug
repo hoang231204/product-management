@@ -1,0 +1,29 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+block main
+    +alert-success(5000)
+    h1 THÊM MỚI VAI TRÒ
+    form(
+        action=`${prefixAdmin}/roles/create` 
+        method="POST" 
+        form-upload
+    )
+        div(class="form-group")
+            label(for="title") Tiêu đề
+            input(
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                required 
+            )
+        div(class="form-group")
+            label(for="desc") Mô tả
+            textarea(
+                class="form-control textarea-mce"
+                id="desc"
+                name="description"
+                rows="5"
+            )
+        div(class="form-group")
+            button(type="submit" class="btn btn-primary") Tạo mới

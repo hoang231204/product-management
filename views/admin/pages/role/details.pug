@@ -1,0 +1,66 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+
+block main
+    +alert-success(5000)
+    
+    //- .container giúp bóp lề hai bên cho cân đối
+    .container.mt-5.mb-5
+        .row.justify-content-center
+            //- Chia cột 8/12 để khung không bị quá rộng
+            .col-8
+                .card
+                    .card-header
+                        h2.mb-0 CHI TIẾT VAI TRÒ
+                    
+                    if role
+                        .card-body
+                            //- Mỗi phần thông tin là một hàng (row)
+                            .row.mb-3
+                                .col-3
+                                    strong Tiêu đề:
+                                .col-9
+                                    span #{role.title}
+                            
+                            hr
+
+                            .row.mb-3
+                                .col-3
+                                    strong Trạng thái:
+                                .col-9
+                                    if !role.deleted
+                                        span.badge.badge-success Hoạt động
+                                    else
+                                        span.badge.badge-danger Đã xóa
+                            
+                            hr
+
+                            .row.mb-3
+                                .col-3
+                                    strong Mô tả:
+                                .col-9
+                                    //- Dùng != để render HTML từ description
+                                    div.description-box!= role.description
+                        
+                        .card-footer
+                            .row
+                                .col-4
+                                    //- Dùng data-id và _id vì bạn đang dùng .lean()
+                                    a(
+                                        href=`${prefixAdmin}/roles/edit/${role._id}`
+                                        class="btn btn-warning btn-block"
+                                    ) Chỉnh sửa
+                                .col-4
+                                    a(
+                                        href=`${prefixAdmin}/roles/delete/${role._id}`
+                                        class="btn btn-secondary btn-block"
+                                    ) Xóa
+                                .col-4 
+                                    a(
+                                        href=`${prefixAdmin}/roles`
+                                        class="btn btn-primary btn-block"
+                                    ) Quay lại
+                    else
+                        .card-body
+                            .alert.alert-danger Vai trò không tồn tại!
+                            a(href=`${prefixAdmin}/roles` class="btn btn-secondary") Quay lại danh sách

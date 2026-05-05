@@ -64,7 +64,12 @@ module.exports.changeStatus = async (req,res)=>{
         deleted: false,
     }
     const categories = await Category.find(find);
-    let ids = changeStatus(categories, status, id);
+    let ids = changeStatus(categories, status, id, req, res);
+    if(!ids){
+        req.flash("error", "Không thể kích hoạt danh mục khi danh mục cha chưa được kích hoạt!");
+        const backUrl = req.get("Referrer");
+        return res.redirect(backUrl);
+    }
     await Category.updateMany({_id: {$in: ids}}, {status: status});
     req.flash("success", "Cập nhật trạng thái danh mục thành công!");
     const backUrl = req.get("Referrer");
@@ -129,6 +134,11 @@ module.exports.editPatch = async (req,res)=>{
     const status = req.body.status;
     const categories = await Category.find({deleted: false});
     let ids = changeStatus(categories, status, id);
+    if(!ids){
+        req.flash("error", "Không thể kích hoạt danh mục khi danh mục cha chưa được kích hoạt!");
+        const backUrl = req.get("Referrer");
+        return res.redirect(backUrl);
+    }
     await Category.updateOne({_id: id}, req.body);
     if(ids.length > 1){
         ids.shift();
@@ -139,13 +149,14 @@ module.exports.editPatch = async (req,res)=>{
     res.redirect(backUrl);
 }
 module.exports.changeMulti = async (req, res) => {
+    //console.log(req.body);  
     try {
-        const { type, ids: idsString } = req.body;
-        const ids = idsString.split(", ");
+        const typeChecked = req.body.type;
+        const idsChecked = req.body.ids;
+        const ids = idsChecked.split(",");
         const categories = await Category.find({ deleted: false });
-        const backUrl = req.get("Referrer") || "/admin/categories";
         let bulkOps = [];
-        switch (type) {
+        switch (typeChecked) {
             case "active":
                 for (const id of ids) {
                     const current = categories.find(item => item.id === id);
@@ -210,9 +221,27 @@ module.exports.changeMulti = async (req, res) => {
         } else {
             req.flash("error", "Không có thay đổi nào hợp lệ được thực hiện!");
         }
+        const backUrl = req.get("Referrer");
         res.redirect(backUrl);
     } catch (error) {
-        req.flash("error", "Có lỗi xảy ra!");
-        res.redirect("back");
+        req.flash("error", "Có lỗi xảy ra!");;
     }
 };
+//GET /recycle-bin
+module.exports.recycleBin = async (req, res)=>{
+    let find={};
+    find.deleted = true;
+    const categories = await Category.find(find)
+    res.render("admin/pages/category/recycleBin",{
+        pageTitle:"Thùng rác",
+        categories: categories
+    })
+}
+//PATCH /recycleBin/restore/:id
+module.exports.restore = async (req, res)=>{
+   
+    
+}
+//PATCH /recycleBin/hard-delete/:id
+module.exports.forceDelete = async (req, res)=>{
+}

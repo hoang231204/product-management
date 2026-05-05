@@ -1,6 +1,6 @@
 const checkStatusParents = require("./check-status-parents");
 const getChildren = require("./get-children");
-module.exports = (arr, status, id)=>{
+module.exports = (arr, status, id, req, res)=>{
     const ids = []
         if(status === "inactive"){
             ids.push(id);
@@ -14,9 +14,7 @@ module.exports = (arr, status, id)=>{
                 ids.push(id);
             }
             else{
-                req.flash("error", "Danh mục cha chưa được kích hoạt!");
-                const backUrl = req.get("Referrer");
-                return res.redirect(backUrl);
+                return;
             }
         }
     return ids;

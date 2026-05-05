@@ -1,0 +1,30 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+block main
+    +alert-success(5000)
+    h1 Chỉnh sửa vai trò
+    form(
+        action=`${prefixAdmin}/roles/edit/${role._id}?_method=PATCH` 
+        method="POST" 
+        form-upload
+    )
+        div(class="form-group")
+            label(for="title") Tiêu đề
+            input(
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                value=role.title
+                required 
+            )
+        div(class="form-group")
+            label(for="desc") Mô tả ngắn
+            textarea(
+                class="form-control textarea-mce"
+                id="desc"
+                name="description"
+                rows="5"
+            )!= role.description
+        div(class="form-group")
+            button(type="submit" class="btn btn-primary") Cập nhật

@@ -1,8 +1,10 @@
 const Product = require('../../models/product-model')
+const Category = require('../../models/category-model')
 const filter = require("../../helpers/filter-status")
 const search = require("../../helpers/search")  
 const pagination = require("../../helpers/pagination") 
 const systemConfig = require("../../config/system")
+const tree = require("../../helpers/create-tree")
 
 //DANH SÁCH SẢN PHẨM
 module.exports.index = async (req, res) => {
@@ -86,7 +88,7 @@ module.exports.changeMulti = async (req, res) => {
         default:
             await Product.updateMany({ _id: { $in: ids } }, { status: typeChecked });
     }
-    res.flash('success', 'Cập nhật trạng thái thành công!');
+    req.flash('success', 'Cập nhật trạng thái thành công!');
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
 }
@@ -126,7 +128,12 @@ module.exports.restore = async (req,res)=>{
 }
 //GET CREATE
 module.exports.create = async (req, res)=>{
-    res.render("admin/pages/products/create")
+    const categories = await Category.find({status: "active", deleted: false});
+    const categoryTree = tree(categories);
+    res.render("admin/pages/products/create", {
+        pageTitle: "Tạo mới sản phẩm",
+        categoryTree: categoryTree
+    });
 }
 //POST CREATE
 module.exports.createPost = async (req, res)=>{
@@ -149,11 +156,17 @@ module.exports.createPost = async (req, res)=>{
 //GET EDIT
 module.exports.edit= async (req,res)=>{
     try {
-         //console.log(req.params.id)
-    const product = await Product.findById(req.params.id);
+    const categories = await Category.find({deleted: false},{status: "active"});
+    const categoryTree = tree(categories);
+    const product = await Product.findById(req.params.id).populate("category");
+    const categoryId = product.category ? product.category._id : null;
+    const categoryTitle = product.category ? product.category.title : "N/A";
     res.render("admin/pages/products/edit",{
         pageTitle: "Sửa sản phẩm",
-        product: product
+        product: product,
+        categoryTree: categoryTree,
+        categoryId: categoryId,
+        categoryTitle: categoryTitle
     })
     } catch (error) {
         res.status(404).send("Sản phẩm không tồn tại");
@@ -185,13 +198,15 @@ module.exports.details = async (req,res)=>{
         _id: req.params.id,
         delete: false
     }
-    const product = await Product.findOne(find);
+    const product = await Product.findOne(find).populate("category");
+    const categoryTitle = product.category ? product.category.title : "N/A";
     if (!product) {
         res.status(404).send("Sản phẩm không tồn tại");
     } else {
         res.render("admin/pages/products/details", {
             pageTitle: product.title,
-            product: product
+            product: product,
+            categoryTitle: categoryTitle
         });
     }
 }

@@ -1,6 +1,6 @@
 module.exports.create = (req,res,next)=>{
     if(!req.body.title){
-        req.flash("error","Vui lòng nhập tiêu đề sản phẩm!");
+        req.flash("error","Vui lòng nhập tiêu đề!");
         const backUrl = req.get("Referrer");
         res.redirect(backUrl);
         return
@@ -9,7 +9,7 @@ module.exports.create = (req,res,next)=>{
 }
 module.exports.edit = (req,res,next)=>{
     if(!req.body.title){
-        req.flash("error","Vui lòng nhập tiêu đề sản phẩm!");
+        req.flash("error","Vui lòng nhập tiêu đề!");
         const backUrl = req.get("Referrer");
         res.redirect(backUrl);
         return

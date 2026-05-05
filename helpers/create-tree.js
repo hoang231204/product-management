@@ -1,5 +1,5 @@
 let count = 0;
-const createTree = (categories,parentId = null)=>{
+const createTree = (categories,parentId=null)=>{
         const tree=[];
         categories.forEach((item)=>{
             if(item.parent_id == parentId){

@@ -1,5 +1,5 @@
 //console.log(window.location.href)
-//BỘ LỌC
+//FILTER
 const filterButtons = document.querySelectorAll("[button-status]")
 if(filterButtons.length>0){
     let url = new URL(window.location.href)
@@ -17,7 +17,7 @@ if(filterButtons.length>0){
         })
     })
 }
-//TÌM KIẾM
+//SEARCH
 const formSearch = document.querySelector("#form-search")
 if(formSearch){
     formSearch.addEventListener("submit",(event)=>{
@@ -36,7 +36,7 @@ if(formSearch){
 })
 }
 
-//PHÂN TRANG
+//PAGINATION
     const buttonsPage = document.querySelectorAll(".page-link")
     if(buttonsPage){
         let url = new URL(window.location.href)
@@ -65,6 +65,41 @@ if(showAlert){
         showAlert.classList.add("alert-hidden")
     },time)
 }
+//DELETE
+const buttonsDelete = document.querySelectorAll("[button-delete]")
+if(buttonsDelete.length>0){
+    const formDelete = document.querySelector("[form-delete]")
+    const pathDel = formDelete.getAttribute("data-path")
+    buttonsDelete.forEach(buttonDelete =>{
+        buttonDelete.addEventListener("click",()=>{
+                const check = confirm('Bạn chắc chắn xóa?')
+                if(check ==true){
+                    const id = buttonDelete.getAttribute("idDel")
+                    const action =`${pathDel}/${id}?_method=PATCH`
+                    formDelete.action = action;
+                    formDelete.submit();
+                }
+                
+            })
+            
+        })
+    }
+//EDIT
+const buttonsEdit = document.querySelectorAll("[button-edit]");
+const formEdit = document.querySelector("[form-edit]");
+if(formEdit){
+    const dataPathEdit = formEdit.getAttribute("data-path");
+}
+if(buttonsEdit.length>0){
+    buttonsEdit.forEach(buttonEdit=>{
+      buttonEdit.addEventListener("click",()=>{
+        const id = buttonEdit.getAttribute("idEdit");
+        const action = `${dataPathEdit}/${id}?_method=PATCH`;
+        formEdit.action = action;
+        formEdit.submit();
+      })
+    })
+}  
 
 
 // PREVIEW IMAGE

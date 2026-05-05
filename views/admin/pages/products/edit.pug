@@ -1,5 +1,6 @@
 extends ../../layouts/default.pug
 include ../../mixins/show-alert.pug
+include ../../mixins/select-tree.pug
 
 block main
     +alert-error(5000)
@@ -19,7 +20,16 @@ block main
                 value=product.title
                 required 
             )
-        
+        div(class="form-group")
+            label(for="category") Danh mục
+            select(
+                name="category"
+                id="category"
+                class="form-control"
+            )
+                option(value=categoryId) #{categoryTitle}
+                if (categoryTree)
+                    +select-tree(categoryTree)
         // Mô tả (Description)
         div(class="form-group")
             label(for="desc") Mô tả
@@ -123,7 +133,26 @@ block main
                 checked=(product.status === "inactive")
             )
             label(class="form-check-label" for="statusInactive") Dừng hoạt động
-        
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusPending"
+                name="status"
+                value="pending"
+                checked=(product.status === "pending")
+            )
+            label(class="form-check-label" for="statusPending") Đang chờ
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusLowStock"
+                name="status"
+                value="low-stock"
+                checked=(product.status === "low-stock")
+            )
+            label(class="form-check-label" for="statusLowStock") Hêt hàng
         // Nút submit
         div(class="form-group")
             button(type="submit" class="btn btn-primary") Cập nhật sản phẩm

@@ -2,7 +2,7 @@ extends ../../layouts/default.pug
 block main 
     h1 Thùng rác
     .card.mb-3
-        .card-header Thùng rác sản phẩm
+        .card-header Thùng rác danh mục
         .card-body
             table(class="table table-hover table-sm")
                 thead
@@ -10,27 +10,15 @@ block main
                     th STT
                     th Hình ảnh
                     th Tiêu đề
-                    th Giá
-                    th Trạng thái
                     th Thời gian xóa
                     th Hoạt động
                 tbody
-                    each item, index in products
+                    each item, index in categories
                         tr
                         td #{index+1}
                         td
                             img( src=item.thumbnail, alt="Sản phẩm 1",width="100px",height="auto")
                         td #{item.title}
-                        td #{item.price}$
-                        td
-                            if item.status == 'active'
-                                a(href="javascript:;" class="badge badge-success" ) Hoạt động
-                            else if item.status == 'inactive'
-                                a(href="javascript:;" class="badge badge-danger" ) Không hoạt động
-                            else if item.status == 'pending'
-                                a(href="javascript:;" class="badge badge-warning" ) Đang chờ
-                            else
-                                a(href="javascript:;" class="badge badge-secondary") Sắp hết
                         td #{item.deleteAt}
                         td
                             button(class="btn btn-success btn-sm" button-restore data-id= item.id) Khôi phục
@@ -39,12 +27,12 @@ block main
       action="",
       method="POST"
       form-hard-delete
-      data-path = `${prefixAdmin}/products/recycleBin/hardDelete`
+      data-path = `${prefixAdmin}/categories/recycleBin/hard-delete`
     )
     form(
       action="",
       method="POST"
       form-restore 
-      data-path = `${prefixAdmin}/products/recycleBin/restore`
+      data-path = `${prefixAdmin}/categories/recycleBin/restore`
     )
     script(src="/admin/js/recycleBin.js") 

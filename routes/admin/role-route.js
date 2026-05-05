@@ -1,0 +1,14 @@
+const roleController = require("../../controllers/admin/role-controller");
+const validateRole = require("../../validates/admin/product-validate");
+const express = require("express");
+const router = express.Router();
+router.get("/", roleController.index);
+router.get("/create", roleController.create);
+router.post("/create", validateRole.create, roleController.createPost);
+router.get("/details/:id", roleController.details);
+router.delete("/delete/:id", roleController.delete);
+router.get("/edit/:id", roleController.edit);
+router.patch("/edit/:id", validateRole.edit, roleController.editPatch);
+router.get("/permissions", roleController.permission);
+router.patch("/permissions", roleController.permissionPatch);
+module.exports = router;

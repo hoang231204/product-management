@@ -26,4 +26,7 @@ router.patch(
     categoryValidate.edit, 
     categoryController.editPatch);
 router.patch("/change-multi", categoryController.changeMulti)
+router.get("/recycleBin", categoryController.recycleBin)
+router.patch("/recycleBin/restore/:id", categoryController.restore)
+router.patch("/recycleBin/hard-delete/:id", categoryController.forceDelete)
 module.exports = router;

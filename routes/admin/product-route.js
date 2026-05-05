@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/',productController.index);
 router.patch('/change-status/:status/:id',productController.changeStatus);
 router.patch('/change-multi',productController.changeMulti);
-router.delete('/delete/:id',productController.delete)
+router.patch('/delete/:id',productController.delete)
 router.get("/recycleBin",productController.recycleBin)
     router.delete("/recycleBin/hardDelete/:id",productController.hardDelete)
     router.patch("/recycleBin/restore/:id",productController.restore)
