@@ -1,0 +1,42 @@
+extends ../../layouts/auth.pug
+include ../../mixins/show-alert.pug
+block main
+    div(class="alert-container")
+        +alert-success(5000)
+        +alert-error(5000)
+    .container
+        .row.justify-content-center
+            .col-md-5.col-lg-4
+                .card.shadow.border-0
+                    .card-body.p-5
+                        h2.text-center.mb-4.font-weight-bold Đăng nhập
+                        form(
+                            action=`${prefixAdmin}/auth/login`
+                            method="POST"
+                        )
+                            div(class="form-group")
+                                label(for="email") Email
+                                input(
+                                    type="email"
+                                    class="form-control"
+                                    id="email"
+                                    name="email"
+                                    placeholder="admin@example.com"
+                                    required
+                                )
+
+                            div(class="form-group")
+                                label(for="password") Mật khẩu
+                                input(
+                                    type="password"
+                                    class="form-control"
+                                    id="password"
+                                    name="password"
+                                    required
+                                )
+                            button(
+                                type="submit"
+                                class="btn btn-primary btn-block mt-4"
+                            ) Đăng nhập
+                            .text-center.mt-3
+                                a(href="/" class="small text-muted") Quay lại trang chủ
