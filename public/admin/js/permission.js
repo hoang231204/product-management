@@ -1,3 +1,4 @@
+//Update permissions
 const tablePermission = document.querySelector("[table-permissions]")
 if(tablePermission) {
     const button = document.querySelector("[button-submit]");
@@ -33,6 +34,7 @@ if(tablePermission) {
         }
     })
 }
+//Default permissions
 const data = document.querySelector("[input-records]").value;
 const records= JSON.parse(data);
 records.forEach((record,index)=>{
@@ -47,6 +49,7 @@ records.forEach((record,index)=>{
         }
     })
 })
+//Select all permissions
 const inputCheckAll = document.querySelectorAll("[checkbox-select-all]");
 if (inputCheckAll) {
     inputCheckAll.forEach((input, index) => {

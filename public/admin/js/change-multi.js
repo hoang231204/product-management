@@ -1,40 +1,4 @@
-//CHANGE STATUS
-const buttonsChange = document.querySelectorAll("[button-change-status]")
-    //console.log(buttonsChange)
-const form = document.querySelector("[form-change-status]")
-const path = form.getAttribute("data-path")
-    //console.log(path)
-if(buttonsChange.length>0){
-    buttonsChange.forEach(button => {
-        button.addEventListener("click",()=>{
-            const currentStatus = button.getAttribute("data-status")
-            //console.log(currentStatus)
-            const id = button.getAttribute("id")
-            //console.log(id)
-            let statusChange;
-            switch (currentStatus) {
-            case "active":
-                statusChange = "inactive";
-                break;
-            case "inactive":
-                statusChange = "active";
-                break;
-            case "pending":
-                statusChange = "active";
-                break;
-            case "low_stock":
-                statusChange = "active"; 
-                break;
-            default:
-                statusChange = "active"; 
-            }
-            const action = path + `/${statusChange}/${id}?_method=PATCH`
-            form.action = action;
-            console.log(action)
-            form.submit();
-        })
-    })
-}
+
 //CHANGEMULTI STATUS - DELETE - POSITION
 const checkboxMulti = document.querySelector("[check-box-multi]")
 if(checkboxMulti){

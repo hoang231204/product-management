@@ -53,17 +53,54 @@ if(formSearch){
     }
 
 //SHOW-ALERT
-const showAlert = document.querySelector("[show-alert]")
+const showAlert = document.querySelectorAll("[show-alert]")
 if(showAlert){
-    const data_time = showAlert.getAttribute("data-time")
-    const time = parseInt(data_time)
-    const closeAlert = showAlert.querySelector("[close-alert]")
-    closeAlert.addEventListener("click",()=>{
-        showAlert.classList.add("alert-hidden")
+    showAlert.forEach(alert => {
+        const data_time = alert.getAttribute("data-time")
+        const time = parseInt(data_time)
+        const closeAlert = alert.querySelector("[close-alert]")
+        closeAlert.addEventListener("click",()=>{
+            alert.classList.add("alert-hidden")
     })
     setTimeout(()=>{
-        showAlert.classList.add("alert-hidden")
+        alert.classList.add("alert-hidden")
     },time)
+    })
+}
+//CHANGE STATUS
+const buttonsChange = document.querySelectorAll("[button-change-status]")
+const form = document.querySelector("[form-change-status]")
+const path = form.getAttribute("data-path")
+if(buttonsChange.length>0){
+    buttonsChange.forEach(button => {
+        button.addEventListener("click",()=>{
+            const currentStatus = button.getAttribute("data-status")
+            //console.log(currentStatus)
+            const id = button.getAttribute("data-id")
+            //console.log(id)
+            let statusChange;
+            switch (currentStatus) {
+            case "active":
+                statusChange = "inactive";
+                break;
+            case "inactive":
+                statusChange = "active";
+                break;
+            case "pending":
+                statusChange = "active";
+                break;
+            case "low_stock":
+                statusChange = "active"; 
+                break;
+            default:
+                statusChange = "active"; 
+            }
+            const action = path + `/${statusChange}/${id}?_method=PATCH`
+            form.action = action;
+            console.log(action)
+            form.submit();
+        })
+    })
 }
 //DELETE
 const buttonsDelete = document.querySelectorAll("[button-delete]")
@@ -74,7 +111,7 @@ if(buttonsDelete.length>0){
         buttonDelete.addEventListener("click",()=>{
                 const check = confirm('Bạn chắc chắn xóa?')
                 if(check ==true){
-                    const id = buttonDelete.getAttribute("idDel")
+                    const id = buttonDelete.getAttribute("data-id")
                     const action =`${pathDel}/${id}?_method=PATCH`
                     formDelete.action = action;
                     formDelete.submit();

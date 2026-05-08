@@ -1,0 +1,134 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+block main
+    +alert-success(5000)
+    .container.my-5
+        .row.justify-content-center
+            .col-md-8.col-lg-6
+                h1.mb-4.font-weight-bold Chỉnh sửa tài khoản
+
+                form(
+                    action=`${prefixAdmin}/accounts/edit/${account.id}?_method=PATCH`
+                    method="POST"
+                    enctype="multipart/form-data"
+                )
+                    //- Họ tên
+                    div(class="form-group mb-3")
+                        label(for="fullname" class="form-label") Họ tên *
+                        input(
+                            type="text"
+                            class="form-control"
+                            id="fullname"
+                            name="fullname"
+                            value=account.fullname
+                            required
+                        )
+
+                    //- Email
+                    div(class="form-group mb-3")
+                        label(for="email" class="form-label") Email *
+                        input(
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            value=account.email
+                            required
+                        )
+
+                    //- Mật khẩu (Để trống nếu không muốn đổi)
+                    div(class="form-group mb-3")
+                        label(for="password" class="form-label") Mật khẩu
+                        input(
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            name="password"
+                            placeholder="Nhập mật khẩu mới nếu muốn thay đổi"
+                        )
+                        small.text-muted * Để trống nếu giữ nguyên mật khẩu cũ
+
+                    //- Số điện thoại
+                    div(class="form-group mb-3")
+                        label(for="phone" class="form-label") Số điện thoại
+                        if account.telephone
+                            input(
+                                type="text"
+                                class="form-control"
+                                id="phone"
+                                name="phone"
+                                value=account.telephone
+                            )
+                        else
+                            input(
+                                type="text"
+                                class="form-control"
+                                id="phone"
+                                name="phone"
+                                placeholder="Chưa có số điện thoại"
+                            )
+                    //- Avatar
+                    div(class="form-group mb-3" upload-image)
+                        label(for="avatar" class="form-label") Avatar
+                        input(
+                            type="file"
+                            class="form-control-file d-block"
+                            id="avatar"
+                            name="avatar"
+                            accept="image/*"
+                            upload-image-input
+                        )
+                        div(class="box-image")
+                            img(
+                                src=""
+                                upload-image-preview
+                                class="image-preview"
+                                )
+                            button(
+                                type="button"
+                                class="btn-remove-image"
+                                aria-label="Remove image"
+                                ) ×
+
+                    //- Phân quyền (Role)
+                    div(class="form-group mb-3")
+                        label(for="role_id" class="form-label") Phân quyền
+                        select(name="role_id" id="role_id" class="form-control")
+                            option(value=account.role_id._id) #{account.role_id.title}
+                            each role in roles
+                                if role._id.toString() !== account.role_id._id.toString()
+                                    option(value=role._id) #{role.title}
+                    //- Trạng thái
+                    div(class="form-group mb-4")
+                        div(class="form-check form-check-inline")
+                            input(
+                                type="radio"
+                                class="form-check-input"
+                                id="statusActive"
+                                name="status"
+                                value="active"
+                                checked=(account.status === "active" ? true : false)
+                            )
+                            label(for="statusActive" class="form-check-label") Hoạt động
+                        
+                        div(class="form-check form-check-inline")
+                            input(
+                                type="radio"
+                                class="form-check-input"
+                                id="statusInActive"
+                                name="status"
+                                value="inactive"
+                                checked=(account.status === "inactive" ? true : false)
+                            )
+                            label(for="statusInActive" class="form-check-label") Dừng hoạt động
+
+                    //- Nút cập nhật
+                    div(class="form-group")
+                        button(
+                            type="submit"
+                            class="btn btn-primary px-4"
+                        ) Cập nhật
+                        a(
+                            href=`${prefixAdmin}/accounts`
+                            class="btn btn-secondary ml-2"
+                        ) Hủy bỏ

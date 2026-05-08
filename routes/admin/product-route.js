@@ -17,16 +17,16 @@ router.get("/create",productController.create)
 router.post(
     "/create",
     upload.single('thumbnail'),
-    middleware.upload,
     productValidate.create,
+    middleware.upload,
     productController.createPost
 )
 router.get("/edit/:id",productController.edit);
 router.patch(
     "/edit/:id",
     upload.single('thumbnail'),
-    middleware.upload,
     productValidate.edit,
+    middleware.upload,
     productController.editPatch
 );
 router.get("/details/:id", productController.details);

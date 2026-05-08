@@ -32,12 +32,12 @@ mixin table-tree(items, level = 1)
                     )
                 td
                     if item.status == 'active'
-                        a(href="javascript:;" class="badge badge-success" button-change-status id=item._id data-status=item.status) Hoạt động
+                        a(href="javascript:;" class="badge badge-success" button-change-status data-id=item._id data-status=item.status) Hoạt động
                     else
-                        a(href="javascript:;" class="badge badge-danger" button-change-status id=item._id data-status=item.status) Không hoạt động
+                        a(href="javascript:;" class="badge badge-danger" button-change-status data-id=item._id data-status=item.status) Không hoạt động
                 td
                     a(href=`${prefixAdmin}/categories/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
                     a(href=`${prefixAdmin}/categories/edit/${item._id}` class="btn btn-primary btn-sm ml-1") Sửa
-                    button(class="btn btn-danger btn-sm ml-1" button-delete idDel=item._id) Xóa
+                    button(class="btn btn-danger btn-sm ml-1" button-delete data-id=item._id) Xóa
             if item.children && item.children.length > 0
                 +table-tree(item.children, level + 1)
