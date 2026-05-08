@@ -5,7 +5,7 @@ const md5 = require("md5")
 //GET /admin/accounts
 module.exports.index = async (req, res) =>{
     let find= {deleted: false};
-    const accounts = await Account.find(find).select("-password ").populate("role_id", "title");
+    const accounts = await Account.find(find).select("-password -token").populate("role_id", "title");
     res.render("admin/pages/account/index",{
         pageTitle: "Quản lý tài khoản",
         accounts: accounts
@@ -35,7 +35,7 @@ module.exports.createPost = async (req, res) =>{
 //GET /admin/accounts/details/:id
 module.exports.details = async (req, res) =>{
     const id = req.params.id;
-    const account = await Account.findOne({ _id: id }).select("-password").populate("role_id", "title");
+    const account = await Account.findOne({ _id: id }).select("-password -token").populate("role_id", "title");
     res.render("admin/pages/account/details", {
         pageTitle: "Chi tiết tài khoản",  
         account: account
@@ -44,7 +44,13 @@ module.exports.details = async (req, res) =>{
 //GET /admin/accounts/edit/:id
 module.exports.edit = async (req, res) =>{
     const id = req.params.id;
-    const account = await Account.findOne({ _id: id }).select("-password").populate("role_id", "title");
+    const emailExists = await Account.findOne({email: req.body.email, _id: {$ne: id}, deleted: false});
+    if(emailExists){
+        req.flash('error', 'Email đã tồn tại!');
+        const backUrl = req.get("Referrer");
+        return res.redirect(backUrl);
+    }
+    const account = await Account.findOne({ _id: id }).select("-password -token").populate("role_id", "title");
     const roles = await Role.find().select("_id title");
     res.render("admin/pages/account/edit", {
         pageTitle: "Chỉnh sửa tài khoản",
