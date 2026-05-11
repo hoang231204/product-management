@@ -44,12 +44,6 @@ module.exports.details = async (req, res) =>{
 //GET /admin/accounts/edit/:id
 module.exports.edit = async (req, res) =>{
     const id = req.params.id;
-    const emailExists = await Account.findOne({email: req.body.email, _id: {$ne: id}, deleted: false});
-    if(emailExists){
-        req.flash('error', 'Email đã tồn tại!');
-        const backUrl = req.get("Referrer");
-        return res.redirect(backUrl);
-    }
     const account = await Account.findOne({ _id: id }).select("-password -token").populate("role_id", "title");
     const roles = await Role.find().select("_id title");
     res.render("admin/pages/account/edit", {
@@ -61,6 +55,12 @@ module.exports.edit = async (req, res) =>{
 //PATCH /admin/accounts/edit/:id
 module.exports.editPatch = async (req, res) =>{
     const id = req.params.id;
+    const emailExists = await Account.findOne({email: req.body.email, _id: {$ne: id}, deleted: false});
+    if(emailExists){
+        req.flash('error', 'Email đã tồn tại!');
+        const backUrl = req.get("Referrer");
+        return res.redirect(backUrl);
+    }
     if(req.body.password){
         req.body.password = md5(req.body.password);
     }else{

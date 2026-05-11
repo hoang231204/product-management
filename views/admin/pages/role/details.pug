@@ -46,15 +46,17 @@ block main
                             .row
                                 .col-4
                                     //- Dùng data-id và _id vì bạn đang dùng .lean()
-                                    a(
-                                        href=`${prefixAdmin}/roles/edit/${role._id}`
-                                        class="btn btn-warning btn-block"
-                                    ) Chỉnh sửa
+                                    if(role.permissions.includes('role_edit'))
+                                        a(
+                                            href=`${prefixAdmin}/roles/edit/${role._id}`
+                                            class="btn btn-warning btn-block"
+                                        ) Chỉnh sửa
                                 .col-4
-                                    a(
-                                        href=`${prefixAdmin}/roles/delete/${role._id}`
-                                        class="btn btn-secondary btn-block"
-                                    ) Xóa
+                                    if(role.permissions.includes('role_delete'))
+                                        a(
+                                            href=`${prefixAdmin}/roles/delete/${role._id}`
+                                            class="btn btn-secondary btn-block"
+                                        ) Xóa
                                 .col-4 
                                     a(
                                         href=`${prefixAdmin}/roles`

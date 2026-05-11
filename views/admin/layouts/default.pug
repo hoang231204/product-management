@@ -6,16 +6,17 @@ html
         link(rel="stylesheet", href="/admin/css/style.css")
 
     body 
-        include ../partials/header.pug
+        if(role.permissions.length > 0)
+            include ../partials/header.pug
 
-        .body 
-            include ../partials/sider.pug
-            .main 
-                block main
-
-      
-
-
+            .body 
+                include ../partials/sider.pug
+                .main 
+                    block main
+        else 
+            .container
+                .alert.alert-danger.mt-5(role="alert")
+                    | Tài khoản của bạn không có quyền truy cập vào trang quản trị. Vui lòng liên hệ quản trị viên để được cấp quyền.
         script(src="/admin/js/script.js")
         script(src="https://cdn.tiny.cloud/1/kdo72bzbyt581rgiklvme2juiwkcjsa586xg0t6y961hsa95/tinymce/7/tinymce.min.js", referrerpolicy="origin") 
         script(src="/admin/js/my-tinymce-config.js") 

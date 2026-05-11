@@ -54,15 +54,17 @@ block main
 
                 //- Nút hành động
                 div(class="mt-4")
-                    a(
-                        href=`${prefixAdmin}/accounts/edit/${account.id}`
-                        class="btn btn-warning"
-                    ) Chỉnh sửa
-                    a(
-                        href=`${prefixAdmin}/accounts/delete/${account.id}`
-                        class="btn btn-danger ml-2"
-                        onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?');"
-                    ) Xóa
+                    if(role.permissions.includes('account_edit'))
+                        a(
+                            href=`${prefixAdmin}/accounts/edit/${account.id}`
+                            class="btn btn-warning"
+                        ) Chỉnh sửa
+                    if(role.permissions.includes('account_delete'))
+                        a(
+                            href=`${prefixAdmin}/accounts/delete/${account.id}`
+                            class="btn btn-danger ml-2"
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?');"
+                        ) Xóa
                     a(
                         href=`${prefixAdmin}/accounts`
                         class="btn btn-secondary ml-2"

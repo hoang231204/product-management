@@ -1,4 +1,4 @@
-module.exports.login = (req,res,login)=>{
+module.exports.login = (req,res,next)=>{
     if(!req.body.email){
         req.flash("error","Vui lòng nhập email!");
         const backUrl = req.get("Referrer");

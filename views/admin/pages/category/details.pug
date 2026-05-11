@@ -99,22 +99,22 @@ block main
                         .card-footer
                             .row
                                 .col-6
-                                    a(
-                                        href=`${prefixAdmin}/categories/${category._id}/edit`
-                                        class="btn btn-primary btn-block"
-                                    )
-                                        i.fa.fa-edit.mr-2
-                                        | Chỉnh sửa
-                                
+                                    if(role.permissions.includes('categories_edit'))
+                                        a(
+                                            href=`${prefixAdmin}/categories/${category._id}/edit`
+                                            class="btn btn-primary btn-block"
+                                        )
+                                            i.fa.fa-edit.mr-2
+                                            | Chỉnh sửa
                                 .col-3
-                                    a(
-                                        href=`${prefixAdmin}/categories/delete/${category._id}`
-                                        class="btn btn-danger btn-block"
-                                        onclick="return confirm('Bạn chắc chắn muốn xóa?')"
-                                    )
-                                        i.fa.fa-trash.mr-2
-                                        | Xóa
-                                
+                                    if(role.permissions.includes('categories_delete'))
+                                        a(
+                                            href=`${prefixAdmin}/categories/delete/${category._id}`
+                                            class="btn btn-danger btn-block"
+                                            onclick="return confirm('Bạn chắc chắn muốn xóa?')"
+                                        )
+                                            i.fa.fa-trash.mr-2
+                                            | Xóa
                                 .col-3
                                     a(
                                         href=`${prefixAdmin}/categories`

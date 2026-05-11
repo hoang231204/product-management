@@ -153,31 +153,32 @@ block main
                 .card.shadow-sm.sticky-top(style="top: 20px;")
                     .card-header.bg-dark.text-white
                         h5.mb-0 Thao tác
-                    
                     .card-body
-                        a(href=`${prefixAdmin}/products/edit/${product._id}` class="btn btn-warning btn-sm w-100 mb-2")
-                            i.fas.fa-edit.me-2
-                            | Chỉnh sửa
+                        if(role.permissions.includes("product_edit"))
+                            a(href=`${prefixAdmin}/products/edit/${product._id}` class="btn btn-warning btn-sm w-100 mb-2")
+                                i.fas.fa-edit.me-2
+                                | Chỉnh sửa
+                            
+                            if product.status === 'active'
+                                a(href=`${prefixAdmin}/products/change-status/inactive/${product._id}?_method=PATCH` class="btn btn-secondary btn-sm w-100 mb-2" onclick="return confirm('Bạn chắc chắn muốn vô hiệu hóa sản phẩm này?')")
+                                    i.fas.fa-ban.me-2
+                                    | Vô hiệu hóa
+                            else
+                                a(href=`${prefixAdmin}/products/change-status/active/${product._id}?_method=PATCH` class="btn btn-success btn-sm w-100 mb-2" onclick="return confirm('Bạn chắc chắn muốn kích hoạt sản phẩm này?')")
+                                    i.fas.fa-check.me-2
+                                    | Kích hoạt
                         
-                        if product.status === 'active'
-                            a(href=`${prefixAdmin}/products/change-status/inactive/${product._id}?_method=PATCH` class="btn btn-secondary btn-sm w-100 mb-2" onclick="return confirm('Bạn chắc chắn muốn vô hiệu hóa sản phẩm này?')")
-                                i.fas.fa-ban.me-2
-                                | Vô hiệu hóa
-                        else
-                            a(href=`${prefixAdmin}/products/change-status/active/${product._id}?_method=PATCH` class="btn btn-success btn-sm w-100 mb-2" onclick="return confirm('Bạn chắc chắn muốn kích hoạt sản phẩm này?')")
-                                i.fas.fa-check.me-2
-                                | Kích hoạt
-                        
-                        a(href=`${prefixAdmin}/products/delete/${product._id}?_method=DELETE` class="btn btn-danger btn-sm w-100 mb-2" onclick="return confirm('Bạn chắc chắn muốn xóa sản phẩm này?')")
-                            i.fas.fa-trash.me-2
-                            | Xóa vào thùng rác
+                        if(role.permissions.includes("product_delete"))
+                            a(href=`${prefixAdmin}/products/delete/${product._id}?_method=DELETE` class="btn btn-danger btn-sm w-100 mb-2" onclick="return confirm('Bạn chắc chắn muốn xóa sản phẩm này?')")
+                                i.fas.fa-trash.me-2
+                                | Xóa
                         
                         hr
                         
                         a(href=`${prefixAdmin}/products` class="btn btn-info btn-sm w-100")
                             i.fas.fa-arrow-left.me-2
                             | Quay lại danh sách
-                
+            
                 // Thông tin bổ sung
                 .card.shadow-sm.mt-3
                     .card-header.bg-secondary.text-white

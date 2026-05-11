@@ -114,6 +114,32 @@ block main
                             input(type="checkbox")
                 tr
                     td(class="text-center")
+                        b Quản lý tài khoản
+                tr(data-name="account_view")
+                    td(class="text-center") Xem
+                    each record in records
+                        td(class="text-center")
+                            input(type="checkbox")
+                
+                tr(data-name="account_create")
+                    td(class="text-center") Thêm mới
+                    each record in records
+                        td(class="text-center")
+                            input(type="checkbox")
+                
+                tr(data-name="account_edit")
+                    td(class="text-center") Chỉnh sửa
+                    each record in records
+                        td(class="text-center")
+                            input(type="checkbox")
+                
+                tr(data-name="account_delete")
+                    td(class="text-center") Xóa
+                    each record in records
+                        td(class="text-center")
+                            input(type="checkbox")
+                tr
+                    td(class="text-center")
                         b Phân quyền
                 tr(data-name="permission")
                     td(class="text-center") Phân quyền
