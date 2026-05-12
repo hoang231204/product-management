@@ -27,7 +27,8 @@ router.patch(
     middleware.upload,
     categoryController.editPatch);
 router.patch("/change-multi", categoryController.changeMulti)
-router.get("/recycleBin", categoryController.recycleBin)
-router.patch("/recycleBin/restore/:id", categoryController.restore)
+router.get("/recycle-bin", categoryController.recycleBin)
+//router.patch("/recycle-bin/restore/:id", categoryController.restore)
+router.delete("/recycle-bin/destroy/:id", categoryController.destroy)
 router.patch("/change-status/:status/:id", categoryController.changeStatus)
 module.exports = router;

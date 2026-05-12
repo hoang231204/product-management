@@ -25,4 +25,7 @@ router.patch(
 );
 router.patch("/delete/:id", accountController.delete);
 router.patch("/change-status/:status/:id", accountController.changeStatus);
+router.get("/recycle-bin", accountController.recycleBin);
+router.patch("/recycle-bin/restore/:id", accountController.restore);
+router.delete("/recycle-bin/destroy/:id", accountController.destroy);
 module.exports = router;

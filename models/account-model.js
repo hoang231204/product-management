@@ -20,9 +20,39 @@ const schema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    deleteAt:Date
-},{
-    timestamps: true
-});
+    createdBy:{
+        account_id:{
+            type: String,
+            ref: "Account",
+        },
+        createdAt:{
+            type: Date,
+            default: Date.now
+        }
+    },
+    deletedBy:{
+        account_id:{
+            type: String,
+            ref: "Account",
+        },
+        deletedAt:{
+            type: Date,
+            default: Date.now
+        }
+    },
+    updatedBy:[
+        {
+            account_id: {
+                type: String,
+                ref: "Account"
+            },
+            updatedAt:{
+                type: Date,
+                default: Date.now
+            }
+        }
+    ]
+}
+)
 const Account = mongoose.model('Account', schema, "accounts");
 module.exports = Account;

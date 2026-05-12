@@ -30,6 +30,8 @@ block main
                             th Phân quyền
                             th Email
                             th Trạng thái
+                            th Người tạo
+                            th Người sửa
                             th Hành động
 
                         tbody
@@ -75,7 +77,15 @@ block main
                                                     data-status=item.status
                                                     data-id=item.id
                                                 ) Dừng hoạt động
-
+                                    td
+                                        p #{item.createdBy.account_id.fullname}
+                                        p #{moment(item.createdAt).locale('vi').fromNow()}
+                                    td
+                                        if(item.updatedBy && item.updatedBy.length > 0)
+                                            p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
+                                            p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).locale('vi').fromNow()}
+                                        else   
+                                            p.em Chưa được cập nhật
                                     //- Hành động
                                     td.align-middle
                                         if(role.permissions.includes('account_edit'))
@@ -95,7 +105,7 @@ block main
                                             ) Chi tiết
                             else
                                 tr
-                                    td(colspan="7" class="text-center py-4") 
+                                    td(colspan="8" class="text-center py-4") 
                                         em Không tìm thấy tài khoản nào phù hợp.
         form(
             form-change-status

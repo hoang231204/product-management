@@ -12,7 +12,7 @@ const session = require('express-session')
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser')
 const path = require('path');
-
+const moment = require('moment');
 //Mongoose
 database.connect();
 //setting pug
@@ -20,6 +20,7 @@ app.set('views', `${__dirname}/views`)
 app.set('view engine', 'pug')
 //APP LOCAL
 app.locals.prefixAdmin = pathAdmin.prefixAdmin
+app.locals.moment = moment;
 //static file
 app.use(express.static(`${__dirname}/public`));
 //method-override

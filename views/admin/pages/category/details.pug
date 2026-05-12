@@ -4,131 +4,60 @@ include ../../mixins/show-alert.pug
 block main
     +alert-success(5000)
     
-    .container-fluid
-        .row.mb-4
-            .col-12
-                h1 CHI TIẾT DANH MỤC SẢN PHẨM
+    .container.my-5
+        h1.mb-4.font-weight-bold CHI TIẾT DANH MỤC
         
         if category
             .row
-                .col-lg-8.offset-lg-2
-                    .card
-                        .card-header
-                            h5.mb-0 Thông tin danh mục
-                        
-                        .card-body
-                            //- Tiêu đề
-                            .form-group
-                                label(for="title")
-                                    strong Tiêu đề
-                                input(
-                                    type="text"
-                                    class="form-control"
-                                    id="title"
-                                    value=category.title
-                                    disabled
-                                )
-                            
-                            .form-group.mb-3
-                                label(for="parent_id")
-                                    strong Danh mục cha
-                                input(
-                                    type="text"
-                                    class="form-control bg-light" 
-                                    id="parent_id"
-                                    value=parentName
-                                    readonly 
-                                )
-                            
-                            //- Mô tả
-                            .form-group
-                                label(for="description")
-                                    strong Mô tả
-                                textarea(
-                                    class="form-control"
-                                    id="description"
-                                    rows="5"
-                                    disabled
-                                )= category.description || ""
-                            
-                            //- Hình ảnh
-                            if category.thumbnail
-                                .form-group
-                                    label(for="thumbnail")
-                                        strong Hình ảnh
-                                    div.mt-2
-                                        img(
-                                            src=category.thumbnail
-                                            alt=category.title
-                                            style="max-width: 300px; max-height: 300px; object-fit: cover;"
-                                        )
-                            else 
-                                .form-group
-                                    label(for="thumbnail")
-                                        strong Hình ảnh
-                                    div.mt-2
-                                        img(
-                                            src="/images/no-image.png"
-                                            alt="No Image"
-                                            style="max-width: 300px; max-height: 300px; object-fit: cover;"
-                                        )
-                            //- Vị trí
-                            .form-group
-                                label(for="position")
-                                    strong Vị trí
-                                input(
-                                    type="text"
-                                    class="form-control"
-                                    id="position"
-                                    value=category.position
-                                    disabled
-                                )
-                            
-                            //- Trạng thái
-                            .form-group
-                                label(for="status")
-                                    strong Trạng thái
-                                input(
-                                    type="text"
-                                    class="form-control"
-                                    id="status"
-                                    value=category.status === "active" ? "Kích hoạt" : "Vô hiệu hóa"
-                                    disabled
-                                )
-                        
-                        .card-footer
-                            .row
-                                .col-6
-                                    if(role.permissions.includes('categories_edit'))
-                                        a(
-                                            href=`${prefixAdmin}/categories/${category._id}/edit`
-                                            class="btn btn-primary btn-block"
-                                        )
-                                            i.fa.fa-edit.mr-2
-                                            | Chỉnh sửa
-                                .col-3
-                                    if(role.permissions.includes('categories_delete'))
-                                        a(
-                                            href=`${prefixAdmin}/categories/delete/${category._id}`
-                                            class="btn btn-danger btn-block"
-                                            onclick="return confirm('Bạn chắc chắn muốn xóa?')"
-                                        )
-                                            i.fa.fa-trash.mr-2
-                                            | Xóa
-                                .col-3
-                                    a(
-                                        href=`${prefixAdmin}/categories`
-                                        class="btn btn-secondary btn-block"
-                                    )
-                                        i.fa.fa-arrow-left.mr-2
-                                        | Quay lại
+                //- Ảnh bên trái
+                .col-4
+                    div(class="border rounded p-2 text-center bg-white")
+                        img(
+                            src=(category.thumbnail ? category.thumbnail : "/admin/images/no-image.png")
+                            class="img-fluid"
+                        )
+                
+                //- Thông tin bên phải
+                .col-8
+                    div(class="mb-2") <b>Tiêu đề:</b> #{category.title}
+                    div(class="mb-2") <b>Danh mục cha:</b> #{parentName ? parentName : "Không có"}
+                    div(class="mb-2") 
+                        b Vị trí: 
+                        span.badge.bg-info.text-white #{category.position}
+                    
+                    div(class="mb-2")
+                        b Trạng thái: 
+                        if category.status === "active"
+                            span.badge.bg-success.text-white Hoạt động
+                        else
+                            span.badge.bg-danger.text-white Dừng hoạt động
+
+                    div(class="mb-3")
+                        b Mô tả:
+                        div(class="mt-1 p-3 bg-light border rounded") !{category.description || "<i>Không có mô tả</i>"}
+
+                    //- Phần Log: Người tạo
+                    if category.createdBy && category.createdBy.account_id
+                        div(class="mt-4 pt-2 border-top")
+                            div <b>Người tạo:</b> #{category.createdBy.account_id.fullname}
+                            div.small.text-muted #{moment(category.createdBy.createdAt).format('DD/MM/YYYY HH:mm')}
+
+                    //- Phần Log: Lịch sử cập nhật (Giống Product)
+                    if category.updatedBy && category.updatedBy.length > 0
+                        div(class="mt-3")
+                            b Lịch sử cập nhật:
+                            each item in category.updatedBy
+                                if item.account_id
+                                    div(class="small border-bottom py-1 d-flex justify-content-between")
+                                        span #{item.account_id.fullname} 
+                                        span.text-muted #{moment(item.updatedAt).fromNow()}
+
+            //- Cụm nút bấm
+            div(class="mt-4")
+                if(role.permissions.includes('categories_edit'))
+                    a(href=`${prefixAdmin}/categories/${category._id}/edit` class="btn btn-warning btn-sm mr-2") Chỉnh sửa
+                a(href=`${prefixAdmin}/categories` class="btn btn-secondary btn-sm") Quay lại
+
         else
-            .alert.alert-warning
-                | Không tìm thấy danh mục này!
-            div.mt-3
-                a(
-                    href=`${prefixAdmin}/categories`
-                    class="btn btn-secondary"
-                )
-                    i.fa.fa-arrow-left.mr-2
-                    | Quay lại danh sách
+            .alert.alert-warning Không tìm thấy danh mục này!
+            a(href=`${prefixAdmin}/categories` class="btn btn-secondary btn-sm") Quay lại danh sách

@@ -51,6 +51,8 @@ block main
                         th Giá
                         th Vị trí
                         th Trạng thái
+                        th Người tạo
+                        th Người sửa
                         th Hành động
                     tbody
                         each item, index in products
@@ -63,7 +65,7 @@ block main
                                     )
                             td #{index+1+objectPagination.skipPage}
                             td
-                                img( src=item.thumbnail, alt="Sản phẩm 1",width="100px",height="auto")
+                                img( src=item.thumbnail, alt=item.title,width="100px",height="auto")
                             td #{item.title}
                             td #{item.price}$
                             td 
@@ -85,6 +87,14 @@ block main
                                     else
                                         a(href="javascript:;" class="badge badge-secondary" button-change-status data-id=item._id  data-status=item.status) Sắp hết hàng
                             td
+                                p #{item.createdBy.account_id.fullname}
+                                p #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}
+                            td
+                                if item.updatedBy && item.updatedBy.length > 0
+                                    p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
+                                    p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                else
+                                    p Chưa có cập nhật
                                 a(href=`${prefixAdmin}/products/details/${item.id}` class="btn btn-info btn-sm") Chi tiết
                                 if(role.permissions.includes("product_edit"))
                                     button(class="btn btn-primary btn-sm" button-edit data-id=item._id) Sửa

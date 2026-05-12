@@ -11,4 +11,7 @@ router.get("/edit/:id", roleController.edit);
 router.patch("/edit/:id", validateRole.edit, roleController.editPatch);
 router.get("/permissions", roleController.permission);
 router.patch("/permissions", roleController.permissionPatch);
+router.get("/recycle-bin", roleController.recycleBin);
+router.patch("/recycle-bin/restore/:id", roleController.restore);
+router.delete("/recycle-bin/destroy/:id", roleController.destroy);
 module.exports = router;

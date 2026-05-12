@@ -50,6 +50,10 @@ module.exports.createPost = async (req,res)=>{
     if(req.body.parent_id == ""){
         req.body.parent_id = null;
     }
+    req.body.createdBy = {
+        account_id: res.locals.user._id,
+        createdAt: new Date()
+    };
     const category = new Category(req.body);
     await category.save();
     req.flash('success', 'Tạo danh mục thành công!');
@@ -70,7 +74,11 @@ module.exports.changeStatus = async (req,res)=>{
         const backUrl = req.get("Referrer");
         return res.redirect(backUrl);
     }
-    await Category.updateMany({_id: {$in: ids}}, {status: status});
+    let updatedBy = {
+        account_id: res.locals.user._id,
+        updatedAt: new Date()
+    };
+    await Category.updateMany({_id: {$in: ids}}, {status: status, $push: { updatedBy: updatedBy }});
     req.flash("success", "Cập nhật trạng thái danh mục thành công!");
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
@@ -83,7 +91,20 @@ module.exports.delete = async (req,res)=>{
     const categories = await Category.find({deleted: false});
     const childrenId = getChildren(categories, id);
     ids.push(...childrenId);
-    await Category.updateMany({_id: {$in: ids}}, {deleted: true}, {deleteAt: new Date()});
+    await Category.updateMany(
+        {
+            _id: {$in: ids}
+        },
+        {
+            $set: {
+                deleted: true,
+                deletedBy: {
+                    account_id: res.locals.user._id,
+                    deletedAt: new Date()
+                }
+            }
+        }
+    );
     req.flash("success", "Xóa danh mục thành công!");
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
@@ -95,7 +116,12 @@ module.exports.details = async (req,res)=>{
         deleted: false,
     };
     find._id = id; 
-    const category = await Category.findOne(find).populate("parent_id","title");
+    const category = await Category
+        .findOne(find)
+        .populate("parent_id","title")
+        .populate("createdBy.account_id", "fullname")
+        .populate("updatedBy.account_id", "fullname")
+        .lean();
     const parentTitle = category.parent_id ? category.parent_id.title : "Danh mục gốc";
     res.render("admin/pages/category/details",{
         pageTitle:"Chi tiết danh mục sản phẩm",
@@ -139,7 +165,11 @@ module.exports.editPatch = async (req,res)=>{
         const backUrl = req.get("Referrer");
         return res.redirect(backUrl);
     }
-    await Category.updateOne({_id: id}, req.body);
+    let updatedBy = {
+        account_id: res.locals.user._id,
+        updatedAt: new Date()
+    };
+    await Category.updateOne({_id: id}, {...req.body, $push: { updatedBy: updatedBy }});
     if(ids.length > 1){
         ids.shift();
         await Category.updateMany({_id: {$in: ids}}, {status: status});
@@ -155,6 +185,10 @@ module.exports.changeMulti = async (req, res) => {
         const idsChecked = req.body.ids;
         const ids = idsChecked.split(",");
         const categories = await Category.find({ deleted: false });
+        let updatedBy = {
+            account_id: res.locals.user._id,
+            updatedAt: new Date()
+        };
         let bulkOps = [];
         switch (typeChecked) {
             case "active":
@@ -164,7 +198,7 @@ module.exports.changeMulti = async (req, res) => {
                         bulkOps.push({
                             updateOne: {
                                 filter: { _id: id },
-                                update: { $set: { status: "active" } }
+                                update: { $set: { status: "active" }, $push: { updatedBy: updatedBy } }
                             }
                         });
                     }
@@ -177,7 +211,7 @@ module.exports.changeMulti = async (req, res) => {
                     bulkOps.push({
                         updateMany: {
                             filter: { _id: { $in: allChildIds } },
-                            update: { $set: { status: "inactive" } }
+                            update: { $set: { status: "inactive" }, $push: { updatedBy: updatedBy } }
                         }
                     });
                 }
@@ -192,8 +226,11 @@ module.exports.changeMulti = async (req, res) => {
                             update: { 
                                 $set: { 
                                     deleted: true, 
-                                    deletedAt: new Date() 
-                                } 
+                                    deletedBy: {
+                                        account_id: res.locals.user._id,
+                                        deletedAt: new Date()
+                                    }
+                                }  
                             }
                         }
                     });
@@ -206,7 +243,7 @@ module.exports.changeMulti = async (req, res) => {
                     bulkOps.push({
                         updateOne: {
                             filter: { _id: id },
-                            update: { $set: { position: parseInt(position) } }
+                            update: { $set: { position: parseInt(position) }, $push: { updatedBy: updatedBy } }
                         }
                     });
                 }
@@ -238,10 +275,18 @@ module.exports.recycleBin = async (req, res)=>{
     })
 }
 //PATCH /recycleBin/restore/:id
-module.exports.restore = async (req, res)=>{
-   
-    
-}
-//PATCH /recycleBin/hard-delete/:id
-module.exports.forceDelete = async (req, res)=>{
+// module.exports.restore = async (req, res)=>{
+//    const id = req.params.id;
+//    await Category.updateOne({_id:id},{deleted:false,status:"inactive"});
+//    req.flash("success", "Khôi phục danh mục thành công!");
+//    const backUrl = req.get("Referrer");
+//    res.redirect(backUrl);
+// }
+//DELETE /recycle-bin/destroy/:id
+module.exports.destroy = async (req, res)=>{
+    const id = req.params.id;
+    await Category.deleteOne({_id:id});
+    req.flash("success", "Xóa danh mục vĩnh viễn thành công!");
+    const backUrl = req.get("Referrer");
+    res.redirect(backUrl);
 }

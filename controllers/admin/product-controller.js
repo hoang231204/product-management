@@ -1,5 +1,6 @@
 const Product = require('../../models/product-model')
 const Category = require('../../models/category-model')
+const Account = require('../../models/account-model')
 const filter = require("../../helpers/filter-status")
 const search = require("../../helpers/search")  
 const pagination = require("../../helpers/pagination") 
@@ -12,7 +13,7 @@ module.exports.index = async (req, res) => {
     const regex = search(req.query);
     let find = {
     };
-    find.delete = false;
+    find.deleted = false;
     if (req.query.status) {
         find.status = req.query.status;
     }
@@ -33,10 +34,13 @@ module.exports.index = async (req, res) => {
     }
     try {
         const products = await Product
-        .find(find)
-        .sort(sort)
-        .limit(objectPagination.limitPage)
-        .skip(objectPagination.skipPage);
+            .find(find)
+            .sort(sort)
+            .limit(objectPagination.limitPage)
+            .skip(objectPagination.skipPage)
+            .populate("createdBy.account_id","fullname")
+            .populate("updatedBy.account_id","fullname")
+            .lean()
         res.render('admin/pages/products/index', {
             pageTitle: "Danh sách sản phẩm",
             products: products,
@@ -53,8 +57,12 @@ module.exports.index = async (req, res) => {
 module.exports.changeStatus =async (req,res)=>{
     const statusChange = req.params.status
     const id = req.params.id
+    let updatedBy = {
+        account_id: res.locals.user._id,
+        updatedAt: new Date()
+    };
     try {
-        await Product.updateOne({_id:id},{status:statusChange})
+        await Product.updateOne({_id:id},{status:statusChange, $push: { updatedBy: updatedBy }})
         const backUrl = req.get("Referrer");
         req.flash('success', 'Cập nhật trạng thái thành công!')
         res.redirect(backUrl);
@@ -68,43 +76,77 @@ module.exports.changeMulti = async (req, res) => {
     const idsChecked = req.body.ids; 
     const typeChecked = req.body.type;
     const ids = idsChecked.split(","); 
-
+    let updatedBy = {
+        account_id: res.locals.user._id,
+        updatedAt: new Date()
+    };
     switch (typeChecked) {
         case "delete":
-            await Product.updateMany({ _id: { $in: ids } }, { 
-                deleted: true,
-                deletedAt: new Date() 
-            });
+            await Product.updateMany(
+                { 
+                    _id: { $in: ids },
+                    deleted: false 
+                },
+                {
+                    $set: {
+                        deleted: true,
+                        deletedBy: {
+                            account_id: res.locals.user._id,
+                            deletedAt: new Date()
+                        }
+                    }
+                }
+            );
             break;
 
         case "change-position":
             for (const item of ids) {
                 const [id, position] = item.split("-");
                 const newPosition = parseInt(position);
-                await Product.updateOne({ _id: id }, { position: newPosition });
+                await Product.updateOne({ _id: id }, { position: newPosition, $push: { updatedBy: updatedBy } });
             }
             break;
 
         default:
-            await Product.updateMany({ _id: { $in: ids } }, { status: typeChecked });
+            await Product.updateMany({ _id: { $in: ids } }, { status: typeChecked, $push: { updatedBy: updatedBy } });
     }
     req.flash('success', 'Cập nhật trạng thái thành công!');
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
 }
-//XÓA VÀO THÙNG RÁC
-module.exports.delete = async (req,res)=>{
-    const idDel = req.params.id;
-    await Product.updateOne({_id:idDel},{$set: { delete: true, deleteAt: new Date() }})
-    req.flash('success', 'Xóa sản phẩm thành công!');
-    const backUrl = req.get("Referrer");
+//XÓA MỀM
+module.exports.delete = async (req, res) => {
+    try {
+        const idDel = req.params.id;
+        const accountId = res.locals.user._id;
+        await Product.updateOne(
+            { 
+                _id: idDel, 
+                deleted: false 
+            },
+            {
+                $set: {
+                    deleted: true,
+                    deletedBy: {
+                        account_id: accountId,
+                        deletedAt: new Date()
+                    }
+                }
+            }
+        );
+        req.flash('success', 'Xóa sản phẩm thành công!');
+    } catch (error) {
+        console.error("Lỗi xóa sản phẩm:", error);
+        req.flash('error', 'Đã có lỗi xảy ra, không thể xóa sản phẩm.');
+    }
+    const backUrl = req.get("Referrer") || `${systemConfig.prefixAdmin}/products`;
     res.redirect(backUrl);
-}
+};
 //THÙNG RÁC
 module.exports.recycleBin = async (req, res)=>{
     let find={};
-    find.delete = true;
-    const products = await Product.find(find);
+    find.deleted = true;
+    const products = await Product.find(find).populate("deletedBy.account_id","fullname").lean();
     res.render("admin/pages/products/recycleBin",{
         pageTitle:"Thùng rác",
         products: products
@@ -121,7 +163,7 @@ module.exports.hardDelete = async (req,res)=>{
 //KHÔI PHỤC
 module.exports.restore = async (req,res)=>{
     const dataId = req.params.id;
-    await Product.updateOne({_id:dataId},{delete:false, deleteAt:null})
+    await Product.updateOne({_id:dataId},{deleted:false, deleteAt:null})
     req.flash('success', 'Khôi phục sản phẩm thành công!');
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
@@ -137,7 +179,6 @@ module.exports.create = async (req, res)=>{
 }
 //POST CREATE
 module.exports.createPost = async (req, res)=>{
-    
     req.body.price = parseInt(req.body.price)
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
     req.body.stock = parseInt(req.body.stock)
@@ -148,11 +189,14 @@ module.exports.createPost = async (req, res)=>{
     // if(req.file){
     //      req.body.thumbnail = `/uploads/${req.file.filename}`
     // }
+    req.body.createdBy = {
+        account_id: res.locals.user._id
+    }
     const product = new Product(req.body)
     product.save();
     req.flash('success', 'Tạo sản phẩm thành công!');
     res.redirect(`${systemConfig.prefixAdmin}/products`)
-}
+ }
 //GET EDIT
 module.exports.edit= async (req,res)=>{
     try {
@@ -161,6 +205,9 @@ module.exports.edit= async (req,res)=>{
     const product = await Product.findById(req.params.id).populate("category");
     const categoryId = product.category ? product.category._id : null;
     const categoryTitle = product.category ? product.category.title : "N/A";
+    const updatedBy= {
+
+    }
     res.render("admin/pages/products/edit",{
         pageTitle: "Sửa sản phẩm",
         product: product,
@@ -181,8 +228,12 @@ module.exports.editPatch = async (req,res)=>{
     //     req.body.thumbnail = `/uploads/${req.file.filename}`
     // }
     const id = req.params.id;
+    let updatedBy = {
+        account_id: res.locals.user._id,
+        updatedAt: new Date()
+    };
     try {
-        await Product.updateOne({_id:id},req.body);
+        await Product.updateOne({_id:id},{...req.body, $push: { updatedBy: updatedBy }});
         req.flash("success","Cập nhật sản phẩm thành công!");
         res.redirect(`${systemConfig.prefixAdmin}/products`);
     } catch (error) {
@@ -196,9 +247,13 @@ module.exports.editPatch = async (req,res)=>{
 module.exports.details = async (req,res)=>{
     const find = {
         _id: req.params.id,
-        delete: false
+        deleted: false
     }
-    const product = await Product.findOne(find).populate("category");
+    const product = await Product
+            .findOne(find).populate("category")
+            .populate("createdBy.account_id","fullname")
+            .populate("updatedBy.account_id","fullname")
+            .lean();
     const categoryTitle = product.category ? product.category.title : "N/A";
     if (!product) {
         res.status(404).send("Sản phẩm không tồn tại");

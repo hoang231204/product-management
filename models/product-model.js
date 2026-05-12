@@ -16,13 +16,43 @@ const schema = new mongoose.Schema({
     status: String,
     position: Number,
     slug: { type: String, slug: "title", unique:true },
-    delete:{
+    deleted:{
         type: Boolean,
         default: false
     },
-    deleteAt:Date
-},{
-    timestamps: true
+    createdBy:{
+        account_id: {
+            type: String,
+            ref: "Account"
+        },
+        createdAt:{
+            type: Date,
+            default: Date.now
+        },
+    },
+    deletedBy:{
+        account_id: {
+            type: String,
+            ref: "Account"
+        },
+        deletedAt:{
+            type: Date,
+            default: Date.now
+        }
+    },
+    updatedBy:[
+        {
+            account_id: {
+                type: String,
+                ref: "Account"
+            },
+            updatedAt:{
+                type: Date,
+                default: Date.now
+            }
+        }
+    ]
+
 });
 const Product = mongoose.model('Product', schema, "products");
 module.exports = Product;

@@ -12,6 +12,7 @@ block main
                     th Tiêu đề
                     th Giá
                     th Trạng thái
+                    th Người xóa
                     th Thời gian xóa
                     th Hoạt động
                 tbody
@@ -31,10 +32,11 @@ block main
                                 a(href="javascript:;" class="badge badge-warning" ) Đang chờ
                             else
                                 a(href="javascript:;" class="badge badge-secondary") Sắp hết
-                        td #{item.deleteAt}
+                        td  #{item.deletedBy.account_id.fullname}
+                        td  #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}
                         td
-                            button(class="btn btn-success btn-sm" button-restore data-id= item.id) Khôi phục
-                            button(class="btn btn-danger btn-sm ml-1" button-hard-delete data-id=item.id) Xóa
+                            button(class="btn btn-success btn-sm" button-restore data-id= item._id) Khôi phục
+                            button(class="btn btn-danger btn-sm ml-1" button-hard-delete data-id=item._id) Xóa
     form(
       action="",
       method="POST"

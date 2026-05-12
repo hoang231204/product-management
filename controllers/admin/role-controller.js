@@ -2,7 +2,11 @@ const Role = require("../../models/role-model");
 const systemConfig = require("../../config/system")
 //GET 
 module.exports.index = async (req, res) => {
-    const roles = await Role.find().lean();
+    const roles = await Role
+        .find()
+        .populate("createdBy.account_id", "fullname")
+        .populate("updatedBy.account_id", "fullname")
+        .lean();
     res.render("admin/pages/role/index", {
         pageTitle: "Quản lý vai trò",
         roles: roles
@@ -22,6 +26,10 @@ module.exports.createPost = async (req, res) => {
         const newRole = new Role({
             title,
             description,
+            createdBy: {
+            account_id: res.locals.user._id,
+            createdAt: new Date()
+            }  
         });
         await newRole.save();
         res.redirect(`${systemConfig.prefixAdmin}/roles`);
@@ -34,9 +42,14 @@ module.exports.createPost = async (req, res) => {
 module.exports.details = async (req, res) => {
     const id = req.params.id;
     let find={
-        _id: id
+        _id: id,
+        deleted: false
     }
-    const role = await Role.findOne(find).lean();
+    const role = await Role
+    .findOne(find)
+    .populate("createdBy.account_id", "fullname")
+    .populate("updatedBy.account_id", "fullname")
+    .lean();
     res.render("admin/pages/role/details", {
         pageTitle: "Chi tiết vai trò",
         role: role
@@ -46,7 +59,21 @@ module.exports.details = async (req, res) => {
 module.exports.delete = async (req, res) => {
     const { id } = req.params;
     try {
-        await Role.updateOne({ _id: id }, { deleted: true });
+        await Role.updateOne(
+            { 
+                _id: id, 
+                deleted: false 
+            },
+            {
+                $set: {
+                    deleted: true,
+                    deletedBy: {
+                        account_id: res.locals.user._id,
+                        deletedAt: new Date()
+                    }
+                }
+            }
+        );
         req.flash("success", "Xóa vai trò thành công!");
         res.redirect("/admin/roles");
     } catch (error) {
@@ -58,7 +85,8 @@ module.exports.delete = async (req, res) => {
 module.exports.edit = async (req, res) => {
     const id = req.params.id;
     let find={
-        _id: id
+        _id: id,
+        deleted: false
     }
     const role = await Role.findOne(find).lean();
     res.render("admin/pages/role/edit", {
@@ -72,7 +100,11 @@ module.exports.editPatch = async (req, res) => {
     const title = req.body.title;
     const description = req.body.description;
     try {
-        await Role.updateOne({ _id: id }, { title, description });
+        let updatedBy = {
+            account_id: res.locals.user._id,
+            updatedAt: new Date()
+        };
+        await Role.updateOne({ _id: id }, { title: title, description: description, $push: { updatedBy: updatedBy } });
         req.flash("success", "Cập nhật vai trò thành công!");
         res.redirect(`${systemConfig.prefixAdmin}/roles`);
     } catch (error) {
@@ -98,4 +130,37 @@ module.exports.permissionPatch = async (req, res) => {
     }
     req.flash("success", "Cập nhật quyền thành công!");
     res.redirect(`${systemConfig.prefixAdmin}/roles/permissions`);
+}
+//GET /recycle-bin
+module.exports.recycleBin = async (req, res) => {
+    const roles = await Role.find({ deleted: true }).populate("deletedBy.account_id", "fullname").lean();
+    res.render("admin/pages/role/recycle-bin", {
+        pageTitle: "Thùng rác vai trò",
+        roles: roles
+    })
+}
+//PATCH /recycle-bin/restore/:id
+module.exports.restore = async (req, res) => {
+    const id = req.params.id;
+    try {        
+        await Role.updateOne({ _id: id }, { deleted: false });
+        req.flash("success", "Khôi phục vai trò thành công!");
+        res.redirect(`${systemConfig.prefixAdmin}/roles/recycle-bin`);
+    }
+    catch (error) {
+        req.flash("error", "Lỗi khi khôi phục vai trò!");
+        res.redirect(`${systemConfig.prefixAdmin}/roles/recycle-bin`);
+    }
+}
+//DELETE /recycle-bin/destroy/:id
+module.exports.destroy = async (req, res) => {
+    const id = req.params.id;
+    try {
+        await Role.deleteOne({ _id: id });
+        req.flash("success", "Xóa vĩnh viễn vai trò thành công!");
+        res.redirect(`${systemConfig.prefixAdmin}/roles/recycle-bin`);
+    } catch (error) {
+        req.flash("error", "Lỗi khi xóa vĩnh viễn vai trò!");
+        res.redirect(`${systemConfig.prefixAdmin}/roles/recycle-bin`);
+    } 
 }
