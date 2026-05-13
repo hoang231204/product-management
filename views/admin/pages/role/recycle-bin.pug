@@ -1,7 +1,5 @@
 extends ../../layouts/default.pug
 
-block style 
-  link(rel="stylesheet", href="/admin/css/recycle-bin.css")
 
 block main 
     .container-fluid.mt-4
@@ -11,37 +9,37 @@ block main
             .card-header Danh sách nhóm quyền đã xóa
             .card-body
                 table(class="table table-hover table-sm")
-                thead
-                    tr
-                    th STT
-                    th Tên nhóm quyền
-                    th Mô tả ngắn
-                    th Người xóa
-                    th Thời gian xóa
-                    th Hoạt động
-                tbody
-                    if roles.length > 0
-                    each item, index in roles
+                    thead
                         tr
-                        td #{index + 1}
-                        td <b>#{item.title}</b>
-                        td #{item.description}
-                        td #{item.deletedBy.accountFullName}
-                        td #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm')}
-                        td
-                            button(
-                            class="btn btn-success btn-sm" 
-                            button-restore 
-                            data-id=item.id
-                            ) Khôi phục
-                            button(
-                            class="btn btn-danger btn-sm ml-1" 
-                            button-hard-delete 
-                            data-id=item.id
-                            ) Xóa vĩnh viễn
-                    else 
-                        tr 
-                            td(colspan="6" class="text-center") Thùng rác trống
+                        th STT
+                        th Tên nhóm quyền
+                        th Mô tả ngắn
+                        th Người xóa
+                        th Thời gian xóa
+                        th Hoạt động
+                    tbody
+                        if roles.length > 0
+                            each item, index in roles
+                                tr
+                                td #{index + 1}
+                                td <b>#{item.title}</b>
+                                td #{item.description}
+                                td #{item.deletedBy.accountFullName}
+                                td #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm')}
+                                td
+                                    button(
+                                        class="btn btn-success btn-sm" 
+                                        button-restore 
+                                        data-id=item.id
+                                        ) Khôi phục
+                                    button(
+                                        class="btn btn-danger btn-sm ml-1" 
+                                        button-hard-delete 
+                                        data-id=item.id
+                                        ) Xóa vĩnh viễn
+                        else 
+                            tr 
+                                td(colspan="6" class="text-center") Thùng rác trống
     form(
       action=""
       method="POST"

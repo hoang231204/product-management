@@ -95,7 +95,8 @@ block main
                                     p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
                                 else
                                     p Chưa có cập nhật
-                                a(href=`${prefixAdmin}/products/details/${item.id}` class="btn btn-info btn-sm") Chi tiết
+                            td
+                                a(href=`${prefixAdmin}/products/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
                                 if(role.permissions.includes("product_edit"))
                                     button(class="btn btn-primary btn-sm" button-edit data-id=item._id) Sửa
                                 if(role.permissions.includes("product_delete"))

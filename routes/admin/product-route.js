@@ -10,9 +10,9 @@ router.get('/',productController.index);
 router.patch('/change-status/:status/:id',productController.changeStatus);
 router.patch('/change-multi',productController.changeMulti);
 router.patch('/delete/:id',productController.delete)
-router.get("/recycleBin",productController.recycleBin)
-    router.delete("/recycleBin/hardDelete/:id",productController.hardDelete)
-    router.patch("/recycleBin/restore/:id",productController.restore)
+router.get("/recycle-bin",productController.recycleBin)
+router.delete("/recycle-bin/hard-delete/:id",productController.hardDelete)
+router.patch("/recycle-bin/restore/:id",productController.restore)
 router.get("/create",productController.create)
 router.post(
     "/create",

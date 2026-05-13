@@ -3,7 +3,7 @@ const createTree = (categories,parentId=null)=>{
         const tree=[];
         categories.forEach((item)=>{
             if(item.parent_id == parentId){
-                const newItem = item.toObject();
+                const newItem = item
                 newItem.index = ++count;
                 const children = createTree(categories,item._id);
                 if(children.length > 0){

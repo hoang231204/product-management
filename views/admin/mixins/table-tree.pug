@@ -31,16 +31,26 @@ mixin table-tree(items, level = 1)
                         name="position"
                     )
                 td
-                    if(role.permissions.includes('categories_edit'))
+                    if(role.permissions.includes('category_edit'))
                         if item.status == 'active'
                             a(href="javascript:;" class="badge badge-success" button-change-status data-id=item._id data-status=item.status) Hoạt động
                         else
                             a(href="javascript:;" class="badge badge-danger" button-change-status data-id=item._id data-status=item.status) Không hoạt động
                 td
+                    if item.createdBy
+                        p #{item.createdBy.account_id.fullname}
+                        p #{moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                td
+                    if item.updatedBy && item.updatedBy.length > 0
+                        p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
+                        p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                    else
+                        p Chưa có cập nhật
+                td
                     a(href=`${prefixAdmin}/categories/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
-                    if(role.permissions.includes('categories_edit'))
+                    if(role.permissions.includes('category_edit'))
                         a(href=`${prefixAdmin}/categories/edit/${item._id}` class="btn btn-primary btn-sm ml-1") Sửa
-                    if(role.permissions.includes('categories_delete'))
+                    if(role.permissions.includes('category_delete'))
                         button(class="btn btn-danger btn-sm ml-1" button-delete data-id=item._id) Xóa
             if item.children && item.children.length > 0
                 +table-tree(item.children, level + 1)

@@ -34,9 +34,9 @@ module.exports.createPost = async (req, res) =>{
         const backUrl = req.get("Referrer");
         return res.redirect(backUrl);
     }
-    req.body.createdBy = {
-        account_id: res.locals.user._id
-    }
+    // req.body.createdBy = {
+    //     account_id: res.locals.user._id
+    // }
     const account = new Account(req.body);
     await account.save();
     req.flash('success', 'Tạo tài khoản thành công!');

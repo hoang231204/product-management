@@ -24,6 +24,7 @@ const schema = new mongoose.Schema({
         account_id:{
             type: String,
             ref: "Account",
+            default: null
         },
         createdAt:{
             type: Date,
@@ -33,7 +34,7 @@ const schema = new mongoose.Schema({
     deletedBy:{
         account_id:{
             type: String,
-            ref: "Account",
+            ref: "Account"
         },
         deletedAt:{
             type: Date,

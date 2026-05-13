@@ -147,7 +147,7 @@ module.exports.recycleBin = async (req, res)=>{
     let find={};
     find.deleted = true;
     const products = await Product.find(find).populate("deletedBy.account_id","fullname").lean();
-    res.render("admin/pages/products/recycleBin",{
+    res.render("admin/pages/products/recycle-bin",{
         pageTitle:"Thùng rác",
         products: products
     })
@@ -244,24 +244,20 @@ module.exports.editPatch = async (req,res)=>{
     
 }
 //DETAILS
-module.exports.details = async (req,res)=>{
-    const find = {
-        _id: req.params.id,
-        deleted: false
-    }
+module.exports.details = async (req, res) => {
     const product = await Product
-            .findOne(find).populate("category")
-            .populate("createdBy.account_id","fullname")
-            .populate("updatedBy.account_id","fullname")
-            .lean();
-    const categoryTitle = product.category ? product.category.title : "N/A";
+        .findOne({ _id: req.params.id }) 
+        .populate("category", "title")
+        .populate("createdBy.account_id", "fullname")
+        .populate("updatedBy.account_id", "fullname")
+        .lean();
     if (!product) {
-        res.status(404).send("Sản phẩm không tồn tại");
-    } else {
-        res.render("admin/pages/products/details", {
-            pageTitle: product.title,
-            product: product,
-            categoryTitle: categoryTitle
-        });
+        return res.status(404).send("Sản phẩm không tồn tại");
     }
+    const categoryTitle = product.category?.title || "N/A";
+    res.render("admin/pages/products/details", {
+        pageTitle: product.title,
+        product: product,
+        categoryTitle: categoryTitle
+    });
 }

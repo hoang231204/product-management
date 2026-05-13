@@ -19,7 +19,11 @@ module.exports.index =async (req,res)=>{
     if(req.query.keyword){
         find.title = regex;
     }
-    const categories = await Category.find(find);
+    const categories = await Category
+        .find(find)
+        .populate("createdBy.account_id","fullname")
+        .populate("updatedBy.account_id","fullname")
+        .lean();
     const categoryTree = tree(categories);
     res.render("admin/pages/category/index",{
         pageTitle:"Danh mục sản phẩm",
@@ -269,12 +273,12 @@ module.exports.recycleBin = async (req, res)=>{
     let find={};
     find.deleted = true;
     const categories = await Category.find(find)
-    res.render("admin/pages/category/recycleBin",{
+    res.render("admin/pages/category/recycle-bin",{
         pageTitle:"Thùng rác",
         categories: categories
     })
 }
-//PATCH /recycleBin/restore/:id
+//PATCH /recycle-bin/restore/:id
 // module.exports.restore = async (req, res)=>{
 //    const id = req.params.id;
 //    await Category.updateOne({_id:id},{deleted:false,status:"inactive"});

@@ -22,7 +22,7 @@ block main
                 id="category"
                 class="form-control"
             )
-                option(value="") -- Chọn danh mục --
+                option(disabled selected) -- Chọn danh mục --
                 if (categoryTree)
                     +select-tree(categoryTree)
         // Mô tả (Description)
