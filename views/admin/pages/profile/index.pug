@@ -1,0 +1,23 @@
+extends ../../layouts/default.pug
+
+block main
+    .container.my-5
+        h1.mb-4 Thông tin cá nhân
+        
+        .row
+            .col-4.text-center
+                img(
+                    src=(user.avatar ? user.avatar : "/admin/images/avatar-default.png")
+                    class="img-fluid rounded-circle border"
+                    style="width: 150px; height: 150px; object-fit: cover;"
+                )
+            .col-8
+                div(class="mb-2") <b>Họ tên:</b> #{user.fullname}
+                div(class="mb-2") <b>Email:</b> #{user.email}
+                div(class="mb-2") <b>Số điện thoại:</b> #{user.phone}
+                div(class="mb-2") 
+                b Trạng thái: 
+                span #{user.status === "active" ? "Hoạt động" : "Dừng hoạt động"}
+                div(class="mb-3") <b>Phân quyền:</b> #{role.title}
+                a(href=`${prefixAdmin}/my-profile/edit` class="btn btn-primary") Chỉnh sửa hồ sơ
+        

@@ -6,5 +6,7 @@
                     a(href=`${prefixAdmin}/dashboard`) ADMIN
                     
             .col-9
+                div(class ="dropdown" )
+                    a(href=`${prefixAdmin}/my-profile` class="btn btn-outline-primary") #{user.fullname}
                 div(class="text-right")
                     a(href=`${prefixAdmin}/auth/logout` class="btn btn-outline-danger") Đăng xuất

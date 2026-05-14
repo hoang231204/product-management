@@ -70,7 +70,8 @@ if(showAlert){
 //CHANGE STATUS
 const buttonsChange = document.querySelectorAll("[button-change-status]")
 const form = document.querySelector("[form-change-status]")
-const path = form.getAttribute("data-path")
+if(form){
+    const path = form.getAttribute("data-path")
 if(buttonsChange.length>0){
     buttonsChange.forEach(button => {
         button.addEventListener("click",()=>{
@@ -102,6 +103,8 @@ if(buttonsChange.length>0){
         })
     })
 }
+}
+
 //DELETE
 const buttonsDelete = document.querySelectorAll("[button-delete]")
 if(buttonsDelete.length>0){
@@ -141,6 +144,7 @@ if(buttonsEdit.length>0){
 
 // PREVIEW IMAGE
 const formCreate = document.querySelector("[form-upload]")
+console.log(formCreate)
 if(formCreate){
     const uploadImage= formCreate.querySelector("[upload-image]")
     const uploadImageInput = document.querySelector("[upload-image-input]")

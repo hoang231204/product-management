@@ -46,7 +46,7 @@ module.exports.createPost = async (req, res) =>{
 module.exports.details = async (req, res) =>{
     const id = req.params.id;
     const account = await Account
-        .findOne({ _id: id })
+        .findOne({ _id: id})
         .select("-password -token")
         .populate("role_id", "title")
         .populate("createdBy.account_id", "fullname")

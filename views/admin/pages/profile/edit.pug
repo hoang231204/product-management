@@ -5,10 +5,10 @@ block main
     .container.my-5
         .row.justify-content-center
             .col-md-8.col-lg-6
-                h1.mb-4.font-weight-bold Chỉnh sửa tài khoản
+                h1.mb-4.font-weight-bold Chỉnh sửa hồ sơ
 
                 form(
-                    action=`${prefixAdmin}/accounts/edit/${account.id}?_method=PATCH`
+                    action=`${prefixAdmin}/my-profile/edit?_method=PATCH`
                     method="POST"
                     enctype="multipart/form-data"
                     form-upload
@@ -21,7 +21,7 @@ block main
                             class="form-control"
                             id="fullname"
                             name="fullname"
-                            value=account.fullname
+                            value=user.fullname
                             required
                         )
 
@@ -33,7 +33,7 @@ block main
                             class="form-control"
                             id="email"
                             name="email"
-                            value=account.email
+                            value=user.email
                             required
                         )
 
@@ -48,17 +48,17 @@ block main
                             placeholder="Nhập mật khẩu mới nếu muốn thay đổi"
                         )
                         small.text-muted * Để trống nếu giữ nguyên mật khẩu cũ
-
+  
                     //- Số điện thoại
                     div(class="form-group mb-3")
                         label(for="phone" class="form-label") Số điện thoại
-                        if account.telephone
+                        if user.phone
                             input(
                                 type="text"
                                 class="form-control"
                                 id="phone"
                                 name="phone"
-                                value=account.phone
+                                value=user.phone
                             )
                         else
                             input(
@@ -81,7 +81,7 @@ block main
                         )
                         div(class="box-image")
                             img(
-                                src=""
+                                src=user.avatar
                                 upload-image-preview
                                 class="image-preview"
                                 )
@@ -90,46 +90,12 @@ block main
                                 class="btn-remove-image"
                                 aria-label="Remove image"
                                 ) ×
-
-                    //- Phân quyền (Role)
-                    div(class="form-group mb-3")
-                        label(for="role_id" class="form-label") Phân quyền
-                        select(name="role_id" id="role_id" class="form-control")
-                            option(value=account.role_id._id) #{account.role_id.title}
-                            each role in roles
-                                if role._id.toString() !== account.role_id._id.toString()
-                                    option(value=role._id) #{role.title}
-                    //- Trạng thái
-                    div(class="form-group mb-4")
-                        div(class="form-check form-check-inline")
-                            input(
-                                type="radio"
-                                class="form-check-input"
-                                id="statusActive"
-                                name="status"
-                                value="active"
-                                checked=(account.status === "active" ? true : false)
-                            )
-                            label(for="statusActive" class="form-check-label") Hoạt động
-                        
-                        div(class="form-check form-check-inline")
-                            input(
-                                type="radio"
-                                class="form-check-input"
-                                id="statusInActive"
-                                name="status"
-                                value="inactive"
-                                checked=(account.status === "inactive" ? true : false)
-                            )
-                            label(for="statusInActive" class="form-check-label") Dừng hoạt động
-
-                    //- Nút cập nhật
                     div(class="form-group")
                         button(
                             type="submit"
                             class="btn btn-primary px-4"
                         ) Cập nhật
                         a(
-                            href=`${prefixAdmin}/accounts`
+                            href=`${prefixAdmin}/my-profile`
                             class="btn btn-secondary ml-2"
                         ) Hủy bỏ

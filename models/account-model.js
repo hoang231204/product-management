@@ -9,7 +9,7 @@ const schema = new mongoose.Schema({
         default: generateToken
     },
     avatar: String,
-    telephone: String,
+    phone: String,
     role_id:{
         type: String,
         ref: "Role",

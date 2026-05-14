@@ -48,5 +48,5 @@ block main
         //- Cụm nút bấm
         div(class="mt-4")
             if(role.permissions.includes('account_edit'))
-                a(href=`${prefixAdmin}/accounts/edit/${account.id}` class="btn btn-warning btn-sm mr-2") Chỉnh sửa
+                a(href=`${prefixAdmin}/accounts/edit/${account._id}` class="btn btn-warning btn-sm mr-2") Chỉnh sửa
             a(href=`${prefixAdmin}/accounts` class="btn btn-secondary btn-sm") Quay lại
