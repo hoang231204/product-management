@@ -147,3 +147,68 @@
         max-width: 100%;
     }
 }
+
+/* Khung menu chính */
+.inner-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex; /* Menu chính nằm ngang */
+  align-items: center;
+}
+
+/* Các mục li của menu */
+.inner-menu ul li {
+  position: relative; /* Gốc tọa độ cho menu con */
+  padding: 10px 15px;
+}
+
+.inner-menu ul li a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+}
+
+/* --- PHẦN QUAN TRỌNG: MENU CON --- */
+
+/* Mặc định ẩn tất cả các ul nằm trong li */
+.inner-menu ul li ul {
+  position: absolute;
+  top: 100%; /* Đẩy xuống dưới mục cha */
+  left: 0;
+  background: #fff;
+  min-width: 200px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 10px 0;
+  display: block; 
+  
+  /* Hiệu ứng ẩn */
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+
+/* Khi di chuột vào LI, hiển thị UL trực tiếp bên trong nó */
+.inner-menu ul li:hover > ul {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Cấp 3 trở đi: Menu con sẽ đẩy sang bên phải */
+.inner-menu ul li ul li ul {
+  top: 0;
+  left: 100%; /* Đẩy sang phải */
+  transform: translateX(10px);
+}
+
+.inner-menu ul li ul li:hover > ul {
+  transform: translateX(0);
+}
+
+/* Hiệu ứng hover cho các mục con */
+.inner-menu ul li ul li:hover {
+  background-color: #f5f5f5;
+}

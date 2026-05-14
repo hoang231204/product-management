@@ -11,6 +11,7 @@ module.exports.index =  async (req, res) => {
   res.render('client/pages/products/index',{
     pageTitle:"Danh sách sản phẩm",
     products: products,
+    categoryTree: res.locals.categoryTree
   })
 }
 module.exports.details = async (req, res) => {

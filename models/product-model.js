@@ -15,6 +15,7 @@ const schema = new mongoose.Schema({
     thumbnail: String,
     status: String,
     position: Number,
+    featured:String,
     slug: { type: String, slug: "title", unique:true },
     deleted:{
         type: Boolean,

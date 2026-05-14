@@ -34,6 +34,25 @@ block main
                 name="description"
                 rows="5"
             )
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="featured"
+                name="featured"
+                value="1"
+            )
+            label(for="featured" class="form-check-label") Nổi bật
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="notFeatured"
+                name="featured"
+                value="0"
+                checked
+            )
+            label(for="notFeatured" class="form-check-label") Thường
         // Giá (Price)
         div(class="form-group")
             label(for="price") Giá

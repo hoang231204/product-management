@@ -39,7 +39,28 @@ block main
                 name="description"
                 rows="5"
             )= product.description
+
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="featured"
+                name="featured"
+                value="1"
+                checked=(product.featured === "1")
+            )
+            label(class="form-check-label" for="featured") Nổi bật
         
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="notFeatured"
+                name="featured"
+                value="0"
+                checked=(product.featured === "0")
+            )
+            label(class="form-check-label" for="notFeatured") Thường
         // Giá (Price)
         div(class="form-group")
             label(for="price") Giá
