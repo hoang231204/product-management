@@ -4,6 +4,11 @@ const systemConfig = require("../../config/system")
 const md5 = require("md5")
 //GET /admin/accounts
 module.exports.index = async (req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("account_view")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
+    }
     let find= {deleted: false};
     const accounts = await Account
         .find(find)
@@ -26,6 +31,11 @@ module.exports.create = async (req, res) =>{
 }
 //POST /admin/accounts/create
 module.exports.createPost = async (req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("account_create")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
     req.body.password = md5(req.body.password);
     
     const emailExists = await Account.findOne({email: req.body.email});
@@ -34,9 +44,9 @@ module.exports.createPost = async (req, res) =>{
         const backUrl = req.get("Referrer");
         return res.redirect(backUrl);
     }
-    // req.body.createdBy = {
-    //     account_id: res.locals.user._id
-    // }
+    req.body.createdBy = {
+        account_id: res.locals.user._id
+    }
     const account = new Account(req.body);
     await account.save();
     req.flash('success', 'Tạo tài khoản thành công!');
@@ -44,6 +54,11 @@ module.exports.createPost = async (req, res) =>{
 }
 //GET /admin/accounts/details/:id
 module.exports.details = async (req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("account_view")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
     const id = req.params.id;
     const account = await Account
         .findOne({ _id: id})
@@ -70,6 +85,11 @@ module.exports.edit = async (req, res) =>{
 }
 //PATCH /admin/accounts/edit/:id
 module.exports.editPatch = async (req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("account_edit")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
     const id = req.params.id;
     const emailExists = await Account.findOne({email: req.body.email, _id: {$ne: id}, deleted: false});
     if(emailExists){
@@ -92,6 +112,11 @@ module.exports.editPatch = async (req, res) =>{
 }
 //PATCH /admin/accounts/delete/:id
 module.exports.delete = async (req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("account_delete")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
     const id = req.params.id;
     const accountId = res.locals.user._id;
     await Account.updateOne(
@@ -114,6 +139,11 @@ module.exports.delete = async (req, res) =>{
 }
 //PATCH /admin/accounts/change-status/:id
 module.exports.changeStatus = async (req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("account_edit")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
     const id = req.params.id;
     const status = req.params.status;
     let updatedBy = {

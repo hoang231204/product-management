@@ -2,6 +2,11 @@ const Role = require("../../models/role-model");
 const systemConfig = require("../../config/system")
 //GET 
 module.exports.index = async (req, res) => {
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("role_view")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
+    }
     const roles = await Role
         .find()
         .populate("createdBy.account_id", "fullname")
@@ -20,6 +25,11 @@ module.exports.create = async (req, res) => {
 }
 //POST /create
 module.exports.createPost = async (req, res) => {
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("role_create")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/roles`)
+    }
     const title = req.body.title;
     const description = req.body.description;
     try {
@@ -40,6 +50,11 @@ module.exports.createPost = async (req, res) => {
 }
 //GET /details/:id
 module.exports.details = async (req, res) => {
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("role_view")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/roles`)
+    }
     const id = req.params.id;
     let find={
         _id: id,
@@ -58,6 +73,11 @@ module.exports.details = async (req, res) => {
 //PATCH /delete/:id
 module.exports.delete = async (req, res) => {
     const { id } = req.params;
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("role_delete")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/roles`)
+    }
     try {
         await Role.updateOne(
             { 
@@ -96,6 +116,11 @@ module.exports.edit = async (req, res) => {
 }
 //PATCH /edit/:id
 module.exports.editPatch = async (req, res) => {
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("role_edit")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/roles`)
+    }   
     const id = req.params.id;
     const title = req.body.title;
     const description = req.body.description;

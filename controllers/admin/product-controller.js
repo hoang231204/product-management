@@ -9,10 +9,14 @@ const tree = require("../../helpers/create-tree")
 
 //DANH SÁCH SẢN PHẨM
 module.exports.index = async (req, res) => {
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("product_view")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/products`)
+    }
     const filterStatus = filter(req.query);
     const regex = search(req.query);
-    let find = {
-    };
+    let find = {};
     find.deleted = false;
     if (req.query.status) {
         find.status = req.query.status;
@@ -20,11 +24,8 @@ module.exports.index = async (req, res) => {
     if (req.query.keyword) {
         find.title = regex;
     }
-    
     const countData = await Product.find(find).countDocuments(find);
-    //console.log(countData)
     const objectPagination = pagination(req.query,countData)
-    //console.log(objectPagination.currentPage)
     let sort={};
     if(req.query.sortBy && req.query.sortType){
         sort[req.query.sortBy] = req.query.sortType;
@@ -50,11 +51,15 @@ module.exports.index = async (req, res) => {
     });
     } catch (error) {
         res.status(500).send("Lỗi server");
-    }
-    
+    } 
 }
 //CẬP NHẬT TRẠNG THÁI
 module.exports.changeStatus =async (req,res)=>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("product_edit")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/products`)
+    }      
     const statusChange = req.params.status
     const id = req.params.id
     let updatedBy = {
@@ -72,7 +77,6 @@ module.exports.changeStatus =async (req,res)=>{
 }
 //CẬP NHẬT NHIỀU TRẠNG THÁI
 module.exports.changeMulti = async (req, res) => {
-    //console.log(req.body)
     const idsChecked = req.body.ids; 
     const typeChecked = req.body.type;
     const ids = idsChecked.split(","); 
@@ -80,35 +84,47 @@ module.exports.changeMulti = async (req, res) => {
         account_id: res.locals.user._id,
         updatedAt: new Date()
     };
+    const permissions = res.locals.role.permissions;
     switch (typeChecked) {
         case "delete":
+            if(!permissions.includes("product_delete")){
+                req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+                return res.redirect(`${systemConfig.prefixAdmin}/products`)
+            }
             await Product.updateMany(
-                { 
-                    _id: { $in: ids },
-                    deleted: false 
-                },
-                {
-                    $set: {
-                        deleted: true,
-                        deletedBy: {
-                            account_id: res.locals.user._id,
-                            deletedAt: new Date()
-                        }
+            { 
+                _id: { $in: ids },
+                deleted: false 
+            },
+            {
+                $set: {
+                    deleted: true,
+                    deletedBy: {
+                        account_id: res.locals.user._id,
+                        deletedAt: new Date()
                     }
                 }
-            );
+            }
+        );
             break;
 
         case "change-position":
+            if(!permissions.includes("product_edit")) {
+                req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+                return res.redirect(`${systemConfig.prefixAdmin}/products`)
+            }
             for (const item of ids) {
-                const [id, position] = item.split("-");
-                const newPosition = parseInt(position);
-                await Product.updateOne({ _id: id }, { position: newPosition, $push: { updatedBy: updatedBy } });
+            const [id, position] = item.split("-");
+            const newPosition = parseInt(position);
+            await Product.updateOne({ _id: id }, { position: newPosition, $push: { updatedBy: updatedBy } });
             }
             break;
-
         default:
-            await Product.updateMany({ _id: { $in: ids } }, { status: typeChecked, $push: { updatedBy: updatedBy } });
+            if(!permissions.includes("product_edit")) {
+                req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+                return res.redirect(`${systemConfig.prefixAdmin}/products`)
+            }
+            await Product.updateMany({ _id: { $in: ids } }, { status: typeChecked, $push: { updatedBy: updatedBy } }); 
     }
     req.flash('success', 'Cập nhật trạng thái thành công!');
     const backUrl = req.get("Referrer");
@@ -116,6 +132,12 @@ module.exports.changeMulti = async (req, res) => {
 }
 //XÓA MỀM
 module.exports.delete = async (req, res) => {
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("delete-product")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/products`)
+    }
+   
     try {
         const idDel = req.params.id;
         const accountId = res.locals.user._id;
@@ -179,6 +201,11 @@ module.exports.create = async (req, res)=>{
 }
 //POST CREATE
 module.exports.createPost = async (req, res)=>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("create-product")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/products`)
+    }
     req.body.price = parseInt(req.body.price)
     req.body.discountPercentage = parseInt(req.body.discountPercentage)
     req.body.stock = parseInt(req.body.stock)
@@ -186,9 +213,6 @@ module.exports.createPost = async (req, res)=>{
     if(req.body.position == ''){
         req.body.position = count + 1;
     }
-    // if(req.file){
-    //      req.body.thumbnail = `/uploads/${req.file.filename}`
-    // }
     req.body.createdBy = {
         account_id: res.locals.user._id
     }
@@ -196,37 +220,41 @@ module.exports.createPost = async (req, res)=>{
     product.save();
     req.flash('success', 'Tạo sản phẩm thành công!');
     res.redirect(`${systemConfig.prefixAdmin}/products`)
+        
  }
 //GET EDIT
 module.exports.edit= async (req,res)=>{
     try {
-    const categories = await Category.find({deleted: false},{status: "active"});
-    const categoryTree = tree(categories);
-    const product = await Product.findById(req.params.id).populate("category");
-    const categoryId = product.category ? product.category._id : null;
-    const categoryTitle = product.category ? product.category.title : "N/A";
-    const updatedBy= {
+        const categories = await Category.find({deleted: false},{status: "active"});
+        const categoryTree = tree(categories);
+        const product = await Product.findById(req.params.id).populate("category");
+        const categoryId = product.category ? product.category._id : null;
+        const categoryTitle = product.category ? product.category.title : "N/A";
+        const updatedBy= {
 
-    }
-    res.render("admin/pages/products/edit",{
-        pageTitle: "Sửa sản phẩm",
-        product: product,
-        categoryTree: categoryTree,
-        categoryId: categoryId,
-        categoryTitle: categoryTitle
-    })
+        }
+        res.render("admin/pages/products/edit",{
+            pageTitle: "Sửa sản phẩm",
+            product: product,
+            categoryTree: categoryTree,
+            categoryId: categoryId,
+            categoryTitle: categoryTitle
+        })
     } catch (error) {
         res.status(404).send("Sản phẩm không tồn tại");
     }
 }
 //POST EDIT
 module.exports.editPatch = async (req,res)=>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("product_edit"))
+    {
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/products`)
+    }
     req.body.price = parseInt(req.body.price);
     req.body.discountPercentage = parseInt(req.body.discountPercentage);
     req.body.stock = parseInt(req.body.stock);
-    // if(req.file){
-    //     req.body.thumbnail = `/uploads/${req.file.filename}`
-    // }
     const id = req.params.id;
     let updatedBy = {
         account_id: res.locals.user._id,
@@ -245,6 +273,11 @@ module.exports.editPatch = async (req,res)=>{
 }
 //DETAILS
 module.exports.details = async (req, res) => {
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("product_view")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/products`)
+    }
     const product = await Product
         .findOne({ _id: req.params.id }) 
         .populate("category", "title")
