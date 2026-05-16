@@ -8,5 +8,12 @@ block main
         .col-12
             .box-head
             +boxhead("Danh sách sản phẩm nổi bật")
-    .row
-        +product-grid(productsFeatured)
+        .row
+            +product-grid(productsFeatured)
+    .container.my-3
+        .row
+        .col-12
+            .box-head
+            +boxhead("Danh sách sản phẩm mới nhất")
+        .row
+            +product-grid(latestProducts)
