@@ -133,11 +133,10 @@ module.exports.changeMulti = async (req, res) => {
 //XÓA MỀM
 module.exports.delete = async (req, res) => {
     const permissions = res.locals.role.permissions;
-    if(!permissions.includes("delete-product")){
+    if(!permissions.includes("product_delete")){
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
         return res.redirect(`${systemConfig.prefixAdmin}/products`)
     }
-   
     try {
         const idDel = req.params.id;
         const accountId = res.locals.user._id;
@@ -185,7 +184,7 @@ module.exports.hardDelete = async (req,res)=>{
 //KHÔI PHỤC
 module.exports.restore = async (req,res)=>{
     const dataId = req.params.id;
-    await Product.updateOne({_id:dataId},{deleted:false, deleteAt:null})
+    await Product.updateOne({_id:dataId},{deleted:false, deletedBy: null})
     req.flash('success', 'Khôi phục sản phẩm thành công!');
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
@@ -202,7 +201,7 @@ module.exports.create = async (req, res)=>{
 //POST CREATE
 module.exports.createPost = async (req, res)=>{
     const permissions = res.locals.role.permissions;
-    if(!permissions.includes("create-product")){
+    if(!permissions.includes("product_create")){
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
         return res.redirect(`${systemConfig.prefixAdmin}/products`)
     }

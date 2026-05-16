@@ -168,7 +168,7 @@ module.exports.recycleBin = async (req, res) => {
 module.exports.restore = async (req, res) => {
     const id = req.params.id;
     try {        
-        await Role.updateOne({ _id: id }, { deleted: false });
+        await Role.updateOne({ _id: id }, { deleted: false, deletedBy: null });
         req.flash("success", "Khôi phục vai trò thành công!");
         res.redirect(`${systemConfig.prefixAdmin}/roles/recycle-bin`);
     }

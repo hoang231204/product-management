@@ -170,7 +170,7 @@ module.exports.recycleBin = async (req, res) =>{
 //PATCH /admin/accounts/recycle-bin/restore/:id
 module.exports.restore = async (req, res) =>{
     const id = req.params.id;
-    await Account.updateOne({_id: id}, {deleted: false});
+    await Account.updateOne({_id: id}, {deleted: false,deletedBy: null});
     req.flash('success', 'Khôi phục tài khoản thành công!');
     res.redirect(`${systemConfig.prefixAdmin}/accounts/recycle-bin`);
 } 
