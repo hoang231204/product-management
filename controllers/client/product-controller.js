@@ -1,11 +1,12 @@
 const Product = require("../../models/product-model")
+const calcuNewPrice = require("../../helpers/calcu-new-price");
 module.exports.index =  async (req, res) => {
   let find = {
-    delete: false
+    deleted:false
   }
   const products = await Product.find(find).sort({position:-1});
   products.forEach(item => {
-    item.priceNew = (item.price*(100 - item.discountPercentage)/100).toFixed(0);
+    item.priceNew = calcuNewPrice.priceNew(item.price, item.discountPercentage);
   })
  
   res.render('client/pages/products/index',{
