@@ -4,7 +4,7 @@ mixin product-item(item)
       img(src=item.thumbnail, alt="Hình ảnh", srcset="")
       if(item.featured == "1")
         .inner-featured Nổi bật
-      a(href=`/products/${item.slug}`) 
+      a(href=`/products/details/${item.slug}`) 
         h3.inner-title #{item.title}
       .inner-price-new #{item.priceNew}$
       .inner-price-old #{item.price}$

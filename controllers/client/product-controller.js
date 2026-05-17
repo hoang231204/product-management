@@ -18,13 +18,12 @@ module.exports.index =  async (req, res) => {
 }
 module.exports.category = async (req, res) => {
   const slugCategory = req.params.slugCategory;
-  const category = res.locals.categories.find(item => item.slug === slugCategory);
+  const categories = res.locals.categories;
+  const category = categories.find(item => item.slug === slugCategory);
   if(!category) {
-    return res.status(404).render('client/pages/404', {
-      pageTitle: "Danh mục không tồn tại"
-    });
+    return res.redirect('/products');
   }
-  const categoryIds = getChildrenCategories(res.locals.categories, category._id);
+  const categoryIds = getChildrenCategories(res.locals.categories, category.id);
   categoryIds.push(category._id);
   const products = await Product.find({
     category_id: { $in: categoryIds },
@@ -38,26 +37,12 @@ module.exports.category = async (req, res) => {
   });
 }
 module.exports.details = async (req, res) => {
-  try {
-    const product = await Product.findOne({ 
-      slug: req.params.slugProduct,
-      deleted: false,
-      status: "active"
-    });
-    
-    if (!product) {
-      return res.status(404).render('client/pages/404', {
-        pageTitle: "Sản phẩm không tìm thấy"
-      });
-    }
-
-    res.render('client/pages/products/details', {
-      pageTitle: product.title,
-      product: product
-    });
-  } catch (error) {
-    res.status(500).render('client/pages/500', {
-      pageTitle: "Lỗi server"
-    });
-  }
+  const slugProduct = req.params.slugProduct;
+  const product = await Product.findOne({slug: slugProduct, deleted: false}).populate('category', 'title slug').lean();
+  const priceNew = calcuNewPrice.priceNew(product.price, product.discountPercentage);
+  product.priceNew = priceNew;
+  res.render('client/pages/products/details', {
+    pageTitle: product.title,
+    product: product
+  });
 }
