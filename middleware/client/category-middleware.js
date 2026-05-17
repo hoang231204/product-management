@@ -6,6 +6,7 @@ module.exports.category = async (req, res, next) =>{
         return next();
     }
     const categoryTree = tree(categories);
+    res.locals.categories = categories;
     res.locals.categoryTree = categoryTree;
     next();
 }

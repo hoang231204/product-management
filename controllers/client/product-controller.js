@@ -1,5 +1,6 @@
 const Product = require("../../models/product-model")
 const calcuNewPrice = require("../../helpers/calcu-new-price");
+const getChildrenCategories = require("../../helpers/get-children");
 module.exports.index =  async (req, res) => {
   let find = {
     deleted:false
@@ -15,11 +16,32 @@ module.exports.index =  async (req, res) => {
     categoryTree: res.locals.categoryTree
   })
 }
+module.exports.category = async (req, res) => {
+  const slugCategory = req.params.slugCategory;
+  const category = res.locals.categories.find(item => item.slug === slugCategory);
+  if(!category) {
+    return res.status(404).render('client/pages/404', {
+      pageTitle: "Danh mục không tồn tại"
+    });
+  }
+  const categoryIds = getChildrenCategories(res.locals.categories, category._id);
+  categoryIds.push(category._id);
+  const products = await Product.find({
+    category_id: { $in: categoryIds },
+    deleted: false,
+    status: "active"
+  }).sort({position:-1});
+  res.render('client/pages/products/index', {
+    pageTitle: category.title,
+    products: products,
+    categoryTree: res.locals.categoryTree
+  });
+}
 module.exports.details = async (req, res) => {
   try {
     const product = await Product.findOne({ 
-      slug: req.params.slug,
-      delete: false,
+      slug: req.params.slugProduct,
+      deleted: false,
       status: "active"
     });
     

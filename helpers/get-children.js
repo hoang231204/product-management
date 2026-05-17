@@ -1,7 +1,7 @@
 const getChildren = (arr,id)=>{
     let children=[];
     arr.forEach(item=>{
-        if(item.parent_id == id){
+        if(item.parent_id == id && item.status == "active"){
             const childrenId = item._id.toString();
             children.push(childrenId);
             const childChildren = getChildren(arr,item._id);
