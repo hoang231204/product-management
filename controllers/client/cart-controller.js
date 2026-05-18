@@ -47,3 +47,21 @@ module.exports.index = async (req,res)=>{
             pageTitle: 'Giỏ hàng của bạn'
         });
 }
+module.exports.delete = async (req,res)=>{
+    const cartId = req.cartId;
+    const productId = req.params.productId;
+    const cart = await Cart.findById(cartId);
+    if(!cart){
+        req.flash('error', 'Giỏ hàng không tồn tại');
+        return res.redirect('/cart');
+    }
+    const productIndex = cart.products.findIndex(item => item.product_id == productId);
+    if(productIndex === -1){
+        req.flash('error', 'Sản phẩm không tồn tại trong giỏ hàng');
+        return res.redirect('/cart');
+    }
+    cart.products.splice(productIndex, 1);
+    await cart.save();
+    req.flash('success', 'Sản phẩm đã được xóa khỏi giỏ hàng');
+    res.redirect('/cart');
+}
