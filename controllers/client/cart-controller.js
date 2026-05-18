@@ -16,5 +16,5 @@ module.exports.add= async (req,res)=>{
         cart.products.push(product);
     }
     await cart.save();
-    res.redirect('/cart');
+    res.redirect('/products');
 }
