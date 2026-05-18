@@ -1,0 +1,48 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.my-5
+    h2(class="text-success mb-4") Giỏ hàng
+
+    if cartDetail && cartDetail.products.length > 0
+      table(class="table table-bordered text-center align-middle")
+        thead
+          tr
+            th STT
+            th Ảnh
+            th Tên
+            th Giá
+            th Số lượng
+            th Tổng tiền
+            th Hành động
+        tbody
+            each item, index in cartDetail.products
+                tr
+                  td #{index + 1}
+                  td
+                      img(src=item.product_id.thumbnail, alt=item.product_id.title, width="80px")
+                  td(class="text-start")
+                      a(href=`/products/detail/${item.product_id.slug}`) #{item.product_id.title}
+                  td #{item.product_id.priceNew}$
+                  td
+                      input(
+                      type="number"
+                      value=item.quantity
+                      min="1"
+                      product-id=item.product_id._id
+                      style="width: 60px; text-align: center;"
+                      )
+                  td #{item.product_id.priceNew * item.quantity}$
+                  td
+                      a(href=`/cart/delete/${item.product_id._id}` class="btn btn-danger") Xóa
+
+        .text-end.mt-4
+            h3 Tổng đơn hàng: 
+            span #{cartDetail.totalPrice}$
+            div(class="mt-3")
+            a(href="/checkout" class="btn btn-success btn-lg") THANH TOÁN
+
+    else
+      .text-center
+        p(class="alert alert-warning") Giỏ hàng trống!
+        a(href="/products" class="btn btn-primary") Quay lại mua sắm

@@ -10,6 +10,8 @@ module.exports.cart = async (req, res, next) =>{
         req.cartId = req.cookies.cartId;
     }
     const cart = await Cart.findById({_id: req.cartId});
-    res.locals.miniCartCount = cart ? cart.products.length : 0;
+    res.locals.miniCartCount = cart 
+      ? cart.products.reduce((sum, item) => sum + item.quantity, 0) 
+      : 0;
     next();
 }

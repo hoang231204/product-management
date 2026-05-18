@@ -1,7 +1,14 @@
 const moonoose = require('mongoose');
 const schema = new moonoose.Schema({
     user_id: String,
-    products:[]
+    products:[{
+        product_id: {
+            type: String,
+            default: null,
+            ref: "Product"
+        },
+        quantity: Number
+    }]
     },
     {
         timestamps: true

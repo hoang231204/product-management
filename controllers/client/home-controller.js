@@ -4,7 +4,8 @@ module.exports.index = async (req, res) => {
   let find={
     deleted: false,
     status: "active",
-    featured:"1"
+    featured:"1",
+    stock: {$gt: 0}
   }
   const productsFeatured = await Product.find(find).limit(6);
   productsFeatured.forEach(item => {

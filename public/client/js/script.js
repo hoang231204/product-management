@@ -17,3 +17,22 @@ if(formSearch){
     event.target.elements.keyword.value = ""
 })
 }
+//SHOW-ALERT
+const showAlert = document.querySelectorAll("[show-alert]");
+if (showAlert.length > 0) {
+  showAlert.forEach(alert => {
+    
+    const data_time = alert.getAttribute("data-time");
+    const time = parseInt(data_time) || 3000;
+    const closeAlert = alert.querySelector("[close-alert]");
+    console.log(closeAlert)
+    if (closeAlert) { 
+      closeAlert.addEventListener("click", () => {
+        alert.classList.add("alert-hidden");
+      });
+    }
+    setTimeout(() => {
+      alert.classList.add("alert-hidden");
+    }, time);
+  });
+}
