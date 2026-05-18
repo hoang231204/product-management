@@ -38,7 +38,7 @@ module.exports.category = async (req, res) => {
 }
 module.exports.details = async (req, res) => {
   const slugProduct = req.params.slugProduct;
-  const product = await Product.findOne({slug: slugProduct, deleted: false}).populate('category', 'title slug').lean();
+  const product = await Product.findOne({slug: slugProduct, deleted: false}).populate('category', 'title slug');
   const priceNew = calcuNewPrice.priceNew(product.price, product.discountPercentage);
   product.priceNew = priceNew;
   res.render('client/pages/products/details', {
