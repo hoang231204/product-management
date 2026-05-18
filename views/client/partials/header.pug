@@ -1,12 +1,16 @@
 include ../mixins/sub-menu.pug
+include ../mixins/search.pug
 header.header
   .container
     .row.align-items-center
-      .col-0
+      .col-1
         .inner-logo
           a(href="/")
-            img(src="/images/logo.svg", alt="Logo")
-      .col-3
+            img(src="/client/images/logo.png", alt="Logo" width="40" height="40")
+      .col-2
+        .inner-search
+          +boxSearch(keyword)
+      .col-5
         .inner-menu
           ul
             li
@@ -15,3 +19,23 @@ header.header
               -const path = `/products`
               a(href=path) Sản phẩm
                 +subMenu(categoryTree,path)
+            li 
+              a(href="/blog") Bài viết
+            li 
+              a(href="/contact") Liên hệ
+      .col-3
+        .inner-user
+          if user
+            a(href="/profile" class="text-dark text-decoration-none")
+            #{user.name}
+          else
+            a(href="/login" class="text-dark text-decoration-none") Đăng nhập/ 
+            a(href="/register" class="text-dark text-decoration-none ms-2") Đăng ký
+      .col-1
+        .inner-cart
+          a(
+            href="/cart"
+            class="d-flex align-items-center text-dark text-decoration-none"
+          )
+            img(src="/client/images/giohang.png", alt="Cart" width="24" height="24" class="me-1")
+            span(class="badge bg-primary") #{miniCartCount ? miniCartCount : 0}

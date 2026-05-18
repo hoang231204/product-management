@@ -33,6 +33,7 @@ if(formSearch){
         url.searchParams.delete("keyword")
     }
     window.location.href = url
+    event.target.elements.keyword.value = ""
 })
 }
 

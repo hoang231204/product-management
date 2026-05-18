@@ -1,5 +1,9 @@
 include ./product-item.pug
 mixin product-grid(products)
-    each item in products
-        .col-4.mb-3
-            +product-item(item)
+    if(products && products.length === 0)
+        .col-12
+            p.text-center.text-muted Không có sản phẩm nào
+    else
+        each item in products
+            .col-4.mb-3
+                +product-item(item)

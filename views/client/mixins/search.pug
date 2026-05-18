@@ -1,0 +1,13 @@
+mixin boxSearch(keyword)
+     form(
+        method="get"
+        action="/search"
+     )
+        .input-group
+            input(
+                type="text"
+                placeholder=`Tìm kiếm sản phẩm...`
+                name="keyword"
+                class="form-control"
+                value = keyword
+            )
