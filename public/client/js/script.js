@@ -36,3 +36,16 @@ if (showAlert.length > 0) {
     }, time);
   });
 }
+//CHANGE QUANTITY
+const quantityInputs = document.querySelectorAll(`input[name="quantity"]`);
+if(quantityInputs.length > 0){
+  let url = new URL(window.location.href);
+    quantityInputs.forEach(input=>{
+        input.addEventListener("change",(event)=>{
+          console.log(input)
+          const newQuantity = event.target.value;
+          const productId = input.getAttribute("product-id");
+          window.location.href = `/cart/update/${productId}?quantity=${newQuantity}`;
+        })
+    })
+}
