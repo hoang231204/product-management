@@ -1,0 +1,66 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.my-5
+    h2(class="text-success mb-4") Giỏ hàng
+
+    if cartDetail && cartDetail.products.length > 0
+      table(class="table table-bordered text-center align-middle")
+        thead
+          tr
+            th STT
+            th Ảnh
+            th Tên
+            th Giá
+            th Số lượng
+            th Tổng tiền
+        tbody
+          each item, index in cartDetail.products
+              tr
+                td #{index + 1}
+                td
+                    img(src=item.product_id.thumbnail, alt=item.product_id.title, width="80px")
+                td(class="text-start") #{item.product_id.title}
+                td #{item.product_id.priceNew}$
+                td #{item.quantity}
+                td #{item.product_id.priceNew * item.quantity}$
+      .row 
+          .col-md-8.offset-md-8.text-end
+            h3 Tổng đơn hàng: #{cartDetail.totalPrice}$
+      .row
+        .col-6
+          div(class="card p-4 shadow-sm")
+            form(action="/checkout/order" method="POST")
+              div(class="mb-3")
+                label(for="fullname" class="form-label fw-bold") Họ tên
+                input(
+                  type="text"
+                  id="fullname"
+                  name="fullname"
+                  class="form-control"
+                  required
+                )
+              div(class="mb-3")
+                label(for="phone" class="form-label fw-bold") Số điện thoại
+                input(
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  class="form-control"
+                  required
+                )
+              div(class="mb-4")
+                label(for="address" class="form-label fw-bold") Địa chỉ
+                input(
+                  type="text"
+                  id="address"
+                  name="address"
+                  class="form-control"
+                  required
+                )
+              button(type="submit" class="btn btn-success w-100 btn-lg text-uppercase") ĐẶT HÀNG
+
+    else
+      .text-center
+        p(class="alert alert-warning") Giỏ hàng trống!
+        a(href="/products" class="btn btn-primary") Quay lại mua sắm
