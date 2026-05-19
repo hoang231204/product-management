@@ -26,10 +26,6 @@ module.exports.order = async (req, res) =>{
     const fullname = req.body.fullname;
     const phone = req.body.phone;
     const address = req.body.address;
-    if(!fullname || !phone || !address) {
-        req.flash('error', 'Vui lòng điền đầy đủ thông tin');
-        return res.redirect('/checkout');
-    }
     let userInfor= {
         fullname: fullname,
         phone: phone,

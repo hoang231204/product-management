@@ -9,6 +9,7 @@ module.exports.requireLogin = async (req,res,next)=>{
     const user = await Account.findOne({token: req.cookies.token, deleted: false}).select("-password -token")
     if(!user){
         req.flash("error", "Tài khoản không tồn tại");
+        res.clearCookie("token");
         return res.redirect(`${systemConfig.prefixAdmin}/auth/login`);
     }
     const role = await Role.findOne({_id:user.role_id}).select("title permissions");

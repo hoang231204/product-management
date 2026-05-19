@@ -1,0 +1,10 @@
+const userController = require('../../controllers/client/user-controller');
+const userValidate = require('../../validates/client/user-validate');
+const mongoose = require('mongoose');
+const router = require('express').Router();
+router.get('/register', userController.register);
+router.post('/register', userValidate.register, userController.registerPost);
+router.get('/login', userController.login);
+router.post('/login', userValidate.login, userController.loginPost);
+router.post('/logout', userController.logout);
+module.exports = router;

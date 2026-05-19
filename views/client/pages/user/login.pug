@@ -1,0 +1,21 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+
+block main
+    +alert-error(3000)
+    +alert-success(3000)
+    .container.my-5
+        .row 
+            .col-8
+                h2(class="text-success mb-4") Đăng nhập tài khoản
+                
+                form(action="/user/login" method="POST")
+                    div(class="mb-3")
+                        label Email
+                        input(type="email" name="email" class="form-control" required)
+
+                    div(class="mb-4")
+                        label Mật khẩu
+                        input(type="password" name="password" class="form-control" required)
+
+                    button(type="submit" class="btn btn-success") Đăng nhập
