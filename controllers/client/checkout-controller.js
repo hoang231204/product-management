@@ -38,6 +38,10 @@ module.exports.order = async (req, res) =>{
         return res.redirect('/products');
     } 
     cart.products = cart.products.filter(item => item.product_id !== null);
+    if(cart.products.length === 0){
+        req.flash('error', 'Giỏ hàng của bạn đang trống, không thể đặt hàng!');
+        return res.redirect('/products');
+    }
     cart.products.forEach(item => {
         item.product_id.priceNew = calcuNewPrice.priceNew(item.product_id.price, item.product_id.discountPercentage);
     });
@@ -55,11 +59,13 @@ module.exports.order = async (req, res) =>{
     });
     const order = new Order({
         cart_id: cartId,
-        user_id: req.userId,
         userInfor: userInfor,
         products: products,
         totalPrice: cart.totalPrice
     })
+    if(res.locals.user){
+        order.user_id = res.locals.user._id;
+    }
     await order.save();
     const newCart = await Cart.findById(cartId);
     newCart.products = [];
@@ -70,13 +76,13 @@ module.exports.order = async (req, res) =>{
 }
 module.exports.success = async (req, res) =>{
     const orderId = req.params.id;
-    const order = await Order.findOne({ _id: orderId}).populate('products.product_id', 'title price thumbnail discountPercentage').lean();
+    const order = await Order.findOne({ _id: orderId}).populate('products.product_id', 'title thumbnail').lean();
     if(!order){
         req.flash('error', 'Đơn hàng không tồn tại');
         return res.redirect('/products');
     }
     order.products.forEach(item => {
-        item.product_id.priceNew = calcuNewPrice.priceNew(item.product_id.price, item.product_id.discountPercentage);
+        item.priceNew = calcuNewPrice.priceNew(item.price, item.discountPercentage);
     });
     res.render('client/pages/checkout/success', 
         {
