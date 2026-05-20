@@ -1,0 +1,18 @@
+extends ../../layouts/default.pug
+
+block main
+    .container.my-5
+        h1.mb-4 Thông tin cá nhân
+        
+        .row
+            .col-4.text-center
+                img(
+                    src=(user.avatar ? user.avatar : "/client/images/avatar-default.png")
+                    class="img-fluid rounded-circle border"
+                    style="width: 150px; height: 150px; object-fit: cover;"
+                )
+            .col-8
+                div(class="mb-2") <b>Họ tên:</b> #{user.fullname}
+                div(class="mb-2") <b>Email:</b> #{user.email}
+                div(class="mb-2") <b>Số điện thoại:</b> #{user.phone}
+                a(href=`/user/profile/edit` class="btn btn-primary") Chỉnh sửa hồ sơ

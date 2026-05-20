@@ -1,5 +1,6 @@
 const userController = require('../../controllers/client/user-controller');
 const userValidate = require('../../validates/client/user-validate');
+const privateRoute = require('../../middleware/client/private-route');
 const mongoose = require('mongoose');
 const router = require('express').Router();
 router.get('/register', userController.register);
@@ -13,4 +14,5 @@ router.get('/password/otp', userController.otp);
 router.post('/password/otp', userValidate.otp, userController.otpPost);
 router.get('/password/reset-password', userController.resetPassword);
 router.post('/password/reset-password', userValidate.resetPassword, userController.resetPasswordPost);
+router.get('/profile', privateRoute.requireLogin, userController.profile);
 module.exports = router;

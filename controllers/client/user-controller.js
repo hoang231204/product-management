@@ -148,3 +148,12 @@ module.exports.resetPasswordPost = async (req, res) =>{
     req.flash('success', 'Đặt lại mật khẩu thành công');
     res.redirect('/user/login');
 }
+//GET /profile
+module.exports.profile = async (req, res) =>{
+    res.render('client/pages/user/profile',
+        {
+            pageTitle: "Thông tin tài khoản",
+            user: res.locals.user
+        }
+    )
+}
