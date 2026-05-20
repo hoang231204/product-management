@@ -62,6 +62,7 @@ module.exports.loginPost = async (req, res) =>{
 //POST /logout
 module.exports.logout = async (req, res) =>{
     res.clearCookie('tokenUser');
+    res.clearCookie('cartId');
     req.flash('success', 'Đăng xuất thành công');
     res.redirect('/user/login');
 }
@@ -84,7 +85,7 @@ module.exports.forgotPasswordPost = async (req, res) =>{
     }
     const forgotPassword = new ForgotPassword({
         email: email,
-        expireAt: Date.now
+        expireAt: Date.now()
     });
     await forgotPassword.save();
     res.redirect(`/user/password/otp?email=${email}`);
