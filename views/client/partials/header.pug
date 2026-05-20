@@ -23,11 +23,13 @@ header.header
               a(href="/blog") Bài viết
             li 
               a(href="/contact") Liên hệ
-      .col-3
+      .col-2
         .inner-user
           if user
             a(href="/profile" class="text-dark text-decoration-none")
-            #{user.fullname}
+              i(class="bi bi-person-circle me-2")
+              | #{user.fullname} /
+            a(href="/user/logout" class="text-dark text-decoration-none ms-2") Đăng xuất
           else
             a(href="/user/login" class="text-dark text-decoration-none") Đăng nhập/ 
             a(href="/user/register" class="text-dark text-decoration-none ms-2") Đăng ký

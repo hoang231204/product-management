@@ -1,0 +1,37 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+
+block main
+  +alert-error(3000)
+  +alert-success(3000)
+  
+    .container.my-5
+        .row.justify-content-center
+            .col-md-6
+                h2(class="text-success mb-3") Xác thực OTP
+                p(class="text-muted mb-4") Mã xác thực đã được gửi đến email của bạn. Vui lòng kiểm tra và nhập mã vào ô bên dưới.
+                
+                form(action="/user/password/otp" method="POST")
+                    div(class="mb-3")
+                        label(for="email" class="form-label fw-bold") Địa chỉ Email
+                        input(
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-control bg-light"
+                            value=email
+                            readonly
+                        )
+                    div(class="mb-4")
+                        label(for="otp" class="form-label fw-bold") Mã OTP
+                        input(
+                            type="text"
+                            id="otp"
+                            name="otp"
+                            class="form-control"
+                            placeholder="Nhập mã OTP gồm 6 chữ số"
+                            required
+                        )
+                    button(type="submit" class="btn btn-success w-100 mb-3") Xác nhận
+            div(class="text-center mt-3")
+                a(href="/user/password/forgot" class="text-secondary text-decoration-none small") Quay lại trang gửi mã
