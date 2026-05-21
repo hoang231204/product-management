@@ -1,0 +1,87 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+
+block main
+   .container.my-5
+        .row.justify-content-center
+            .col-md-8.col-lg-6
+                h1.mb-4.font-weight-bold Chỉnh sửa thông tin cá nhân
+                form(
+                    action=`/user/profile/edit?_method=PATCH`
+                    method="POST"
+                    enctype="multipart/form-data"
+                    form-upload
+                )
+                    //- Họ tên
+                    div(class="form-group mb-3")
+                        label(for="fullname" class="form-label") Họ tên *
+                        input(
+                            type="text"
+                            class="form-control"
+                            id="fullname"
+                            name="fullname"
+                            value=user.fullname
+                            required
+                        )
+
+                    //- Email
+                    div(class="form-group mb-3")
+                        label(for="email" class="form-label") Email *
+                        input(
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            value=user.email
+                            required
+                        )
+                    //- Số điện thoại
+                    div(class="form-group mb-3")
+                        label(for="phone" class="form-label") Số điện thoại
+                        if user.phone
+                            input(
+                                type="text"
+                                class="form-control"
+                                id="phone"
+                                name="phone"
+                                value=user.phone
+                            )
+                        else
+                            input(
+                                type="text"
+                                class="form-control"
+                                id="phone"
+                                name="phone"
+                                placeholder="Chưa có số điện thoại"
+                            )
+                    //- Avatar
+                    div(class="form-group mb-3" upload-image)
+                        label(for="avatar" class="form-label") Avatar
+                        input(
+                            type="file"
+                            class="form-control-file d-block"
+                            id="avatar"
+                            name="avatar"
+                            accept="image/*"
+                            upload-image-input
+                        )
+                        div(class="box-image")
+                            img(
+                                src=user.avatar
+                                upload-image-preview
+                                class="image-preview"
+                                )
+                            button(
+                                type="button"
+                                class="btn-remove-image"
+                                aria-label="Remove image"
+                                ) ×
+                    div(class="form-group")
+                        button(
+                            type="submit"
+                            class="btn btn-primary px-4"
+                        ) Cập nhật
+                        a(
+                            href=`/user/profile`
+                            class="btn btn-secondary ml-2"
+                        ) Hủy bỏ

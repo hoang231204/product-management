@@ -48,3 +48,23 @@ if(quantityInputs.length > 0){
         })
     })
 }
+// PREVIEW IMAGE
+const formCreate = document.querySelector("[form-upload]")
+console.log(formCreate)
+if(formCreate){
+    const uploadImage= formCreate.querySelector("[upload-image]")
+    const uploadImageInput = document.querySelector("[upload-image-input]")
+    const uploadImagePreview = document.querySelector("[upload-image-preview]")
+
+    uploadImageInput.addEventListener("change",(event)=>{
+    const [file] = event.target.files;
+    if(file){
+      uploadImagePreview.src = URL.createObjectURL(file)
+    }
+  })
+  const buttonRemoveImage = document.querySelector(".btn-remove-image")
+  buttonRemoveImage.addEventListener("click",()=>{
+    uploadImageInput.value = "";
+    uploadImagePreview.src = "";
+  })
+}

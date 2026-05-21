@@ -152,8 +152,21 @@ module.exports.resetPasswordPost = async (req, res) =>{
 module.exports.profile = async (req, res) =>{
     res.render('client/pages/user/profile',
         {
-            pageTitle: "Thông tin tài khoản",
-            user: res.locals.user
+            pageTitle: "Thông tin tài khoản"
         }
     )
+}
+//GET /profile/edit
+module.exports.editProfile = async (req, res) =>{
+    res.render('client/pages/user/edit-profile',
+        {
+            pageTitle: "Chỉnh sửa thông tin cá nhân"
+        }
+    )
+}
+//POST /profile/edit
+module.exports.editProfilePost = async (req, res) =>{
+    await User.updateOne({_id: res.locals.user._id}, req.body);
+    req.flash('success', 'Cập nhật thông tin thành công!');
+    res.redirect('/user/profile');
 }

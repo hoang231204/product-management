@@ -236,3 +236,57 @@
     }
 }
 /* End Show Alert */
+/* Wrapper cho ảnh preview */
+.box-image {
+    position: relative;
+    display: inline-block;
+}
+
+/* Image Preview */
+.image-preview {
+    width: 150px;
+    height: auto;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    display: block;
+}
+
+/* Ẩn ảnh khi chưa có src */
+.image-preview[src=""] {
+    display: none;
+}
+
+/* Nút X */
+.btn-remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+
+    width: 22px;
+    height: 22px;
+
+    border: none;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 20px;
+    text-align: center;
+
+    cursor: pointer;
+    padding: 0;
+}
+
+/* Hover */
+.btn-remove-image:hover {
+    background-color: #dc3545;
+}
+
+/* Ẩn nút X khi không có ảnh */
+.image-preview[src=""] + .btn-remove-image {
+    display: none;
+}
