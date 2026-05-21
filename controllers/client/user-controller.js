@@ -164,8 +164,8 @@ module.exports.editProfile = async (req, res) =>{
         }
     )
 }
-//POST /profile/edit
-module.exports.editProfilePost = async (req, res) =>{
+//PATCH /profile/edit
+module.exports.editProfilePatch = async (req, res) =>{
     const userId = res.locals.user._id;
     if(req.body.password){
         const oldPassword = md5(req.body.password);

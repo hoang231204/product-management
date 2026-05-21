@@ -1,6 +1,7 @@
 const userController = require('../../controllers/client/user-controller');
 const userValidate = require('../../validates/client/user-validate');
 const privateRoute = require('../../middleware/client/private-route');
+const uploadCloud = require('../../middleware/client/uploadCloud-middleware');
 const express = require('express');
 const multer  = require('multer')
 const upload = multer();
@@ -21,9 +22,10 @@ router.get('/profile', privateRoute.requireLogin, userController.profile);
 router.get('/profile/edit', privateRoute.requireLogin, userController.editProfile);
 router.patch(
     '/profile/edit',
-    upload.single('avatar'),
-    privateRoute.requireLogin, 
-    userValidate.profile, 
-    userController.editProfilePost
-    );
+    privateRoute.requireLogin,
+    upload.single('avatar'), 
+    userValidate.profile,
+    uploadCloud.upload,
+    userController.editProfilePatch
+);
 module.exports = router;

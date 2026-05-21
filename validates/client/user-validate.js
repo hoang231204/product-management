@@ -92,7 +92,7 @@ module.exports.otp = (req,res,next)=>{
     next();
 }
 module.exports.resetPassword = (req,res,next)=>{
-    if(req.bodu.fullname){
+    if(req.body.fullname){
         req.flash("error","Không được phép nhập họ và tên!");
         const backUrl = req.get("Referrer");
         res.redirect(backUrl);
@@ -140,7 +140,7 @@ module.exports.profile = (req,res,next)=>{
             res.redirect(backUrl);
             return
         }
-        if(!req.body.newPassword || !req.body.confirmNewPassword){
+        if(!req.body.newPassword || !req.body.confirmPassword){
             req.flash("error","Vui lòng nhập đầy đủ thông tin để thay đổi mật khẩu!");
             const backUrl = req.get("Referrer");
             res.redirect(backUrl);
