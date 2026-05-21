@@ -166,7 +166,25 @@ module.exports.editProfile = async (req, res) =>{
 }
 //POST /profile/edit
 module.exports.editProfilePost = async (req, res) =>{
-    await User.updateOne({_id: res.locals.user._id}, req.body);
-    req.flash('success', 'Cập nhật thông tin thành công!');
-    res.redirect('/user/profile');
-}
+    const userId = res.locals.user._id;
+    if(req.body.password){
+        const oldPassword = md5(req.body.password);
+        const checkPassword = await User.findOne({_id: userId, password: oldPassword, deleted: false, status: "active"});
+        if(!checkPassword){
+            req.flash('error', 'Mật khẩu cũ không đúng');
+            res.redirect('/user/profile/edit');
+            return;
+        }
+        req.body.password = md5(req.body.newPassword);
+       
+    }
+    else{
+        delete req.body.password;
+    }
+        delete req.body.newPassword;
+        delete req.body.confirmPassword;
+        await User.updateOne({_id: userId}, req.body);
+        req.flash('success', 'Cập nhật thông tin thành công');
+        res.redirect('/user/profile');
+    }
+    

@@ -1,8 +1,11 @@
 const userController = require('../../controllers/client/user-controller');
 const userValidate = require('../../validates/client/user-validate');
 const privateRoute = require('../../middleware/client/private-route');
+const express = require('express');
+const multer  = require('multer')
+const upload = multer();
 const mongoose = require('mongoose');
-const router = require('express').Router();
+const router = express.Router();
 router.get('/register', userController.register);
 router.post('/register', userValidate.register, userController.registerPost);
 router.get('/login', userController.login);
@@ -16,5 +19,11 @@ router.get('/password/reset-password', userController.resetPassword);
 router.post('/password/reset-password', userValidate.resetPassword, userController.resetPasswordPost);
 router.get('/profile', privateRoute.requireLogin, userController.profile);
 router.get('/profile/edit', privateRoute.requireLogin, userController.editProfile);
-router.post('/profile/edit', privateRoute.requireLogin, userValidate.profile, userController.editProfilePost);
+router.patch(
+    '/profile/edit',
+    upload.single('avatar'),
+    privateRoute.requireLogin, 
+    userValidate.profile, 
+    userController.editProfilePost
+    );
 module.exports = router;

@@ -24,16 +24,34 @@ block main
                             required
                         )
 
-                    //- Email
+                    //- password
+                    p.text-muted.mb-3 Nếu bạn muốn thay đổi mật khẩu, vui lòng nhập mật khẩu cũ và mật khẩu mới. Nếu không, hãy để trống các trường mật khẩu.
                     div(class="form-group mb-3")
-                        label(for="email" class="form-label") Email *
+                        label(for="password" class="form-label") Mật khẩu cũ
                         input(
-                            type="email"
+                            type="password"
                             class="form-control"
-                            id="email"
-                            name="email"
-                            value=user.email
-                            required
+                            id="password"
+                            name="password"
+                            value=""
+                        )
+                    div(class="form-group mb-3")
+                        label(for="newPassword" class="form-label") Mật khẩu mới
+                        input(
+                            type="password"
+                            class="form-control"
+                            id="newPassword"
+                            name="newPassword"
+                            value=""
+                        )
+                    div(class="form-group mb-3")
+                        label(for="confirmPassword" class="form-label") Xác nhận mật khẩu mới
+                        input(
+                            type="password"
+                            class="form-control"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            value=""
                         )
                     //- Số điện thoại
                     div(class="form-group mb-3")
