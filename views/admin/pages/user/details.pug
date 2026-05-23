@@ -1,0 +1,37 @@
+extends ../../layouts/default.pug
+
+block main
+    .container.my-5
+        h1.mb-4.font-weight-bold Chi tiết người dùng
+        
+        .row
+            //- Ảnh đại diện bên trái
+            .col-4.text-center
+                img(
+                    src=(user.avatar ? user.avatar : "/admin/images/avatar-default.png")
+                    class="img-fluid rounded-circle border"
+                    style="width: 150px; height: 150px; object-fit: cover;"
+                )
+            
+            //- Thông tin bên phải
+            .col-8
+                div(class="mb-2") <b>Họ tên:</b> #{user.fullname}
+                div(class="mb-2") <b>Email:</b> #{user.email}
+                div(class="mb-2") <b>Số điện thoại:</b> #{user.phone || "Chưa cập nhật"}
+                div(class="mb-3")
+                    b Trạng thái: 
+                    if user.status === "active"
+                        span.badge.bg-success.text-white Hoạt động
+                    else
+                        span.badge.bg-danger.text-white Dừng hoạt động
+        //- Cụm nút bấm
+        div(class="mt-4")
+            if(role.permissions.includes('user_edit'))
+                a(href=`${prefixAdmin}/users/edit/${user._id}` class="btn btn-warning btn-sm mr-2") Chỉnh sửa
+            if(role.permissions.includes('user_delete'))
+                button(
+                    class="btn btn-danger btn-sm mr-2"
+                    button-delete
+                    data-id=user._id
+                ) Xóa
+            a(href=`${prefixAdmin}/users` class="btn btn-secondary btn-sm") Quay lại
