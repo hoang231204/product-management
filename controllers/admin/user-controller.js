@@ -18,15 +18,16 @@ module.exports.details = async(req, res) =>{
         user: user
     })
 }
-module.exports.delete = async(req, res) =>{
+module.exports.changeStatus = async(req, res) =>{
     const id = req.params.id;
+    const status = req.params.status;
     const user = await User.findOne({_id: id, deleted: false});
     if(!user){
         req.flash('error', 'Không tìm thấy người dùng');
         return res.redirect('/admin/users');
     }
-    user.deleted = true;
+    user.status = status;
     await user.save();
-    req.flash('success', 'Xóa người dùng thành công');
-    return res.redirect('/admin/users');
+    req.flash('success', 'Cập nhật trạng thái thành công');
+    res.redirect('/admin/users');
 }
