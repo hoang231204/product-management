@@ -163,3 +163,45 @@ module.exports.profile = (req,res,next)=>{
     }
     next();
 }
+module.exports.changeEmail = (req,res,next)=>{
+    if(!req.body.newEmail){
+        req.flash("error","Vui lòng nhập email mới!");
+        const backUrl = req.get("Referrer");
+        res.redirect(backUrl);
+        return
+    }
+    if(req.body.newEmail){
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(req.body.newEmail)) {
+            req.flash("error", "Email mới không hợp lệ!");
+            const backUrl = req.get("Referrer");
+            res.redirect(backUrl);
+            return;
+        }   
+    }
+    next();
+}
+module.exports.changeEmailOtp = (req,res,next)=>{
+    if(!req.body.newEmail){
+        req.flash("error","Vui lòng nhập email mới!");
+        const backUrl = req.get("Referrer");
+        res.redirect(backUrl);
+        return
+    }
+    if(req.body.newEmail){
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(req.body.newEmail)) {
+            req.flash("error", "Email mới không hợp lệ!");
+            const backUrl = req.get("Referrer");
+            res.redirect(backUrl);
+            return;
+        }
+    }
+    if(!req.body.otp){
+        req.flash("error","Vui lòng nhập mã OTP!");
+        const backUrl = req.get("Referrer");  
+        res.redirect(backUrl);
+        return
+    }
+    next();
+}

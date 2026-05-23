@@ -1,0 +1,28 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+
+block main
+    +alert-error(3000)
+    +alert-success(3000)
+  
+    .container.my-5
+        .row.justify-content-center
+            .col-md-6
+                h2(class="text-success mb-3") Đổi email tài khoản
+                p(class="text-muted mb-4") Vui lòng nhập email mới của bạn để hệ thống gửi mã OTP xác nhận.
+                
+                form(action="/user/change-email" method="POST")
+                    div(class="mb-4")
+                        label(for="newEmail" class="form-label fw-bold") Địa chỉ Email mới
+                        input(
+                            type="email"
+                            id="newEmail"
+                            name="newEmail"
+                            class="form-control"
+                            placeholder="example@gmail.com"
+                            required
+                        )
+
+                    button(type="submit" class="btn btn-success w-100 mb-3") Gửi
+                div(class="text-center mt-3")
+                    a(href="/user/profile" class="text-secondary text-decoration-none small") Quay lại trang Thông tin cá nhân

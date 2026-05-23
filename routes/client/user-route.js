@@ -28,4 +28,10 @@ router.patch(
     uploadCloud.upload,
     userController.editProfilePatch
 );
+router.get('/change-email', privateRoute.requireLogin, userController.changeEmail);
+router.post('/change-email', privateRoute.requireLogin, userValidate.changeEmail, userController.changeEmailPost);
+router.get('/change-email/otp', privateRoute.requireLogin, userController.changeEmailOtp);
+router.post('/change-email/otp', privateRoute.requireLogin, userValidate.changeEmailOtp, userController.changeEmailOtpPost);
+// router.patch('/change-email/update', privateRoute.requireLogin, userValidate.changeEmailUpdate, userController.changeEmailUpdate);
+
 module.exports = router;
