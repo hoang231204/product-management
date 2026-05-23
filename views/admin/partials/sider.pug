@@ -26,8 +26,14 @@
                     a(href=`${prefixAdmin}/roles/permissions`) Phân quyền
             
             if(role.permissions.includes("account_view"))
-            li
-                a(href=`${prefixAdmin}/accounts`) Quản lý tài khoản
-                ul 
-                    li 
-                        a(href=`${prefixAdmin}/accounts/recycle-bin`) Thùng rác
+                li
+                    a(href=`${prefixAdmin}/accounts`) Quản lý tài khoản
+                    ul 
+                        li 
+                            a(href=`${prefixAdmin}/accounts/recycle-bin`) Thùng rác
+            if(role.permissions.includes("user_view"))
+                li
+                    a(href=`${prefixAdmin}/users`) Quản lý người dùng
+                    ul 
+                        li 
+                            a(href=`${prefixAdmin}/users/recycle-bin`) Thùng rác
