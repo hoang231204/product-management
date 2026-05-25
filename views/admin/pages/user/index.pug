@@ -17,7 +17,7 @@ block main
                                 if(role.permissions.includes('user_create'))
                                     a(
                                         href=`${prefixAdmin}/users/create`
-                                        class="btn btn-outline-success btn-sm"
+                                        class="btn btn-outline-success btn-sm dislay none"
                                         ) + Thêm mới
 
                     .card-body
@@ -42,11 +42,11 @@ block main
                                         //- Avatar
                                         td.align-middle
                                             img(
-                                            src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png")
-                                            alt=item.fullname
-                                            width="40px"
-                                            height="40px"
-                                            style="object-fit: cover; border-radius: 50%;"
+                                                src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png")
+                                                alt=item.fullname
+                                                width="40px"
+                                                height="40px"
+                                                style="object-fit: cover; border-radius: 50%;"
                                             )
 
                                         //- Họ tên

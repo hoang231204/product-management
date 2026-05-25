@@ -52,7 +52,7 @@ block main
                     //- Số điện thoại
                     div(class="form-group mb-3")
                         label(for="phone" class="form-label") Số điện thoại
-                        if account.telephone
+                        if account.phone
                             input(
                                 type="text"
                                 class="form-control"
@@ -81,7 +81,7 @@ block main
                         )
                         div(class="box-image")
                             img(
-                                src=""
+                                src=account.avatar
                                 upload-image-preview
                                 class="image-preview"
                                 )
