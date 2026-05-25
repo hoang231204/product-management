@@ -13,4 +13,5 @@ router.patch(
     upload.single('avatar'),
     userController.editPatch
 );
+router.get('/create', userController.create);
 module.exports = router;
