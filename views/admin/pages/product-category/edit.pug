@@ -6,7 +6,7 @@ block main
     +alert-success(5000)
     h1(class="mb-4") CHỈNH SỬA DANH MỤC SẢN PHẨM
     form(
-        action=`${prefixAdmin}/categories/edit/${category._id}?_method=PATCH` 
+        action=`${prefixAdmin}/product-categories/edit/${category._id}?_method=PATCH` 
         method="POST" 
         enctype="multipart/form-data"
         form-upload
@@ -108,4 +108,4 @@ block main
         //- Buttons
         div(class="form-group")
             button(type="submit" class="btn btn-primary") Cập nhật
-            a(href=`${prefixAdmin}/categories` class="btn btn-secondary ms-2") Quay lại
+            a(href=`${prefixAdmin}/product-categories` class="btn btn-secondary ms-2") Quay lại

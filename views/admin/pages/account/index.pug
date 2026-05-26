@@ -55,7 +55,10 @@ block main
                                         td.align-middle #{item.fullname}
 
                                         //- Phân quyền (Tên vai trò)
-                                        td.align-middle #{item.role_id.title}
+                                        if(item.role_id && item.role_id.title)
+                                            td.align-middle #{item.role_id.title}
+                                        else
+                                            td.align-middle Chưa được phân quyền
 
                                         //- Email
                                         td.align-middle #{item.email}

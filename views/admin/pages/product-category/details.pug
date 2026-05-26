@@ -55,9 +55,9 @@ block main
             //- Cụm nút bấm
             div(class="mt-4")
                 if(role.permissions.includes('categories_edit'))
-                    a(href=`${prefixAdmin}/categories/${category._id}/edit` class="btn btn-warning btn-sm mr-2") Chỉnh sửa
-                a(href=`${prefixAdmin}/categories` class="btn btn-secondary btn-sm") Quay lại
+                    a(href=`${prefixAdmin}/product-categories/${category._id}/edit` class="btn btn-warning btn-sm mr-2") Chỉnh sửa
+                a(href=`${prefixAdmin}/product-categories` class="btn btn-secondary btn-sm") Quay lại
 
         else
             .alert.alert-warning Không tìm thấy danh mục này!
-            a(href=`${prefixAdmin}/categories` class="btn btn-secondary btn-sm") Quay lại danh sách
+            a(href=`${prefixAdmin}/product-categories` class="btn btn-secondary btn-sm") Quay lại danh sách

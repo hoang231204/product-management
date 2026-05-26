@@ -6,7 +6,6 @@ const upload = multer();
 const middleware = require("../../middleware/admin/uploadCloud-middleware")
 const router = express.Router();
 const validateCreate = require("../../validates/admin/product-validate");
-const { route } = require("./account-route");
 router.get('/', categoryController.index);
 router.get("/create", categoryController.create)
 router.post(
@@ -28,7 +27,7 @@ router.patch(
     categoryController.editPatch);
 router.patch("/change-multi", categoryController.changeMulti)
 router.get("/recycle-bin", categoryController.recycleBin)
-//router.patch("/recycle-bin/restore/:id", categoryController.restore)
-router.delete("/recycle-bin/destroy/:id", categoryController.destroy)
+router.patch("/recycle-bin/restore/:id", categoryController.restore)
+router.delete("/recycle-bin/hard-delete/:id", categoryController.hardDelete)
 router.patch("/change-status/:status/:id", categoryController.changeStatus)
 module.exports = router;

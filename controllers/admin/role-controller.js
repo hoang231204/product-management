@@ -177,8 +177,8 @@ module.exports.restore = async (req, res) => {
         res.redirect(`${systemConfig.prefixAdmin}/roles/recycle-bin`);
     }
 }
-//DELETE /recycle-bin/destroy/:id
-module.exports.destroy = async (req, res) => {
+//DELETE /recycle-bin/hard-delete/:id
+module.exports.hardDelete = async (req, res) => {
     const id = req.params.id;
     try {
         await Role.deleteOne({ _id: id });

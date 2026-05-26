@@ -30,7 +30,7 @@ module.exports.index =async (req,res)=>{
         .populate("updatedBy.account_id","fullname")
         .lean();
     const categoryTree = tree(categories);
-    res.render("admin/pages/category/index",{
+    res.render("admin/pages/product-category/index",{
         pageTitle:"Danh mục sản phẩm",
         categories: categories,
         categoryTree: categoryTree,
@@ -45,7 +45,7 @@ module.exports.create =async (req,res)=>{
     }
     const categories =await ProductCategory.find();
     const categoryTree = tree(categories);
-    res.render("admin/pages/category/create",{
+    res.render("admin/pages/product-category/create",{
         pageTitle:"Tạo danh mục sản phẩm",
         categoryTree: categoryTree
     })
@@ -152,7 +152,7 @@ module.exports.details = async (req,res)=>{
         .populate("updatedBy.account_id", "fullname")
         .lean();
     const parentTitle = category.parent_id ? category.parent_id.title : "Danh mục gốc";
-    res.render("admin/pages/category/details",{
+    res.render("admin/pages/product-category/details",{
         pageTitle:"Chi tiết danh mục sản phẩm",
         category: category,
         parentName: parentTitle
@@ -172,7 +172,7 @@ module.exports.edit = async (req,res)=>{
     const childrenIds = getChildren(categories, id); 
     const filterCategories = categories.filter(item => item._id.toString() !== id && !childrenIds.includes(item._id.toString()));
     const categoryTree = tree(filterCategories);
-    res.render("admin/pages/category/edit",{
+    res.render("admin/pages/product-category/edit",{
         pageTitle:"Chỉnh sửa danh mục sản phẩm",
         category: category,
         parentName: parentTitle,
@@ -320,7 +320,7 @@ module.exports.recycleBin = async (req, res)=>{
     let find={};
     find.deleted = true;
     const categories = await ProductCategory.find(find)
-    res.render("admin/pages/category/recycle-bin",{
+    res.render("admin/pages/product-category/recycle-bin",{
         pageTitle:"Thùng rác",
         categories: categories
     })
@@ -339,8 +339,8 @@ module.exports.restore = async (req, res)=>{
    const backUrl = req.get("Referrer");
    res.redirect(backUrl);
 }
-//DELETE /recycle-bin/destroy/:id
-module.exports.destroy = async (req, res)=>{
+//DELETE /recycle-bin/hard-delete/:id
+module.exports.hardDelete = async (req, res)=>{
     const id = req.params.id;
     await ProductCategory.deleteOne({_id:id});
     req.flash("success", "Xóa danh mục vĩnh viễn thành công!");

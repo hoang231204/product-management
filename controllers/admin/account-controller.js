@@ -174,8 +174,8 @@ module.exports.restore = async (req, res) =>{
     req.flash('success', 'Khôi phục tài khoản thành công!');
     res.redirect(`${systemConfig.prefixAdmin}/accounts/recycle-bin`);
 } 
-//DELETE /admin/accounts/recycle-bin/destroy/:id
-module.exports.destroy = async (req, res) =>{
+//DELETE /admin/accounts/recycle-bin/hard-delete/:id
+module.exports.hardDelete = async (req, res) =>{
     const id = req.params.id;
     await Account.deleteOne({_id: id});
     req.flash('success', 'Xóa vĩnh viễn tài khoản thành công!');
