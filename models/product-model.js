@@ -5,7 +5,7 @@ const schema = new mongoose.Schema({
     title: String,
     category:{
         type: String,
-        ref: "Category",
+        ref: "ProductCategory",
         default: null
     },
     description: String,

@@ -1,4 +1,4 @@
-const categoryController = require("../../controllers/admin/category-controller");
+const categoryController = require("../../controllers/admin/product-category-controller");
 const categoryValidate = require("../../validates/admin/product-validate");
 const express = require('express')
 const multer  = require('multer')

@@ -1,6 +1,6 @@
 const dashboardRoute = require('./dashboard-route')
 const productRoute = require('./product-route')
-const categoryRoute = require('./category-route');
+const categoryRoute = require('./product-category-route');
 const roleRoute = require('./role-route');
 const accountRoute = require('./account-route');
 const authRoute = require('./auth-route');

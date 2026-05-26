@@ -1,5 +1,5 @@
 const Product = require('../../models/product-model')
-const Category = require('../../models/category-model')
+const ProductCategory = require('../../models/product-category-model')
 const Account = require('../../models/account-model')
 const filter = require("../../helpers/filter-status")
 const search = require("../../helpers/search")  
@@ -191,7 +191,7 @@ module.exports.restore = async (req,res)=>{
 }
 //GET CREATE
 module.exports.create = async (req, res)=>{
-    const categories = await Category.find({status: "active", deleted: false});
+    const categories = await ProductCategory.find({status: "active", deleted: false});
     const categoryTree = tree(categories);
     res.render("admin/pages/products/create", {
         pageTitle: "Tạo mới sản phẩm",
@@ -224,7 +224,7 @@ module.exports.createPost = async (req, res)=>{
 //GET EDIT
 module.exports.edit= async (req,res)=>{
     try {
-        const categories = await Category.find({deleted: false},{status: "active"});
+        const categories = await ProductCategory.find({deleted: false},{status: "active"});
         const categoryTree = tree(categories);
         const product = await Product.findById(req.params.id).populate("category");
         const categoryId = product.category ? product.category._id : null;

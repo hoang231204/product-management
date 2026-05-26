@@ -1,4 +1,4 @@
-const Category = require("../../models/category-model");
+const ProductCategory = require("../../models/product-category-model");
 const systemConfig = require("../../config/system")
 const tree = require("../../helpers/create-tree");
 const filter = require("../../helpers/filter-status")
@@ -24,7 +24,7 @@ module.exports.index =async (req,res)=>{
     if(req.query.keyword){
         find.title = regex;
     }
-    const categories = await Category
+    const categories = await ProductCategory
         .find(find)
         .populate("createdBy.account_id","fullname")
         .populate("updatedBy.account_id","fullname")
@@ -43,7 +43,7 @@ module.exports.create =async (req,res)=>{
         deleted: false,
         status: "active"
     }
-    const categories =await Category.find();
+    const categories =await ProductCategory.find();
     const categoryTree = tree(categories);
     res.render("admin/pages/category/create",{
         pageTitle:"Tạo danh mục sản phẩm",
@@ -57,7 +57,7 @@ module.exports.createPost = async (req,res)=>{
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
         return res.redirect(`${systemConfig.prefixAdmin}/categories/create`)
     }
-    const count = await Category.countDocuments();
+    const count = await ProductCategory.countDocuments();
     if(req.body.position ==''){
         req.body.position = count + 1;
     }
@@ -68,7 +68,7 @@ module.exports.createPost = async (req,res)=>{
         account_id: res.locals.user._id,
         createdAt: new Date()
     };
-    const category = new Category(req.body);
+    const category = new ProductCategory(req.body);
     await category.save();
     req.flash('success', 'Tạo danh mục thành công!');
     const backUrl = req.get("Referrer");
@@ -97,7 +97,7 @@ module.exports.changeStatus = async (req,res)=>{
         account_id: res.locals.user._id,
         updatedAt: new Date()
     };
-    await Category.updateMany({_id: {$in: ids}}, {status: status, $push: { updatedBy: updatedBy }});
+    await ProductCategory.updateMany({_id: {$in: ids}}, {status: status, $push: { updatedBy: updatedBy }});
     req.flash("success", "Cập nhật trạng thái danh mục thành công!");
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
@@ -112,10 +112,10 @@ module.exports.delete = async (req,res)=>{
     const id = req.params.id;
     let ids=[];
     ids.push(id);
-    const categories = await Category.find({deleted: false});
+    const categories = await ProductCategory.find({deleted: false});
     const childrenId = getChildren(categories, id);
     ids.push(...childrenId);
-    await Category.updateMany(
+    await ProductCategory.updateMany(
         {
             _id: {$in: ids}
         },
@@ -145,7 +145,7 @@ module.exports.details = async (req,res)=>{
         deleted: false,
     };
     find._id = id; 
-    const category = await Category
+    const category = await ProductCategory
         .findOne(find)
         .populate("parent_id","title")
         .populate("createdBy.account_id", "fullname")
@@ -165,10 +165,10 @@ module.exports.edit = async (req,res)=>{
         deleted: false,
     }
     find._id = id;
-    const category = await Category.findOne(find).populate("parent_id","title");
+    const category = await ProductCategory.findOne(find).populate("parent_id","title");
     const parentTitle = category.parent_id ? category.parent_id.title : "Danh mục gốc";
     const parentId = category.parent_id ? category.parent_id._id.toString() : "";
-    const categories = await Category.find({ deleted: false, status: "active" });
+    const categories = await ProductCategory.find({ deleted: false, status: "active" });
     const childrenIds = getChildren(categories, id); 
     const filterCategories = categories.filter(item => item._id.toString() !== id && !childrenIds.includes(item._id.toString()));
     const categoryTree = tree(filterCategories);
@@ -192,7 +192,7 @@ module.exports.editPatch = async (req,res)=>{
     }
     const id = req.params.id;
     const status = req.body.status;
-    const categories = await Category.find({deleted: false});
+    const categories = await ProductCategory.find({deleted: false});
     let ids = changeStatusCategory(categories, status, id);
     if(!ids){
         req.flash("error", "Không thể kích hoạt danh mục khi danh mục cha chưa được kích hoạt!");
@@ -203,10 +203,10 @@ module.exports.editPatch = async (req,res)=>{
         account_id: res.locals.user._id,
         updatedAt: new Date()
     };
-    await Category.updateOne({_id: id}, {...req.body, $push: { updatedBy: updatedBy }});
+    await ProductCategory.updateOne({_id: id}, {...req.body, $push: { updatedBy: updatedBy }});
     if(ids.length > 1){
         ids.shift();
-        await Category.updateMany({_id: {$in: ids}}, {status: status});
+        await ProductCategory.updateMany({_id: {$in: ids}}, {status: status});
     }
     req.flash("success", "Cập nhật danh mục thành công!");
     const backUrl = req.get("Referrer");
@@ -218,7 +218,7 @@ module.exports.changeMulti = async (req, res) => {
         const typeChecked = req.body.type;
         const idsChecked = req.body.ids;
         const ids = idsChecked.split(",");
-        const categories = await Category.find({ deleted: false });
+        const categories = await ProductCategory.find({ deleted: false });
         let updatedBy = {
             account_id: res.locals.user._id,
             updatedAt: new Date()
@@ -304,7 +304,7 @@ module.exports.changeMulti = async (req, res) => {
                 break;
         }
         if (bulkOps.length > 0) {
-            await Category.bulkWrite(bulkOps);
+            await ProductCategory.bulkWrite(bulkOps);
             req.flash("success", `Đã thực hiện thành công hành động cho ${bulkOps.length} nhóm bản ghi!`);
         } else {
             req.flash("error", "Không có thay đổi nào hợp lệ được thực hiện!");
@@ -319,7 +319,7 @@ module.exports.changeMulti = async (req, res) => {
 module.exports.recycleBin = async (req, res)=>{
     let find={};
     find.deleted = true;
-    const categories = await Category.find(find)
+    const categories = await ProductCategory.find(find)
     res.render("admin/pages/category/recycle-bin",{
         pageTitle:"Thùng rác",
         categories: categories
@@ -328,13 +328,13 @@ module.exports.recycleBin = async (req, res)=>{
 //PATCH /recycle-bin/restore/:id
 module.exports.restore = async (req, res)=>{
    const id = req.params.id;
-   const category = await Category.findOne({_id:id}).populate("parent_id","deleted");
+   const category = await ProductCategory.findOne({_id:id}).populate("parent_id","deleted");
    if(category.parent_id && category.parent_id.deleted) {
        req.flash("error", "Không thể khôi phục danh mục này vì danh mục cha đã bị xóa!");
        const backUrl = req.get("Referrer");
        return res.redirect(backUrl);
    }
-   await Category.updateOne({_id:id},{deleted:false, deletedBy: null});
+   await ProductCategory.updateOne({_id:id},{deleted:false, deletedBy: null});
    req.flash("success", "Khôi phục danh mục thành công!");
    const backUrl = req.get("Referrer");
    res.redirect(backUrl);
@@ -342,7 +342,7 @@ module.exports.restore = async (req, res)=>{
 //DELETE /recycle-bin/destroy/:id
 module.exports.destroy = async (req, res)=>{
     const id = req.params.id;
-    await Category.deleteOne({_id:id});
+    await ProductCategory.deleteOne({_id:id});
     req.flash("success", "Xóa danh mục vĩnh viễn thành công!");
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
