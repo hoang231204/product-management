@@ -25,3 +25,14 @@ module.exports.details = async (req, res) =>{
             pageTitle: 'Chi tiết đơn hàng'
         });
 }
+module.exports.cancel = async (req, res) =>{
+    const orderId = req.params.id;
+    const checkOrder = await Order.findOne({ _id: orderId }).lean();
+    if(checkOrder.status !== 'pending'){
+        req.flash('error', 'Đơn hàng đã được xử lý, không thể hủy');
+        return res.redirect('/client/orders');
+    }
+    await Order.updateOne({ _id: orderId }, { status: 'cancelled' });
+    req.flash('success', 'Đơn hàng đã được hủy thành công');
+    res.redirect('/client/orders');
+}

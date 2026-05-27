@@ -1,6 +1,8 @@
 extends ../../layouts/default.pug
-
+include ../../mixins/show-alert.pug
 block main
+    +alert-success(3000)
+    +alert-error(3000)
     h1.mb-4 Đơn hàng đã mua
     .card.mb-3
       .card-header Danh sách đơn hàng
