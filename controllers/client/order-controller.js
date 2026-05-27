@@ -13,3 +13,15 @@ module.exports.index = async (req, res) =>{
      });
     
 }
+module.exports.details = async (req, res) =>{
+    const orderId = req.params.id;
+    const order = await Order.findOne({ _id: orderId}).populate('products.product_id', 'title thumbnail').lean()
+    order.products.forEach(item => {
+        item.priceNew = calcuNewPrice.priceNew(item.price, item.discountPercentage);
+    });
+    res.render('client/pages/order/details', 
+        {
+            order: order,
+            pageTitle: 'Chi tiết đơn hàng'
+        });
+}

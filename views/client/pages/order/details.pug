@@ -1,0 +1,60 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.my-5
+    div(class="alert alert-success mb-4" role="alert")
+      | Đơn hàng của ban đang ở trạng thái: 
+      if order.status == 'pending'
+        span.badge.badge-warning Đang chờ
+      else if order.status == 'confirmed'
+        span.badge.badge-info Đã xác nhận
+      else if order.status == 'shipped'
+        span.badge.badge-primary Đang giao
+      else if order.status == 'delivered'
+        span.badge.badge-success Đã giao
+      else
+        span.badge.badge-danger Đã hủy
+    h4(class="mb-3 font-weight-bold") Thông tin cá nhân
+    table(class="table table-bordered align-middle mb-5")
+      tbody
+        tr
+          td(style="width: 30%;" class="fw-bold bg-light") Họ tên
+          td #{order.userInfor.fullname}
+        tr
+          td(class="fw-bold bg-light") Số điện thoại
+          td #{order.userInfor.phone}
+        tr
+          td(class="fw-bold bg-light") Địa chỉ
+          td #{order.userInfor.address}
+    h4(class="mb-3 font-weight-bold") Thông tin đơn hàng
+    if order && order.products && order.products.length > 0
+      if(order.products.product_id === null)
+        p(class="text-center") Sản phẩm đã ngừng kinh doanh hoặc đã bị xóa khỏi hệ thống, vui lòng liên hệ với chúng tôi để biết thêm chi tiết. 
+      else
+        table(class="table table-bordered text-center align-middle")
+          thead(class="table-light")
+            tr
+              th STT
+              th Ảnh
+              th Tên
+              th Giá
+              th Số lượng
+              th Tổng tiền
+          tbody
+            each item, index in order.products
+              tr
+                td #{index + 1}
+                td
+                  img(src=item.product_id.thumbnail, alt=item.product_id.title, width="80px")
+                td(class="text-start") #{item.product_id.title}
+                td #{item.priceNew}$
+                td #{item.quantity}
+                td #{item.priceNew * item.quantity}$
+
+        .text-end.mt-4
+          h3 Tổng đơn hàng: 
+            span(class="fw-bold") #{order.totalPrice}$
+    else
+      p(class="text-center") Không có đơn hàng nào được tìm thấy.
+      .text-center.mt-5
+        a(href="/products" class="btn btn-primary") Tiếp tục mua sắm
