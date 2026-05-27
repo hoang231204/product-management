@@ -15,7 +15,11 @@ const schema = new mongoose.Schema({
         ref: "Role",
         default:null
     },
-    status: String,
+    status: {
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'active'
+    },
     deleted:{
         type: Boolean,
         default: false

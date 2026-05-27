@@ -17,6 +17,7 @@ const categorySchema = new mongoose.Schema({
     thumbnail: String,
     status: {
         type: String,
+        enum: ['active', 'inactive'],
         default: "active"
     },
     position: Number,

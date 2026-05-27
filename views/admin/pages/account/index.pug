@@ -38,76 +38,76 @@ block main
                                 if(accounts.length > 0)
                                     each item, index in accounts
                                         tr
-                                        //- STT
-                                        td.align-middle #{index + 1}
+                                            //- STT
+                                            td.align-middle #{index + 1}
 
-                                        //- Avatar
-                                        td.align-middle
-                                            img(
-                                            src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png")
-                                            alt=item.fullname
-                                            width="40px"
-                                            height="40px"
-                                            style="object-fit: cover; border-radius: 50%;"
-                                            )
+                                            //- Avatar
+                                            td.align-middle
+                                                img(
+                                                src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png")
+                                                alt=item.fullname
+                                                width="40px"
+                                                height="40px"
+                                                style="object-fit: cover; border-radius: 50%;"
+                                                )
 
-                                        //- Họ tên
-                                        td.align-middle #{item.fullname}
+                                            //- Họ tên
+                                            td.align-middle #{item.fullname}
 
-                                        //- Phân quyền (Tên vai trò)
-                                        if(item.role_id && item.role_id.title)
-                                            td.align-middle #{item.role_id.title}
-                                        else
-                                            td.align-middle Chưa được phân quyền
+                                            //- Phân quyền (Tên vai trò)
+                                            if(item.role_id && item.role_id.title)
+                                                td.align-middle #{item.role_id.title}
+                                            else
+                                                td.align-middle Chưa được phân quyền
 
-                                        //- Email
-                                        td.align-middle #{item.email}
-                                        //- Trạng thái
-                                        td.align-middle
-                                            if(role.permissions.includes('account_edit'))
-                                                if (item.status === "active")
+                                            //- Email
+                                            td.align-middle #{item.email}
+                                            //- Trạng thái
+                                            td.align-middle
+                                                if(role.permissions.includes('account_edit'))
+                                                    if (item.status === "active")
+                                                        button(
+                                                            class="badge badge-success border-0"
+                                                            button-change-status
+                                                            data-status=item.status
+                                                            data-id=item.id
+                                                        ) Hoạt động
+                                                    else
+                                                        button(
+                                                            class="badge badge-danger border-0"
+                                                            button-change-status
+                                                            data-status=item.status
+                                                            data-id=item.id
+                                                        ) Dừng hoạt động
+                                            td 
+                                                if(item.createdBy && item.createdBy.account_id)
+                                                    p #{item.createdBy.account_id.fullname}
+                                                    p #{moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                                                else  
+                                                    p.em Chưa có thông tin người tạo
+                                            td
+                                                if(item.updatedBy && item.updatedBy.length > 0)
+                                                    p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
+                                                    p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                                else   
+                                                    p.em Chưa được cập nhật
+                                            //- Hành động
+                                            td.align-middle
+                                                if(role.permissions.includes('account_edit'))
+                                                    a(
+                                                        href=`${prefixAdmin}/accounts/edit/${item._id}`
+                                                        class="btn btn-warning btn-sm"
+                                                        ) Sửa
+                                                if(role.permissions.includes('account_delete'))
                                                     button(
-                                                        class="badge badge-success border-0"
-                                                        button-change-status
-                                                        data-status=item.status
-                                                        data-id=item.id
-                                                    ) Hoạt động
-                                                else
-                                                    button(
-                                                        class="badge badge-danger border-0"
-                                                        button-change-status
-                                                        data-status=item.status
-                                                        data-id=item.id
-                                                    ) Dừng hoạt động
-                                        td 
-                                            if(item.createdBy && item.createdBy.account_id)
-                                                p #{item.createdBy.account_id.fullname}
-                                                p #{moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-                                            else  
-                                                p.em Chưa có thông tin người tạo
-                                        td
-                                            if(item.updatedBy && item.updatedBy.length > 0)
-                                                p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
-                                                p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
-                                            else   
-                                                p.em Chưa được cập nhật
-                                        //- Hành động
-                                        td.align-middle
-                                            if(role.permissions.includes('account_edit'))
+                                                        class="btn btn-danger btn-sm ml-1"
+                                                        button-delete
+                                                        data-id=item._id
+                                                        ) Xóa
                                                 a(
-                                                    href=`${prefixAdmin}/accounts/edit/${item._id}`
-                                                    class="btn btn-warning btn-sm"
-                                                    ) Sửa
-                                            if(role.permissions.includes('account_delete'))
-                                                button(
-                                                    class="btn btn-danger btn-sm ml-1"
-                                                    button-delete
-                                                    data-id=item._id
-                                                    ) Xóa
-                                            a(
-                                                href=`${prefixAdmin}/accounts/details/${item._id}`
-                                                class="btn btn-info btn-sm ml-1"
-                                                ) Chi tiết
+                                                    href=`${prefixAdmin}/accounts/details/${item._id}`
+                                                    class="btn btn-info btn-sm ml-1"
+                                                    ) Chi tiết
                                 else
                                     tr
                                         td(colspan="8" class="text-center py-4") 

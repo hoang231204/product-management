@@ -13,7 +13,11 @@ const schema = new mongoose.Schema({
     discountPercentage: Number,
     stock:Number,
     thumbnail: String,
-    status: String,
+    status: {
+        type: String,
+        enum: ['active', 'inactive','pending','low-stock'],
+        default: 'active'
+    },
     position: Number,
     featured:String,
     slug: { type: String, slug: "title", unique:true },

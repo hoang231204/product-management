@@ -109,3 +109,25 @@ module.exports.create = async(req, res) =>{
         pageTitle: "Thêm người dùng"
     })
 }
+//GET /admin/users/recycle-bin
+module.exports.recycleBin = async(req, res) =>{
+    const users = await User.find({deleted: true})
+    res.render('admin/pages/user/recycle-bin',{
+        pageTitle: "Thùng rác người dùng",
+        users: users
+    })
+}
+//PATCH /admin/users/recycle-bin/restore
+module.exports.restore = async(req, res) =>{
+    const id = req.params.id;
+    await User.updateOne({_id: id},{deleted: false});
+    req.flash('success', 'Khôi phục người dùng thành công');
+    res.redirect(`${systemConfig.prefixAdmin}/users/recycle-bin`);
+}
+//DELETE /admin/users/recycle-bin/hard-delete
+module.exports.hardDelete = async(req, res) =>{
+    const id = req.params.id;
+    await User.deleteOne({_id: id});
+    req.flash('success', 'Xóa vĩnh viễn người dùng thành công');
+    res.redirect(`${systemConfig.prefixAdmin}/users/recycle-bin`);
+} 

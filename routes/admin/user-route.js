@@ -14,4 +14,7 @@ router.patch(
     userController.editPatch
 );
 router.get('/create', userController.create);
+router.get('/recycle-bin', userController.recycleBin);
+router.patch('/recycle-bin/restore', userController.restore);
+router.delete('/recycle-bin/hard-delete', userController.hardDelete);
 module.exports = router;

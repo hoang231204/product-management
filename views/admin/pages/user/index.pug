@@ -36,60 +36,60 @@ block main
                                 if(users.length > 0)
                                     each item, index in users
                                         tr
-                                        //- STT
-                                        td.align-middle #{index + 1}
+                                            //- STT
+                                            td.align-middle #{index + 1}
 
-                                        //- Avatar
-                                        td.align-middle
-                                            img(
-                                                src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png")
-                                                alt=item.fullname
-                                                width="40px"
-                                                height="40px"
-                                                style="object-fit: cover; border-radius: 50%;"
-                                            )
+                                            //- Avatar
+                                            td.align-middle
+                                                img(
+                                                    src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png")
+                                                    alt=item.fullname
+                                                    width="40px"
+                                                    height="40px"
+                                                    style="object-fit: cover; border-radius: 50%;"
+                                                )
 
-                                        //- Họ tên
-                                        td.align-middle #{item.fullname}
-                                        //- Email
-                                        td.align-middle #{item.email}
-                                        //- Trạng thái
+                                            //- Họ tên
+                                            td.align-middle #{item.fullname}
+                                            //- Email
+                                            td.align-middle #{item.email}
+                                            //- Trạng thái
 
-                                        //- Số điện thoại
-                                        td.align-middle #{item.phone}
-                                        td.align-middle
-                                            if(role.permissions.includes('user_edit'))
-                                                if (item.status === "active")
+                                            //- Số điện thoại
+                                            td.align-middle #{item.phone}
+                                            td.align-middle
+                                                if(role.permissions.includes('user_edit'))
+                                                    if (item.status === "active")
+                                                        button(
+                                                            class="badge badge-success border-0"
+                                                            button-change-status
+                                                            data-status=item.status
+                                                            data-id=item.id
+                                                        ) Hoạt động
+                                                    else
+                                                        button(
+                                                            class="badge badge-danger border-0"
+                                                            button-change-status
+                                                            data-status=item.status
+                                                            data-id=item.id
+                                                        ) Dừng hoạt động
+                                            //- Hành động
+                                            td.align-middle
+                                                if(role.permissions.includes('user_edit'))
+                                                    a(
+                                                        href=`${prefixAdmin}/users/edit/${item._id}`
+                                                        class="btn btn-warning btn-sm"
+                                                        ) Sửa
+                                                if(role.permissions.includes('user_delete'))
                                                     button(
-                                                        class="badge badge-success border-0"
-                                                        button-change-status
-                                                        data-status=item.status
-                                                        data-id=item.id
-                                                    ) Hoạt động
-                                                else
-                                                    button(
-                                                        class="badge badge-danger border-0"
-                                                        button-change-status
-                                                        data-status=item.status
-                                                        data-id=item.id
-                                                    ) Dừng hoạt động
-                                        //- Hành động
-                                        td.align-middle
-                                            if(role.permissions.includes('user_edit'))
+                                                        class="btn btn-danger btn-sm ml-1"
+                                                        button-delete
+                                                        data-id=item._id
+                                                        ) Xóa
                                                 a(
-                                                    href=`${prefixAdmin}/users/edit/${item._id}`
-                                                    class="btn btn-warning btn-sm"
-                                                    ) Sửa
-                                            if(role.permissions.includes('user_delete'))
-                                                button(
-                                                    class="btn btn-danger btn-sm ml-1"
-                                                    button-delete
-                                                    data-id=item._id
-                                                    ) Xóa
-                                            a(
-                                                href=`${prefixAdmin}/users/details/${item._id}`
-                                                class="btn btn-info btn-sm ml-1"
-                                                ) Chi tiết
+                                                    href=`${prefixAdmin}/users/details/${item._id}`
+                                                    class="btn btn-info btn-sm ml-1"
+                                                    ) Chi tiết
                                 else
                                     tr
                                         td(colspan="8" class="text-center py-4") 
