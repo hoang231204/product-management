@@ -1,8 +1,9 @@
 const Order = require('../../models/order-model');
 const Cart = require('../../models/cart-model');
+const Product = require('../../models/product-model');
 const calcuNewPrice = require('../../helpers/calcu-new-price');
 module.exports.index = async (req, res) =>{
-   const cartId = req.cartId;
+    const cartId = req.cartId;
     const cart = await Cart.findOne({ _id: cartId }).populate('products.product_id', 'title price thumbnail discountPercentage').lean();
     if(!cart){
         req.flash('error', 'Giỏ hàng không tồn tại');
@@ -71,6 +72,14 @@ module.exports.order = async (req, res) =>{
     newCart.products = [];
     newCart.totalPrice = 0;
     await newCart.save();
+    const productIds = products.map(item => item.product_id);
+    for (const productId of productIds) {
+        const product = await Product.findById(productId);
+        if (product) {
+            product.stock -= products.find(p => p.product_id.equals(productId)).quantity;
+            await product.save();
+        }
+    }
     req.flash('success', 'Đặt hàng thành công');
     res.redirect(`/checkout/success/${order._id}`);
 }
