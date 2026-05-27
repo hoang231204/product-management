@@ -1,7 +1,8 @@
 const Order = require('../../models/order-model');
+const calcuNewPrice = require('../../helpers/calcu-new-price');
 module.exports.index = async (req, res) =>{
     const cartId = req.cartId;
-    const orders = await Order.find({ cart_id: cartId }).select('userInfor totalPrice status').lean();
+    const orders = await Order.find({ cart_id: cartId }).select('userInfor totalPrice status products').lean();
     orders.forEach(order => {
         order.fullname = order.userInfor.fullname;
         order.phone = order.userInfor.phone;
@@ -28,7 +29,7 @@ module.exports.details = async (req, res) =>{
 module.exports.cancel = async (req, res) =>{
     const orderId = req.params.id;
     const checkOrder = await Order.findOne({ _id: orderId }).lean();
-    if(checkOrder.status !== 'pending'){
+    if(checkOrder.status !== 'pending' && checkOrder.status !== 'confirmed'){
         req.flash('error', 'Đơn hàng đã được xử lý, không thể hủy');
         return res.redirect('/client/orders');
     }

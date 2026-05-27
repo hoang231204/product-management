@@ -40,6 +40,7 @@ block main
               th Giá
               th Số lượng
               th Tổng tiền
+              th Hành động
           tbody
             each item, index in order.products
               tr
@@ -50,7 +51,8 @@ block main
                 td #{item.priceNew}$
                 td #{item.quantity}
                 td #{item.priceNew * item.quantity}$
-
+                td
+                  a(href=`/cart/add/${item.product_id._id}` class="btn btn-sm btn-info") Mua lại
         .text-end.mt-4
           h3 Tổng đơn hàng: 
             span(class="fw-bold") #{order.totalPrice}$

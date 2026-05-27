@@ -72,14 +72,6 @@ module.exports.order = async (req, res) =>{
     newCart.products = [];
     newCart.totalPrice = 0;
     await newCart.save();
-    const productIds = products.map(item => item.product_id);
-    for (const productId of productIds) {
-        const product = await Product.findById(productId);
-        if (product) {
-            product.stock -= products.find(p => p.product_id.equals(productId)).quantity;
-            await product.save();
-        }
-    }
     req.flash('success', 'Đặt hàng thành công');
     res.redirect(`/checkout/success/${order._id}`);
 }

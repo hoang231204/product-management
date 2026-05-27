@@ -50,7 +50,6 @@ if(quantityInputs.length > 0){
 }
 // PREVIEW IMAGE
 const formCreate = document.querySelector("[form-upload]")
-console.log(formCreate)
 if(formCreate){
     const uploadImage= formCreate.querySelector("[upload-image]")
     const uploadImageInput = document.querySelector("[upload-image-input]")
@@ -67,4 +66,19 @@ if(formCreate){
     uploadImageInput.value = "";
     uploadImagePreview.src = "";
   })
+}
+// CANCEL ORDER
+const cancelButtons = document.querySelectorAll("[button-cancel]");
+if(cancelButtons.length>0){
+  const formCancel = document.querySelector("[form-cancel]")
+  if(formCancel){
+    const path = formCancel.getAttribute("data-path")
+    cancelButtons.forEach(button=>{
+      button.addEventListener("click",(event)=>{
+        const orderId = button.getAttribute("data-id")
+        formCancel.action = `${path}/${orderId}?_method=PATCH`
+        formCancel.submit()
+      })
+    })
+  }
 }
