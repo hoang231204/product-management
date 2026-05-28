@@ -52,7 +52,7 @@ block main
                 td #{item.quantity}
                 td #{item.priceNew * item.quantity}$
                 td
-                  a(href=`/cart/add/${item.product_id._id}` class="btn btn-sm btn-info") Mua lại
+                  a(href=`/products/details/${item.product_id.slug}` class="btn btn-sm btn-info") Mua lại
         .text-end.mt-4
           h3 Tổng đơn hàng: 
             span(class="fw-bold") #{order.totalPrice}$

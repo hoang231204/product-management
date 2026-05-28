@@ -2,7 +2,7 @@ const Order = require('../../models/order-model');
 const calcuNewPrice = require('../../helpers/calcu-new-price');
 module.exports.index = async (req, res) =>{
     const cartId = req.cartId;
-    const orders = await Order.find({ cart_id: cartId }).select('userInfor totalPrice status products').lean();
+    const orders = await Order.find({ cart_id: cartId }).select('userInfor totalPrice status').lean();
     orders.forEach(order => {
         order.fullname = order.userInfor.fullname;
         order.phone = order.userInfor.phone;
@@ -16,7 +16,7 @@ module.exports.index = async (req, res) =>{
 }
 module.exports.details = async (req, res) =>{
     const orderId = req.params.id;
-    const order = await Order.findOne({ _id: orderId}).populate('products.product_id', 'title thumbnail').lean()
+    const order = await Order.findOne({ _id: orderId}).populate('products.product_id', 'title thumbnail slug').lean()
     order.products.forEach(item => {
         item.priceNew = calcuNewPrice.priceNew(item.price, item.discountPercentage);
     });

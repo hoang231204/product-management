@@ -5,6 +5,7 @@ const roleRoute = require('./role-route');
 const accountRoute = require('./account-route');
 const authRoute = require('./auth-route');
 const userRoute = require('./user-route');
+const orderRoute = require('./order-route');
 const privateRoute = require('../../middleware/admin/private-route');
 const myProfileRoute = require('./my-profile-route');
 const PATH_ADMIN = require('../../config/system')
@@ -17,4 +18,5 @@ module.exports = (app)=>{
     app.use(PATH_ADMIN.prefixAdmin+"/auth",authRoute)
     app.use(PATH_ADMIN.prefixAdmin+"/my-profile",privateRoute.requireLogin,myProfileRoute)
     app.use(PATH_ADMIN.prefixAdmin+"/users",privateRoute.requireLogin,userRoute)
+    app.use(PATH_ADMIN.prefixAdmin+"/orders",privateRoute.requireLogin,orderRoute)
 }
