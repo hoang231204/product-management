@@ -2,7 +2,7 @@ const orderController = require('../../controllers/admin/order-controller');
 const express = require('express');
 const router = express.Router();
 router.get('/', orderController.index);
-// router.get('/details/:id', orderController.detail);
+router.get('/details/:id', orderController.details);
 router.patch('/change-status/:status/:id', orderController.changeStatus);
 // router.patch("/change-multi",orderController.changeMulti);
 // router.patch('/delete/:id', orderController.delete);
