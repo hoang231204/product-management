@@ -108,9 +108,16 @@ module.exports.delete = async (req, res) => {
     }
 }
 module.exports.recycleBin = async (req, res) => {
-    const orders = await Order.find({ deleted: true }).lean();
-    res.render('admin/pages/order/recycle-bin', {
+    try{
+        const orders = await Order.find({ deleted: true }).lean();
+        res.render('admin/pages/order/recycle-bin', {
         pageTitle: "Thùng rác đơn hàng",
         orders: orders
     });
+    }
+    catch(error){
+        console.error(error);
+        req.flash('error', 'Có lỗi xảy ra khi tải thùng rác đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
+    }
 }
