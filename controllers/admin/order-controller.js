@@ -121,3 +121,16 @@ module.exports.recycleBin = async (req, res) => {
         res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }
+module.exports.hardDelete = async (req, res) => {
+    try{
+        const id = req.params.id;
+        await Order.deleteOne({ _id: id });
+        req.flash('success', 'Xóa vĩnh viễn đơn hàng thành công');
+        res.redirect(`${systemConfig.prefixAdmin}/orders/recycle-bin`);
+    }
+    catch(error){
+        console.error(error);
+        req.flash('error', 'Có lỗi xảy ra khi xóa vĩnh viễn đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/orders/recycle-bin`);
+    }
+}
