@@ -14,7 +14,7 @@ module.exports.index = async (req, res) => {
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
         return res.redirect(`${systemConfig.prefixAdmin}/products`)
     }
-    const filterStatus = filter(req.query);
+    const filterStatus = filter(req.query, 'product');
     const regex = search(req.query);
     let find = {};
     find.deleted = false;

@@ -30,7 +30,7 @@ block main
                 .row
                     .col-10
                         if(role.permissions.includes("product_edit"))
-                            +boxChange(`${prefixAdmin}/products/change-multi?_method=PATCH`)
+                            +boxChange(`${prefixAdmin}/products/change-multi?_method=PATCH`, 'product')
                     .col-2
                         if(role.permissions.includes("product_create"))
                             a(
