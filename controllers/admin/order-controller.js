@@ -107,3 +107,10 @@ module.exports.delete = async (req, res) => {
         res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }
+module.exports.recycleBin = async (req, res) => {
+    const orders = await Order.find({ deleted: true }).lean();
+    res.render('admin/pages/order/recycle-bin', {
+        pageTitle: "Thùng rác đơn hàng",
+        orders: orders
+    });
+}

@@ -1,0 +1,67 @@
+extends ../../layouts/default.pug
+block main 
+    h1 Thùng rác
+    .card.mb-3
+        .card-header Thùng rác đơn
+            .card-body
+                table(class="table table-hover table-sm")
+                    thead
+                        tr
+                            th STT
+                            th Mã đơn hàng
+                            th Họ tên
+                            th Số điện thoại
+                            th Địa chỉ
+                            th Trạng thái
+                            th Hoạt động
+                    tbody
+                        each item, index in products
+                            tr
+                            td #{index + 1}
+                            td #{item.order_code}
+                            td #{item.userInfor.fullname}
+                            td #{item.userInfor.phone}
+                            td #{item.userInfor.address}
+                            td
+                                if(role.permissions.includes("order_edit"))
+                                    if item.status == 'pending'
+                                        a(
+                                            href="javascript:;" 
+                                            class="badge badge-success" 
+                                        ) Chờ xử lý
+                                    else if item.status == 'confirmed'
+                                        a(
+                                            href="javascript:;" 
+                                            class="badge badge-danger" 
+                                        ) Đã xác nhận
+                                    else if item.status == 'shipping'
+                                        a(
+                                            href="javascript:;" 
+                                            class="badge badge-warning"
+                                        ) Đang giao
+                                    else if item.status == 'delivered'
+                                        a(
+                                            href="javascript:;" 
+                                            class="badge badge-primary" 
+                                        ) Đã giao
+                                    else 
+                                        a(
+                                            href="javascript:;" 
+                                            class="badge badge-secondary" 
+                                        ) Đã hủy
+                            td
+                                button(class="btn btn-success btn-sm" button-restore data-id= item._id) Khôi phục
+                                button(class="btn btn-danger btn-sm ml-1" button-hard-delete data-id=item._id) Xóa
+    form(
+      action="",
+      method="POST"
+      form-hard-delete
+      data-path = `${prefixAdmin}/orders/recycle-bin/hardDelete`
+    )
+    form(
+      action="",
+      method="POST"
+      form-restore 
+      data-path = `${prefixAdmin}/orders/recycle-bin/restore`
+    )
+    script(src="/admin/js/recycleBin.js") 
