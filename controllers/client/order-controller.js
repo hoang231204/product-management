@@ -35,5 +35,5 @@ module.exports.cancel = async (req, res) =>{
     }
     await Order.updateOne({ _id: orderId }, { status: 'cancelled' });
     req.flash('success', 'Đơn hàng đã được hủy thành công');
-    res.redirect('/client/orders');
+    res.redirect('/orders');
 }

@@ -75,6 +75,10 @@ if(cancelButtons.length>0){
     const path = formCancel.getAttribute("data-path")
     cancelButtons.forEach(button=>{
       button.addEventListener("click",(event)=>{
+        const confirmCancel = confirm("Bạn có chắc muốn hủy đơn hàng này không?")
+        if(!confirmCancel){
+          return;
+        }
         const orderId = button.getAttribute("data-id")
         formCancel.action = `${path}/${orderId}?_method=PATCH`
         formCancel.submit()
