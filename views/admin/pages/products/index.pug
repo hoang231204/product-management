@@ -79,13 +79,41 @@ block main
                                 td
                                     if(role.permissions.includes("product_edit"))
                                         if item.status == 'active'
-                                            a(href="javascript:;" class="badge badge-success" button-change-status data-id=item._id  data-status=item.status) Hoạt động
+                                            a(
+                                                href="javascript:;" 
+                                                class="badge badge-success" 
+                                                button-change-status 
+                                                data-id=item._id  
+                                                data-status=item.status
+                                                data-next-status="inactive"
+                                                ) Hoạt động
                                         else if item.status == 'inactive'
-                                            a(href="javascript:;" class="badge badge-danger" button-change-status data-id=item._id  data-status=item.status) Không hoạt động
+                                            a(
+                                                href="javascript:;" 
+                                                class="badge badge-danger" 
+                                                button-change-status 
+                                                data-id=item._id  
+                                                data-status=item.status
+                                                data-next-status="active"
+                                                ) Không hoạt động
                                         else if item.status == 'pending'
-                                            a(href="javascript:;" class="badge badge-warning" button-change-status data-id=item._id  data-status=item.status) Đang chờ
+                                            a(
+                                                href="javascript:;" 
+                                                class="badge badge-warning" 
+                                                button-change-status 
+                                                data-id=item._id  
+                                                data-status=item.status
+                                                data-next-status="active"
+                                                ) Đang chờ
                                         else
-                                            a(href="javascript:;" class="badge badge-secondary" button-change-status data-id=item._id  data-status=item.status) Sắp hết hàng
+                                            a(
+                                                href="javascript:;" 
+                                                class="badge badge-secondary" 
+                                                button-change-status 
+                                                data-id=item._id  
+                                                data-status=item.status
+                                                data-next-status="active"
+                                                ) Sắp hết hàng
                                 td
                                     p #{item.createdBy.account_id.fullname}
                                     p #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}

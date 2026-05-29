@@ -71,10 +71,28 @@ block main
                                                 a(href="javascript:;" class="badge badge-secondary" button-change-status data-id=item._id  data-status=item.status) Đã hủy
                                         td
                                             a(href=`${prefixAdmin}/orders/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
-                                            a(href=`${prefixAdmin}/orders/delete/${item._id}` class="btn btn-danger btn-sm") Xóa
+                                            if(permissions.includes("order_delete"))
+                                                button(
+                                                    type="button"
+                                                    class="btn btn-danger btn-sm"
+                                                    button-delete
+                                                    data-id=item._id
+                                                ) Xóa
                             else
                                 tr
                                     td(colspan="7" class="text-center") Không có đơn hàng nào!  
+        form(
+            action=""
+            method="POST"
+            form-change-status
+            data-path=`${prefixAdmin}/products/change-status`
+        ) 
+        form(
+            action=""
+            method="POST"
+            form-delete
+            data-path=`${prefixAdmin}/products/delete`
+            )
         +pagination(objectPagination)
     else
         h1 Bạn không có quyền truy cập trang này!

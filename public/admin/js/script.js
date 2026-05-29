@@ -1,4 +1,3 @@
-
 //FILTER
 const filterButtons = document.querySelectorAll("[button-status]")
 if(filterButtons.length>0){
@@ -79,24 +78,7 @@ if(buttonsChange.length>0){
             const currentStatus = button.getAttribute("data-status")
             //console.log(currentStatus)
             const id = button.getAttribute("data-id")
-            //console.log(id)
-            let statusChange;
-            switch (currentStatus) {
-            case "active":
-                statusChange = "inactive";
-                break;
-            case "inactive":
-                statusChange = "active";
-                break;
-            case "pending":
-                statusChange = "active";
-                break;
-            case "low_stock":
-                statusChange = "active"; 
-                break;
-            default:
-                statusChange = "active"; 
-            }
+            const statusChange = button.getAttribute("data-next-status")
             const action = path + `/${statusChange}/${id}?_method=PATCH`
             form.action = action;
             console.log(action)
