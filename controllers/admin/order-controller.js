@@ -33,3 +33,17 @@ module.exports.index = async (req, res) => {
         objectPagination: objectPagination
     });
 }
+module.exports.changeStatus = async (req, res) => {
+    try{
+        const id = req.params.id;
+        const status = req.params.status;
+        await Order.updateOne({ _id: id }, { status: status });
+        req.flash('success', 'Cập nhật trạng thái đơn hàng thành công');
+        res.redirect('/admin/orders');
+    }
+    catch(error){
+        console.error(error);
+        req.flash('error', 'Có lỗi xảy ra khi cập nhật trạng thái đơn hàng');
+        res.redirect('/admin/orders');
+    }
+}

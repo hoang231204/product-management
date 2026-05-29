@@ -59,19 +59,53 @@ block main
                                         td #{item.userInfor.address}
                                         td #{item.totalPrice.toLocaleString()}$
                                         td
-                                            if item.status == 'pending'
-                                                a(href="javascript:;" class="badge badge-success" button-change-status data-id=item._id  data-status=item.status) Chờ xử lý
-                                            else if item.status == 'confirmed'
-                                                a(href="javascript:;" class="badge badge-danger" button-change-status data-id=item._id  data-status=item.status) Đã xác nhận
-                                            else if item.status == 'shipping'
-                                                a(href="javascript:;" class="badge badge-warning" button-change-status data-id=item._id  data-status=item.status) Đang giao
-                                            else if item.status == 'delivered'
-                                                a(href="javascript:;" class="badge badge-primary" button-change-status data-id=item._id  data-status=item.status) Đã giao
-                                            else 
-                                                a(href="javascript:;" class="badge badge-secondary" button-change-status data-id=item._id  data-status=item.status) Đã hủy
+                                            if(role.permissions.includes("order_edit"))
+                                                if item.status == 'pending'
+                                                    a(
+                                                        href="javascript:;" 
+                                                        class="badge badge-success" 
+                                                        button-change-status 
+                                                        data-id=item._id  
+                                                        data-status=item.status
+                                                        data-next-status="confirmed"
+                                                    ) Chờ xử lý
+                                                else if item.status == 'confirmed'
+                                                    a(
+                                                        href="javascript:;" 
+                                                        class="badge badge-danger" 
+                                                        button-change-status 
+                                                        data-id=item._id  
+                                                        data-status=item.status
+                                                        data-next-status="shipping"
+                                                    ) Đã xác nhận
+                                                else if item.status == 'shipping'
+                                                    a(
+                                                        href="javascript:;" 
+                                                        class="badge badge-warning" 
+                                                        button-change-status 
+                                                        data-id=item._id  
+                                                        data-status=item.status
+                                                        data-next-status="delivered"
+                                                    ) Đang giao
+                                                else if item.status == 'delivered'
+                                                    a(
+                                                        href="javascript:;" 
+                                                        class="badge badge-primary" 
+                                                        button-change-status 
+                                                        data-id=item._id  
+                                                        data-status=item.status
+                                                    ) Đã giao
+                                                else 
+                                                    a(
+                                                        href="javascript:;" 
+                                                        class="badge badge-secondary" 
+                                                        button-change-status 
+                                                        data-id=item._id  
+                                                        data-status=item.status
+                                                    ) Đã hủy
                                         td
                                             a(href=`${prefixAdmin}/orders/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
-                                            if(permissions.includes("order_delete"))
+                                            if(role.permissions.includes("order_delete"))
                                                 button(
                                                     type="button"
                                                     class="btn btn-danger btn-sm"
@@ -85,13 +119,13 @@ block main
             action=""
             method="POST"
             form-change-status
-            data-path=`${prefixAdmin}/products/change-status`
+            data-path=`${prefixAdmin}/orders/change-status`
         ) 
         form(
             action=""
             method="POST"
             form-delete
-            data-path=`${prefixAdmin}/products/delete`
+            data-path=`${prefixAdmin}/orders/delete`
             )
         +pagination(objectPagination)
     else
