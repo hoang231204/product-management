@@ -4,6 +4,7 @@ const filter = require('../../helpers/filter-status');
 const mongoose = require('mongoose');
 const pagination = require('../../helpers/pagination');
 const systemConfig = require('../../config/system');
+//GET /admin/orders
 module.exports.index = async (req, res) => {
     try{
         const filterStatus = filter(req.query, 'order');
@@ -41,6 +42,7 @@ module.exports.index = async (req, res) => {
         res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }
+//PATCH /admin/orders/change-status/:status/:id
 module.exports.changeStatus = async (req, res) => {
     try{
         const id = req.params.id;
@@ -55,6 +57,7 @@ module.exports.changeStatus = async (req, res) => {
         res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }
+//GET /admin/orders/details/:id
 module.exports.details = async (req, res) => {
     try{
         const id = req.params.id;
@@ -70,6 +73,7 @@ module.exports.details = async (req, res) => {
         res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }
+//PATCH /admin/orders/change-multi
 module.exports.changeMulti = async (req, res) => {
     try{
         const typeChange = req.body.type;
@@ -94,6 +98,7 @@ module.exports.changeMulti = async (req, res) => {
         res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }
+//PATCH /admin/orders/delete/:id
 module.exports.delete = async (req, res) => {
     try{
         const id = req.params.id;
@@ -107,6 +112,7 @@ module.exports.delete = async (req, res) => {
         res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }
+//GET /admin/orders/recycle-bin
 module.exports.recycleBin = async (req, res) => {
     try{
         const orders = await Order.find({ deleted: true }).lean();
@@ -121,6 +127,7 @@ module.exports.recycleBin = async (req, res) => {
         res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }
+//DELETE /admin/orders/recycle-bin/hard-delete/:id
 module.exports.hardDelete = async (req, res) => {
     try{
         const id = req.params.id;
@@ -131,6 +138,20 @@ module.exports.hardDelete = async (req, res) => {
     catch(error){
         console.error(error);
         req.flash('error', 'Có lỗi xảy ra khi xóa vĩnh viễn đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/orders/recycle-bin`);
+    }
+}
+//PATCH /admin/orders/recycle-bin/restore/:id
+module.exports.restore = async (req, res) => {
+    try{
+        const id = req.params.id;
+        await Order.updateOne({ _id: id }, { deleted: false });
+        req.flash('success', 'Khôi phục đơn hàng thành công');
+        res.redirect(`${systemConfig.prefixAdmin}/orders/recycle-bin`);
+    }
+    catch(error){
+        console.error(error);
+        req.flash('error', 'Có lỗi xảy ra khi khôi phục đơn hàng');
         res.redirect(`${systemConfig.prefixAdmin}/orders/recycle-bin`);
     }
 }

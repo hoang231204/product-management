@@ -8,5 +8,5 @@ router.patch("/change-multi",orderController.changeMulti);
 router.patch('/delete/:id', orderController.delete);
 router.get("/recycle-bin", orderController.recycleBin);
 router.delete("/recycle-bin/hard-delete/:id", orderController.hardDelete);
-// router.patch("/recycle-bin/restore/:id", orderController.restore);
+router.patch("/recycle-bin/restore/:id", orderController.restore);
 module.exports = router;
