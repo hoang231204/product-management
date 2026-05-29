@@ -7,24 +7,25 @@ mixin boxChange(path, type)
         )
             .d-flex.align-items-start
                 .form-group
-                select(name="type" class="form-control")
-                    if type === 'product'
-                        option(value="active") Hoạt động
-                        option(value="inactive") Dừng hoạt động
-                        option(value="pending") Đang chờ
-                        option(value="low_stock") Sắp hết
-                        option(value="change-position") Thay đổi vị trí
-                    else if type === 'order'
-                        option(value="confirmed") Chuyển trạng thái đã xác nhận
-                        option(value="shipping") Chuyển trạng thái đang giao hàng
-                        option(value="delivered") Chuyển trạng thái đã giao hàng
-                        option(value="canceled") Chuyển trạng thái hủy đơn
-                    option(value="delete") Xóa
+                    select(name="type" class="form-control")
+                        option(disabled selected) Chọn hành động
+                        if type === 'product'
+                            option(value="active") Hoạt động
+                            option(value="inactive") Dừng hoạt động
+                            option(value="pending") Đang chờ
+                            option(value="low_stock") Sắp hết
+                            option(value="change-position") Thay đổi vị trí
+                        else if type === 'order'
+                            option(value="confirmed") Chuyển trạng thái đã xác nhận
+                            option(value="shipping") Chuyển trạng thái đang giao hàng
+                            option(value="delivered") Chuyển trạng thái đã giao hàng
+                            option(value="canceled") Chuyển trạng thái hủy đơn
+                        option(value="delete") Xóa
                 .form-group
-                input(
-                    type="text"
-                    name="ids"
-                    value=""
-                    class="form-control d-none" 
-                )
+                    input(
+                        type="text"
+                        name="ids"
+                        value=""
+                        class="form-control d-none" 
+                    )
                 button(type="submit" class="btn btn-primary ml-2") Áp dụng

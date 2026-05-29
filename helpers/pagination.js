@@ -11,7 +11,7 @@ module.exports = (query,countData)=>{
     else{
         objectPagination.currentPage = 1;
     }
-    objectPagination.limitPage = 5;
+    objectPagination.limitPage = 8;
     objectPagination.skipPage = (objectPagination.currentPage - 1)*objectPagination.limitPage;
     objectPagination.totalPage = Math.ceil(countData/objectPagination.limitPage);
     return objectPagination;

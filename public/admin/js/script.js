@@ -1,4 +1,4 @@
-//console.log(window.location.href)
+
 //FILTER
 const filterButtons = document.querySelectorAll("[button-status]")
 if(filterButtons.length>0){

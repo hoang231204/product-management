@@ -37,3 +37,9 @@
                     ul 
                         li 
                             a(href=`${prefixAdmin}/users/recycle-bin`) Thùng rác
+            if(role.permissions.includes("order_view"))
+                li
+                    a(href=`${prefixAdmin}/orders`) Quản lý đơn hàng
+                    ul 
+                        li 
+                            a(href=`${prefixAdmin}/orders/recycle-bin`) Thùng rác

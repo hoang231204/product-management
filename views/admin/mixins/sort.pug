@@ -1,22 +1,25 @@
 mixin boxSort(type)
     div(sort)
-        select(
-            class="form-control" 
-            name="sort"
-            sort-select
-        )
-            option(disabled selected) Sắp xếp theo
-            if type === 'product'
-                option(value="position-desc") Vị trí giảm dần
-                option(value="position-asc") Vị trí tăng dần
-                option(value="price-desc") Giá giảm dần
-                option(value="price-asc") Giá tăng dần
-                option(value="title-asc") Tiêu đề A - Z
-                option(value="title-desc") Tiêu đề Z - A
-            else if type === 'order'
-                option(value="createdAt-desc") Mới nhất
-                option(value="createdAt-asc") Cũ nhất
-        button(
-            class="btn btn-danger mt-2"
-            sort-clear
-        ) Clear
+        .row
+            .col-8
+                select(
+                    class="form-control" 
+                    name="sort"
+                    sort-select
+                )
+                    option(disabled selected) Sắp xếp theo
+                    if type === 'product'
+                        option(value="position-desc") Vị trí giảm dần
+                        option(value="position-asc") Vị trí tăng dần
+                        option(value="price-desc") Giá giảm dần
+                        option(value="price-asc") Giá tăng dần
+                        option(value="title-asc") Tiêu đề A - Z
+                        option(value="title-desc") Tiêu đề Z - A
+                    else if type === 'order'
+                        option(value="createdAt-desc") Mới nhất
+                        option(value="createdAt-asc") Cũ nhất
+            .col-4
+                button(
+                    class="btn btn-danger"
+                    sort-clear
+                ) Clear

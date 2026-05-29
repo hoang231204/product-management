@@ -11,96 +11,96 @@ block main
         h1 Trang sản phẩm
         .card.mb-3
             .card-header Bộ lọc và Tìm kiếm
-            .card-body
-                .row
-                    .col-6#filter-area
-                        +boxFilter(filterStatus)
+                .card-body
+                    .row
+                        .col-6#filter-area
+                            +boxFilter(filterStatus)
 
-                    .col-6
-                        +boxSearch(keyword)  
+                        .col-6
+                            +boxSearch(keyword)  
         .card.mb-3
             .card-header Sắp xếp
-            .card-body
-                .row
-                .col-4
-                    +boxSort()
+                .card-body
+                    .row
+                        .col-4
+                            +boxSort('product')
         .card.mb-3
-        .card-header Thay đổi
-            .card-body 
-                .row
-                    .col-10
-                        if(role.permissions.includes("product_edit"))
-                            +boxChange(`${prefixAdmin}/products/change-multi?_method=PATCH`, 'product')
-                    .col-2
-                        if(role.permissions.includes("product_create"))
-                            a(
-                                href=`${prefixAdmin}/products/create`
-                                class="btn btn-outline-success"
-                            ) + Thêm mới
+            .card-header Thay đổi
+                .card-body 
+                    .row
+                        .col-10
+                            if(role.permissions.includes("product_edit"))
+                                +boxChange(`${prefixAdmin}/products/change-multi?_method=PATCH`, 'product')
+                        .col-2
+                            if(role.permissions.includes("product_create"))
+                                a(
+                                    href=`${prefixAdmin}/products/create`
+                                    class="btn btn-outline-success"
+                                ) + Thêm mới
         .card.mb-3
             .card-header Danh sách sản phẩm
-            .card-body
-                table(class="table table-hover table-sm" check-box-multi)
-                    thead
-                        tr
-                        th 
-                            input(type="checkbox" name="checkAll")
-                        th STT
-                        th Hình ảnh
-                        th Tiêu đề
-                        th Giá
-                        th Vị trí
-                        th Trạng thái
-                        th Người tạo
-                        th Người sửa
-                        th Hành động
-                    tbody
-                        each item, index in products
+                .card-body
+                    table(class="table table-hover table-sm" check-box-multi)
+                        thead
                             tr
-                            td
-                                input(
-                                    type="checkbox"
-                                    name="id"
-                                    value=item.id
+                            th 
+                                input(type="checkbox" name="checkAll")
+                            th STT
+                            th Hình ảnh
+                            th Tiêu đề
+                            th Giá
+                            th Vị trí
+                            th Trạng thái
+                            th Người tạo
+                            th Người sửa
+                            th Hành động
+                        tbody
+                            each item, index in products
+                                tr
+                                td
+                                    input(
+                                        type="checkbox"
+                                        name="id"
+                                        value=item.id
+                                        )
+                                td #{index+1+objectPagination.skipPage}
+                                td
+                                    img( src=item.thumbnail, alt=item.title,width="100px",height="auto")
+                                td #{item.title}
+                                td #{item.price}$
+                                td 
+                                    input(
+                                        type="number"
+                                        value=item.position 
+                                        style="width:50px"
+                                        min="1"
+                                        name="position"
                                     )
-                            td #{index+1+objectPagination.skipPage}
-                            td
-                                img( src=item.thumbnail, alt=item.title,width="100px",height="auto")
-                            td #{item.title}
-                            td #{item.price}$
-                            td 
-                                input(
-                                    type="number"
-                                    value=item.position 
-                                    style="width:50px"
-                                    min="1"
-                                    name="position"
-                                )
-                            td
-                                if(role.permissions.includes("product_edit"))
-                                    if item.status == 'active'
-                                        a(href="javascript:;" class="badge badge-success" button-change-status data-id=item._id  data-status=item.status) Hoạt động
-                                    else if item.status == 'inactive'
-                                        a(href="javascript:;" class="badge badge-danger" button-change-status data-id=item._id  data-status=item.status) Không hoạt động
-                                    else if item.status == 'pending'
-                                        a(href="javascript:;" class="badge badge-warning" button-change-status data-id=item._id  data-status=item.status) Đang chờ
+                                td
+                                    if(role.permissions.includes("product_edit"))
+                                        if item.status == 'active'
+                                            a(href="javascript:;" class="badge badge-success" button-change-status data-id=item._id  data-status=item.status) Hoạt động
+                                        else if item.status == 'inactive'
+                                            a(href="javascript:;" class="badge badge-danger" button-change-status data-id=item._id  data-status=item.status) Không hoạt động
+                                        else if item.status == 'pending'
+                                            a(href="javascript:;" class="badge badge-warning" button-change-status data-id=item._id  data-status=item.status) Đang chờ
+                                        else
+                                            a(href="javascript:;" class="badge badge-secondary" button-change-status data-id=item._id  data-status=item.status) Sắp hết hàng
+                                td
+                                    p #{item.createdBy.account_id.fullname}
+                                    p #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                td
+                                    if item.updatedBy && item.updatedBy.length > 0
+                                        p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
+                                        p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
                                     else
-                                        a(href="javascript:;" class="badge badge-secondary" button-change-status data-id=item._id  data-status=item.status) Sắp hết hàng
-                            td
-                                p #{item.createdBy.account_id.fullname}
-                                p #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}
-                            td
-                                if item.updatedBy && item.updatedBy.length > 0
-                                    p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
-                                    p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
-                                else
-                                    p Chưa có cập nhật
-                            td
-                                a(href=`${prefixAdmin}/products/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
-                                if(role.permissions.includes("product_edit"))
-                                    a(href=`${prefixAdmin}/products/edit/${item._id}` class="btn btn-warning btn-sm ml-1") Sửa
-                                if(role.permissions.includes("product_delete"))
-                                    button(class="btn btn-danger btn-sm ml-1" button-delete data-id=item._id) Xóa
+                                        p Chưa có cập nhật
+                                td
+                                    a(href=`${prefixAdmin}/products/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
+                                    if(role.permissions.includes("product_edit"))
+                                        a(href=`${prefixAdmin}/products/edit/${item._id}` class="btn btn-warning btn-sm ml-1") Sửa
+                                    if(role.permissions.includes("product_delete"))
+                                        button(class="btn btn-danger btn-sm ml-1" button-delete data-id=item._id) Xóa
     form(
         action=""
         method="POST"

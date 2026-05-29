@@ -10,12 +10,15 @@ module.exports = (query, type) => {
         { name: "Đã giao hàng", status: "delivered", class: "" },
         { name: "Đã hủy", status: "canceled", class: "" }
     ];
-    const productStatuses = ["", "active", "inactive", "low_stock"];
+    const productStatuses = ["", "active", "inactive", "low_stock", "pending"];
     const orderStatuses = ["", "pending", "confirmed", "shipping", "delivered", "canceled"];
-    let filterStatus = (type === 'product') 
-        ? allStatuses.filter(item => productStatuses.includes(item.status))
-        : allStatuses.filter(item => orderStatuses.includes(item.status))
-
+    let filterStatus = [];
+    if(type === 'order'){
+        filterStatus = allStatuses.filter(item => orderStatuses.includes(item.status))
+    }
+    if(type === 'product'){
+        filterStatus = allStatuses.filter(item => productStatuses.includes(item.status))
+    }
     if(query.status){
         const index = filterStatus.findIndex(item => item.status == query.status)
         filterStatus[index].class = "active"
