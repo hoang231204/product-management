@@ -78,9 +78,6 @@ module.exports.changeMulti = async (req, res) => {
             switch(typeChange){
                 case "delete":
                     let confirmDelete = confirm("Bạn chắc chắn muốn xóa các đơn hàng đã chọn?");
-                    if(!confirmDelete) {
-                        return res.redirect(`${systemConfig.prefixAdmin}/orders`);
-                    }
                     await Order.updateMany({ _id: { $in: ids } }, { $set: { deleted: true } });
                     req.flash('success', 'Xóa nhiều đơn hàng thành công');
                     break;
@@ -94,6 +91,19 @@ module.exports.changeMulti = async (req, res) => {
     catch(error){
         console.error(error);
         req.flash('error', 'Có lỗi xảy ra khi thực hiện thay đổi nhiều đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
+    }
+}
+module.exports.delete = async (req, res) => {
+    try{
+        const id = req.params.id;
+        await Order.updateOne({ _id: id }, { deleted: true });
+        req.flash('success', 'Xóa đơn hàng thành công');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
+    }
+    catch(error){
+        console.error(error);
+        req.flash('error', 'Có lỗi xảy ra khi xóa đơn hàng');
         res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }
