@@ -3,6 +3,7 @@ const search = require('../../helpers/search')
 const filter = require('../../helpers/filter-status');
 const mongoose = require('mongoose');
 const pagination = require('../../helpers/pagination');
+const systemConfig = require('../../config/system');
 module.exports.index = async (req, res) => {
     try{
         const filterStatus = filter(req.query, 'order');
@@ -19,12 +20,12 @@ module.exports.index = async (req, res) => {
                 { "userInfor.address": regex }
             ];
         }
-        const countData = await Order.find(find).countDocuments(find);
-        const objectPagination = pagination(req.query,countData)
+        const countData = await Order.find(find).countDocuments();
+        const objectPagination = pagination(req.query, countData);
         const orders = await Order
             .find(find).limit(objectPagination.limitPage).skip(objectPagination.skipPage)
             .sort({ createdAt: -1 })
-            .select('userInfor totalPrice status order_code')
+            .select('userInfor totalPrice status order_code _id')
             .lean();
         res.render('admin/pages/order/index', {
             pageTitle: "Quản lý đơn hàng",
@@ -37,7 +38,7 @@ module.exports.index = async (req, res) => {
     catch(error){
         console.error(error);
         req.flash('error', 'Có lỗi xảy ra khi tải danh sách đơn hàng');
-        res.redirect('/admin/orders');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }
 module.exports.changeStatus = async (req, res) => {
@@ -46,12 +47,12 @@ module.exports.changeStatus = async (req, res) => {
         const status = req.params.status;
         await Order.updateOne({ _id: id }, { status: status });
         req.flash('success', 'Cập nhật trạng thái đơn hàng thành công');
-        res.redirect('/admin/orders');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
     catch(error){
         console.error(error);
         req.flash('error', 'Có lỗi xảy ra khi cập nhật trạng thái đơn hàng');
-        res.redirect('/admin/orders');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }
 module.exports.details = async (req, res) => {
@@ -66,6 +67,33 @@ module.exports.details = async (req, res) => {
     catch(error){
         console.error(error);
         req.flash('error', 'Có lỗi xảy ra khi xem chi tiết đơn hàng');
-        res.redirect('/admin/orders');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
+    }
+}
+module.exports.changeMulti = async (req, res) => {
+    try{
+        const typeChange = req.body.type;
+        const ids = req.body.ids.split(",");
+        if(typeChange && ids.length > 0){
+            switch(typeChange){
+                case "delete":
+                    let confirmDelete = confirm("Bạn chắc chắn muốn xóa các đơn hàng đã chọn?");
+                    if(!confirmDelete) {
+                        return res.redirect(`${systemConfig.prefixAdmin}/orders`);
+                    }
+                    await Order.updateMany({ _id: { $in: ids } }, { $set: { deleted: true } });
+                    req.flash('success', 'Xóa nhiều đơn hàng thành công');
+                    break;
+                default:
+                    await Order.updateMany({ _id: { $in: ids } }, { status: typeChange });
+                    req.flash('success', 'Cập nhật trạng thái nhiều đơn hàng thành công');
+            }
+                res.redirect(`${systemConfig.prefixAdmin}/orders`);  
+        }  
+    }
+    catch(error){
+        console.error(error);
+        req.flash('error', 'Có lỗi xảy ra khi thực hiện thay đổi nhiều đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
 }

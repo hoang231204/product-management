@@ -4,7 +4,7 @@ const router = express.Router();
 router.get('/', orderController.index);
 router.get('/details/:id', orderController.details);
 router.patch('/change-status/:status/:id', orderController.changeStatus);
-// router.patch("/change-multi",orderController.changeMulti);
+router.patch("/change-multi",orderController.changeMulti);
 // router.patch('/delete/:id', orderController.delete);
 // router.get("/recycle-bin", orderController.recycleBin);
 // router.delete("/recycle-bin/hard-delete/:id", orderController.hardDelete);
