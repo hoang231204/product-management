@@ -116,7 +116,7 @@ block main
                                                 ) Sắp hết hàng
                                 td
                                     p #{item.createdBy.account_id.fullname}
-                                    p #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                    p #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
                                 td
                                     if item.updatedBy && item.updatedBy.length > 0
                                         p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}

@@ -38,7 +38,7 @@ block main
                     if item.account_id
                         div(class="small border-bottom py-1")
                             span #{item.account_id.fullname} 
-                            span.text-muted.ml-2 - #{moment(product.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                            span.text-muted.ml-2 - #{moment(item.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
             else 
                 div(class="mt-3")
                     b Lịch sử cập nhật:
