@@ -4,6 +4,7 @@ const filter = require('../../helpers/filter-status');
 const mongoose = require('mongoose');
 const pagination = require('../../helpers/pagination');
 const systemConfig = require('../../config/system');
+const calcuNewPrice = require('../../helpers/calcu-new-price');
 //GET /admin/orders
 module.exports.index = async (req, res) => {
     try{
@@ -26,7 +27,7 @@ module.exports.index = async (req, res) => {
         const orders = await Order
             .find(find).limit(objectPagination.limitPage).skip(objectPagination.skipPage)
             .sort({ createdAt: -1 })
-            .select('userInfor totalPrice status order_code _id')
+            .select('userInfor totalPrice status order_code _id updatedBy createdAt')
             .lean();
         res.render('admin/pages/order/index', {
             pageTitle: "Quản lý đơn hàng",
@@ -47,7 +48,11 @@ module.exports.changeStatus = async (req, res) => {
     try{
         const id = req.params.id;
         const status = req.params.status;
-        await Order.updateOne({ _id: id }, { status: status });
+        let updateBy={
+            account_id: res.locals.user._id,
+            updatedAt: Date.now()
+        }
+        await Order.updateOne({ _id: id }, { status: status, $push: { updatedBy: updateBy } });
         req.flash('success', 'Cập nhật trạng thái đơn hàng thành công');
         res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
@@ -61,7 +66,13 @@ module.exports.changeStatus = async (req, res) => {
 module.exports.details = async (req, res) => {
     try{
         const id = req.params.id;
-        const order = await Order.findOne({ _id: id }).lean();
+        const order = await Order
+            .findOne({ _id: id })
+            .populate('products.product_id', 'title thumbnail')
+            .lean();
+        order.products.forEach(item => {
+            item.priceNew = calcuNewPrice.priceNew(item.price, item.discountPercentage);
+        });
         res.render('admin/pages/order/details', {
             pageTitle: "Chi tiết đơn hàng",
             order: order
@@ -81,12 +92,19 @@ module.exports.changeMulti = async (req, res) => {
         if(typeChange && ids.length > 0){
             switch(typeChange){
                 case "delete":
-                    let confirmDelete = confirm("Bạn chắc chắn muốn xóa các đơn hàng đã chọn?");
-                    await Order.updateMany({ _id: { $in: ids } }, { $set: { deleted: true } });
+                    let deletedBy={
+                        account_id: res.locals.user._id,
+                        deletedAt: Date.now()
+                    }
+                    await Order.updateMany({ _id: { $in: ids } }, { $set: { deleted: true, deletedBy: deletedBy } });
                     req.flash('success', 'Xóa nhiều đơn hàng thành công');
                     break;
                 default:
-                    await Order.updateMany({ _id: { $in: ids } }, { status: typeChange });
+                    let updateBy={
+                        account_id: res.locals.user._id,
+                        updatedAt: Date.now()
+                    }
+                    await Order.updateMany({ _id: { $in: ids } }, { status: typeChange, $push: { updatedBy: updateBy } });
                     req.flash('success', 'Cập nhật trạng thái nhiều đơn hàng thành công');
             }
                 res.redirect(`${systemConfig.prefixAdmin}/orders`);  
@@ -102,7 +120,11 @@ module.exports.changeMulti = async (req, res) => {
 module.exports.delete = async (req, res) => {
     try{
         const id = req.params.id;
-        await Order.updateOne({ _id: id }, { deleted: true });
+        let deletedBy={
+            account_id: res.locals.user._id,
+            deletedAt: Date.now()
+        }
+        await Order.updateOne({ _id: id }, { deleted: true, deletedBy: deletedBy });
         req.flash('success', 'Xóa đơn hàng thành công');
         res.redirect(`${systemConfig.prefixAdmin}/orders`);
     }
@@ -145,7 +167,11 @@ module.exports.hardDelete = async (req, res) => {
 module.exports.restore = async (req, res) => {
     try{
         const id = req.params.id;
-        await Order.updateOne({ _id: id }, { deleted: false });
+        let updateBy={
+            account_id: res.locals.user._id,
+            updatedAt: Date.now()
+        }
+        await Order.updateOne({ _id: id }, { deleted: false, $push: { updatedBy: updateBy } });
         req.flash('success', 'Khôi phục đơn hàng thành công');
         res.redirect(`${systemConfig.prefixAdmin}/orders/recycle-bin`);
     }
