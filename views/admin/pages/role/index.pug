@@ -36,7 +36,7 @@ block main
                             td
                                 if(item.createdBy && item.createdBy.account_id)
                                     p #{item.createdBy.account_id.fullname}
-                                    p #{moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                                    p #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
                                 else
                                     p.em Chưa có thông tin người tạo
                             td
