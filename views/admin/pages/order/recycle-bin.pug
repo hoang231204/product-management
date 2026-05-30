@@ -1,33 +1,33 @@
 extends ../../layouts/default.pug
-block main 
-    h1 Thùng rác
-    .card.mb-3
-        .card-header Thùng rác đơn
-            .card-body
-                table(class="table table-hover table-sm")
-                    thead
-                        tr
-                            th STT
-                            th Mã đơn hàng
-                            th Họ tên
-                            th Số điện thoại
-                            th Địa chỉ
-                            th Người xóa
-                            th Trạng thái
-                            th Hoạt động
-                    tbody
-                        each item, index in products
+block main
+    if(role.permissions.includes('order_view'))
+        h1 Thùng rác
+        .card.mb-3
+            .card-header Thùng rác đơn
+                .card-body
+                    table(class="table table-hover table-sm")
+                        thead
                             tr
-                            td #{index + 1}
-                            td #{item.order_code}
-                            td #{item.userInfor.fullname}
-                            td #{item.userInfor.phone}
-                            td #{item.userInfor.address}
-                            td
-                                p #{item.deletedBy.account_id.fullname}
-                                p #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}
-                            td
-                                if(role.permissions.includes("order_edit"))
+                                th STT
+                                th Mã đơn hàng
+                                th Họ tên
+                                th Số điện thoại
+                                th Địa chỉ
+                                th Người xóa
+                                th Trạng thái
+                                th Hoạt động
+                        tbody
+                            each item, index in products
+                                tr
+                                td #{index + 1}
+                                td #{item.order_code}
+                                td #{item.userInfor.fullname}
+                                td #{item.userInfor.phone}
+                                td #{item.userInfor.address}
+                                td
+                                    p #{item.deletedBy.account_id.fullname}
+                                    p #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                td
                                     if item.status == 'pending'
                                         a(
                                             href="javascript:;" 
@@ -53,19 +53,21 @@ block main
                                             href="javascript:;" 
                                             class="badge badge-secondary" 
                                         ) Đã hủy
-                            td
-                                button(class="btn btn-success btn-sm" button-restore data-id= item._id) Khôi phục
-                                button(class="btn btn-danger btn-sm ml-1" button-hard-delete data-id=item._id) Xóa
-    form(
-      action="",
-      method="POST"
-      form-hard-delete
-      data-path = `${prefixAdmin}/orders/recycle-bin/hardDelete`
-    )
-    form(
-      action="",
-      method="POST"
-      form-restore 
-      data-path = `${prefixAdmin}/orders/recycle-bin/restore`
-    )
-    script(src="/admin/js/recycleBin.js") 
+                                td
+                                    if(role.permissions.includes('order_edit'))
+                                        button(class="btn btn-success btn-sm" button-restore data-id= item._id) Khôi phục
+                                    if(role.permissions.includes('order_delete'))
+                                        button(class="btn btn-danger btn-sm ml-1" button-hard-delete data-id=item._id) Xóa
+        form(
+            action="",
+            method="POST"
+            form-hard-delete
+            data-path = `${prefixAdmin}/orders/recycle-bin/hardDelete`
+        )
+        form(
+            action="",
+            method="POST"
+            form-restore 
+            data-path = `${prefixAdmin}/orders/recycle-bin/restore`
+        )
+        script(src="/admin/js/recycleBin.js") 

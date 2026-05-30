@@ -7,6 +7,12 @@ const systemConfig = require('../../config/system');
 const calcuNewPrice = require('../../helpers/calcu-new-price');
 //GET /admin/orders
 module.exports.index = async (req, res) => {
+    const permission = res.locals.role.permissions;
+    if(!permission.includes('order_view')){
+        req.flash('error', 'Bạn không có quyền truy cập vào danh sách đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/dashboard`);
+        return;
+    }
     try{
         const filterStatus = filter(req.query, 'order');
         const regex = search(req.query);
@@ -46,6 +52,12 @@ module.exports.index = async (req, res) => {
 }
 //PATCH /admin/orders/change-status/:status/:id
 module.exports.changeStatus = async (req, res) => {
+    const permission = res.locals.role.permissions;
+    if(!permission.includes('order_edit')){
+        req.flash('error', 'Bạn không có quyền cập nhật trạng thái đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
+        return;
+    }
     try{
         const id = req.params.id;
         const status = req.params.status;
@@ -65,6 +77,12 @@ module.exports.changeStatus = async (req, res) => {
 }
 //GET /admin/orders/details/:id
 module.exports.details = async (req, res) => {
+    const permission = res.locals.role.permissions;
+    if(!permission.includes('order_view')){
+        req.flash('error', 'Bạn không có quyền xem chi tiết đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
+        return;
+    }
     try{
         const id = req.params.id;
         const order = await Order
@@ -88,12 +106,18 @@ module.exports.details = async (req, res) => {
 }
 //PATCH /admin/orders/change-multi
 module.exports.changeMulti = async (req, res) => {
+    const permission = res.locals.role.permissions;
     try{
         const typeChange = req.body.type;
         const ids = req.body.ids.split(",");
         if(typeChange && ids.length > 0){
             switch(typeChange){
                 case "delete":
+                    if(!permission.includes('order_delete')){
+                        req.flash('error', 'Bạn không có quyền xóa đơn hàng');
+                        res.redirect(`${systemConfig.prefixAdmin}/orders`);
+                        return;
+                    }
                     let deletedBy={
                         account_id: res.locals.user._id,
                         deletedAt: Date.now()
@@ -102,6 +126,11 @@ module.exports.changeMulti = async (req, res) => {
                     req.flash('success', 'Xóa nhiều đơn hàng thành công');
                     break;
                 default:
+                    if(!permission.includes('order_edit')){
+                        req.flash('error', 'Bạn không có quyền cập nhật trạng thái đơn hàng');
+                        res.redirect(`${systemConfig.prefixAdmin}/orders`);
+                        return;
+                    }
                     let updateBy={
                         account_id: res.locals.user._id,
                         updatedAt: Date.now()
@@ -120,6 +149,12 @@ module.exports.changeMulti = async (req, res) => {
 }
 //PATCH /admin/orders/delete/:id
 module.exports.delete = async (req, res) => {
+    const permission = res.locals.role.permissions;
+    if(!permission.includes('order_delete')){
+        req.flash('error', 'Bạn không có quyền xóa đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
+        return;
+    }
     try{
         const id = req.params.id;
         let deletedBy={
@@ -138,6 +173,12 @@ module.exports.delete = async (req, res) => {
 }
 //GET /admin/orders/recycle-bin
 module.exports.recycleBin = async (req, res) => {
+    const permission = res.locals.role.permissions;
+    if(!permission.includes('order_view')){
+        req.flash('error', 'Bạn không có quyền truy cập vào thùng rác đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/orders`);
+        return;
+    }
     try{
         const orders = await Order
             .find({ deleted: true })
@@ -156,6 +197,12 @@ module.exports.recycleBin = async (req, res) => {
 }
 //DELETE /admin/orders/recycle-bin/hard-delete/:id
 module.exports.hardDelete = async (req, res) => {
+    const permission = res.locals.role.permissions;
+    if(!permission.includes('order_delete')){
+        req.flash('error', 'Bạn không có quyền xóa vĩnh viễn đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/orders/recycle-bin`);
+        return;
+    }
     try{
         const id = req.params.id;
         await Order.deleteOne({ _id: id });
@@ -170,6 +217,12 @@ module.exports.hardDelete = async (req, res) => {
 }
 //PATCH /admin/orders/recycle-bin/restore/:id
 module.exports.restore = async (req, res) => {
+    const permission = res.locals.role.permissions;
+    if(!permission.includes('order_edit')){
+        req.flash('error', 'Bạn không có quyền khôi phục đơn hàng');
+        res.redirect(`${systemConfig.prefixAdmin}/orders/recycle-bin`);
+        return;
+    }
     try{
         const id = req.params.id;
         let updateBy={
