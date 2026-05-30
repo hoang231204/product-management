@@ -39,6 +39,7 @@ block main
                                 span.badge.badge-danger Đã hủy
                         td
                             a(href=`/orders/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
+                            a(href=`/orders/edit/${item._id}` class="btn btn-secondary btn-sm ml-2") Sửa thông tin
                             button(type="button" class="btn btn-danger btn-sm ml-2" data-id=item._id button-cancel) Hủy đơn
             else
                 tr

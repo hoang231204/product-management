@@ -1,0 +1,42 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+block main
+    +alert-success(3000)
+    +alert-error(3000)
+    h1 Chỉnh sửa thông tin giao hàng
+    form(
+        action=`/orders/edit/${order._id}?_method=PATCH` 
+        method="POST" 
+    )
+        div(class="form-group")
+            label(for="fullname") Họ tên
+            input(
+                type="text"
+                class="form-control"
+                id="fullname"
+                name="fullname"
+                value=order.userInfor.fullname
+                required 
+            )
+        div(class="form-group")
+            label(for="phone") Số điện thoại
+            input(
+                type="text"
+                class="form-control"
+                id="phone"
+                name="phone"
+                value=order.userInfor.phone
+                required 
+            )
+        div(class="form-group")
+            label(for="address") Địa chỉ
+            input(
+                type="text"
+                class="form-control"
+                id="address"
+                name="address"
+                value=order.userInfor.address
+                required 
+            )
+        div(class="form-group")
+            button(type="submit" class="btn btn-primary") Cập nhật

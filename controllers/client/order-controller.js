@@ -37,3 +37,38 @@ module.exports.cancel = async (req, res) =>{
     req.flash('success', 'Đơn hàng đã được hủy thành công');
     res.redirect('/orders');
 }
+module.exports.edit = async (req, res) =>{
+    try{
+        const orderId = req.params.id;
+        const order = await Order.findOne({ _id: orderId }).lean();
+        if(order.status !== 'pending' && order.status !== 'confirmed'){
+            req.flash('error', 'Đơn hàng đã được xử lý, không thể sửa');
+            return res.redirect('/orders');
+        }
+        res.render('client/pages/order/edit', {
+            pageTitle: 'Thay đổi thông tin giao hàng',
+            order: order
+        });
+    }
+    catch(err){
+        console.error(err);
+        req.flash('error', 'Đã xảy ra lỗi, vui lòng thử lại');
+        res.redirect('/orders');
+    }
+}
+module.exports.editPatch = async (req, res) =>{
+    try{
+         const orderId = req.params.id;
+        const fullname = req.body.fullname;
+        const phone = req.body.phone;
+        const address = req.body.address;
+        await Order.updateOne({ _id: orderId }, { 'userInfor.fullname': fullname, 'userInfor.phone': phone, 'userInfor.address': address });
+        req.flash('success', 'Thông tin giao hàng đã được cập nhật thành công');
+        res.redirect('/orders');
+    }
+    catch(err){
+        console.error(err);
+        req.flash('error', 'Đã xảy ra lỗi, vui lòng thử lại');
+        res.redirect('/orders');
+    }
+}

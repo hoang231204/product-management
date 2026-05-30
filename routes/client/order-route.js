@@ -1,7 +1,10 @@
 const orderController = require('../../controllers/client/order-controller');
+const orderValidate = require('../../validates/client/order-validate');
 const express = require('express');
 const router = express.Router();
 router.get('/', orderController.index);
 router.get('/details/:id', orderController.details);
 router.patch('/cancel/:id', orderController.cancel);
+router.get('/edit/:id', orderController.edit);
+router.patch('/edit/:id', orderValidate.editPatch, orderController.editPatch);
 module.exports = router;
