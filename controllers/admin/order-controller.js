@@ -28,6 +28,7 @@ module.exports.index = async (req, res) => {
             .find(find).limit(objectPagination.limitPage).skip(objectPagination.skipPage)
             .sort({ createdAt: -1 })
             .select('userInfor totalPrice status order_code _id updatedBy createdAt')
+            .populate('updatedBy.account_id', 'fullname')
             .lean();
         res.render('admin/pages/order/index', {
             pageTitle: "Quản lý đơn hàng",
@@ -69,6 +70,7 @@ module.exports.details = async (req, res) => {
         const order = await Order
             .findOne({ _id: id })
             .populate('products.product_id', 'title thumbnail')
+            .populate('updatedBy.account_id', 'fullname')
             .lean();
         order.products.forEach(item => {
             item.priceNew = calcuNewPrice.priceNew(item.price, item.discountPercentage);
@@ -137,7 +139,10 @@ module.exports.delete = async (req, res) => {
 //GET /admin/orders/recycle-bin
 module.exports.recycleBin = async (req, res) => {
     try{
-        const orders = await Order.find({ deleted: true }).lean();
+        const orders = await Order
+            .find({ deleted: true })
+            .populate('deletedBy.account_id', 'fullname')
+            .lean();
         res.render('admin/pages/order/recycle-bin', {
         pageTitle: "Thùng rác đơn hàng",
         orders: orders

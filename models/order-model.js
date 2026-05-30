@@ -34,11 +34,32 @@ const orderSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    deletedAt:{
-        type: Date
-    }
-}
-, { timestamps: true });
-
+    deletedBy:{
+        account_id: {
+            type: String,
+            ref: "Account"
+        },
+        deletedAt:{
+            type: Date,
+            default: Date.now
+        }
+    },
+    createdAt:{
+        type: Date,
+        default: Date.now
+    },
+    updatedBy:[
+        {
+            account_id: {
+                type: String,
+                ref: "Account"
+            },
+            updatedAt:{
+                type: Date,
+                default: Date.now
+            }
+        }
+    ]   
+});
 const Order = mongoose.model('Order', orderSchema);
 module.exports = Order;

@@ -12,6 +12,7 @@ block main
                             th Họ tên
                             th Số điện thoại
                             th Địa chỉ
+                            th Người xóa
                             th Trạng thái
                             th Hoạt động
                     tbody
@@ -22,6 +23,9 @@ block main
                             td #{item.userInfor.fullname}
                             td #{item.userInfor.phone}
                             td #{item.userInfor.address}
+                            td
+                                p #{item.deletedBy.account_id.fullname}
+                                p #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}
                             td
                                 if(role.permissions.includes("order_edit"))
                                     if item.status == 'pending'
