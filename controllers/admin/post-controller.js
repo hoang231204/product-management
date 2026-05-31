@@ -3,6 +3,8 @@ const filter = require('../../helpers/filter-status');
 const search = require('../../helpers/search');
 const pagination = require('../../helpers/pagination');
 const systemConfig = require('../../config/system');
+const tree = require('../../helpers/tree');
+const ProductCategory = require('../../models/product-category-model');
 //GET /posts
 module.exports.index = async (req, res) => {
     const permissions = res.locals.role.permissions;
@@ -76,6 +78,49 @@ module.exports.details = async (req, res) =>{
                 post: post,
                 categoryTitle: categoryTitle
             });
+    }
+    catch(error){
+        console.log(error);
+        req.flash("error","Có lỗi xảy ra trong quá trình xử lý!")
+        res.redirect(`${systemConfig.prefixAdmin}/posts`)
+    }
+}
+//GET /posts/create
+module.exports.create = async (req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("blog_create")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/posts`)
+    }
+    const categories = await ProductCategory.find({status: "active", deleted: false});
+    const categoryTree = tree(categories);
+    res.render("admin/pages/post/create", {
+        pageTitle: "Tạo mới bài viết",
+        categoryTree: categoryTree
+    });
+}
+//POST /posts/create
+module.exports.postCreate = async (req, res) =>{
+    try{
+        const permissions = res.locals.role.permissions;
+        if(!permissions.includes("blog_create")){
+            req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+            return res.redirect(`${systemConfig.prefixAdmin}/posts`)
+        }
+        const count = await Product.countDocuments()
+        if(req.body.position == ''){
+            req.body.position = count + 1;
+        }
+        else{
+            req.body.position = parseInt(req.body.position);
+        }
+        req.body.createdBy = {
+            account_id: res.locals.user._id
+        }
+        const post = new Post(req.body)
+        post.save();
+        req.flash('success', 'Tạo bài viết thành công!');
+        res.redirect(`${systemConfig.prefixAdmin}/posts`)
     }
     catch(error){
         console.log(error);
