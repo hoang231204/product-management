@@ -33,27 +33,27 @@ block main
 
                     tr
                         td(class="text-center")
-                            b Quản lý danh mục
+                            b Quản lý danh mục sản phẩm
                     
-                    tr(data-name="category_view")
+                    tr(data-name="product_category_view")
                         td(class="text-center") Xem
                         each record in records
                             td(class="text-center")
                                 input(type="checkbox")
                     
-                    tr(data-name="category_create")
+                    tr(data-name="product_category_create")
                         td(class="text-center") Thêm mới
                         each record in records
                             td(class="text-center")
                                 input(type="checkbox")
                     
-                    tr(data-name="category_edit")
+                    tr(data-name="product_category_edit")
                         td(class="text-center") Chỉnh sửa
                         each record in records
                             td(class="text-center")
                                 input(type="checkbox")
                     
-                    tr(data-name="category_delete")
+                    tr(data-name="product_category_delete")
                         td(class="text-center") Xóa
                         each record in records
                             td(class="text-center")
@@ -214,6 +214,34 @@ block main
                                 input(type="checkbox")
                     
                     tr(data-name="order_delete")
+                        td(class="text-center") Xóa
+                        each record in records
+                            td(class="text-center")
+                                input(type="checkbox")
+                    
+
+                    tr
+                        td(class="text-center")
+                            b Quản lý danh mục bài viết
+                    tr(data-name="post_category_view")
+                        td(class="text-center") Xem
+                        each record in records
+                            td(class="text-center")
+                                input(type="checkbox")
+                    
+                    tr(data-name="post_category_create")
+                        td(class="text-center") Thêm mới
+                        each record in records
+                            td(class="text-center")
+                                input(type="checkbox")
+                    
+                    tr(data-name="post_category_edit")
+                        td(class="text-center") Chỉnh sửa
+                        each record in records
+                            td(class="text-center")
+                                input(type="checkbox")
+                    
+                    tr(data-name="post_category_delete")
                         td(class="text-center") Xóa
                         each record in records
                             td(class="text-center")

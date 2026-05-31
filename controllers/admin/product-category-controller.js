@@ -9,7 +9,7 @@ const changeStatusCategory = require("../../helpers/change-status-category");
 //GET /categories
 module.exports.index =async (req,res)=>{
     const permissions = res.locals.role.permissions;
-    if(!permissions.includes("category_view")){
+    if(!permissions.includes("product_category_view")){
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
         return res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
     }
@@ -53,9 +53,9 @@ module.exports.create =async (req,res)=>{
 //POST /create
 module.exports.createPost = async (req,res)=>{
     const permissions = res.locals.role.permissions; 
-    if(!permissions.includes("category_create")){
+    if(!permissions.includes("product_category_create")){
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-        return res.redirect(`${systemConfig.prefixAdmin}/categories/create`)
+        return res.redirect(`${systemConfig.prefixAdmin}/product-categories/create`)
     }
     const count = await ProductCategory.countDocuments();
     if(req.body.position ==''){
@@ -77,9 +77,9 @@ module.exports.createPost = async (req,res)=>{
 //PATCH /change-status/:status/:id
 module.exports.changeStatus = async (req,res)=>{
     const permissions = res.locals.role.permissions;
-    if(!permissions.includes("category_edit")){
+    if(!permissions.includes("product_category_edit")){
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-        return res.redirect(`${systemConfig.prefixAdmin}/categories`)
+        return res.redirect(`${systemConfig.prefixAdmin}/product-categories`)
     }
     const id = req.params.id;
     const status = req.params.status;
@@ -105,9 +105,9 @@ module.exports.changeStatus = async (req,res)=>{
 //PATCH /delete/:id
 module.exports.delete = async (req,res)=>{
     const permissions = res.locals.role.permissions;
-    if(!permissions.includes("category_delete")){
+    if(!permissions.includes("product_category_delete")){
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-        return res.redirect(`${systemConfig.prefixAdmin}/categories`)
+        return res.redirect(`${systemConfig.prefixAdmin}/product-categories`)
     }
     const id = req.params.id;
     let ids=[];
@@ -136,9 +136,9 @@ module.exports.delete = async (req,res)=>{
 //GET details/:id
 module.exports.details = async (req,res)=>{
     const permissions = res.locals.role.permissions;
-    if(!permissions.includes("category_view")){
+    if(!permissions.includes("product_category_view")){
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-        return res.redirect(`${systemConfig.prefixAdmin}/categories`)
+        return res.redirect(`${systemConfig.prefixAdmin}/product-categories`)
     }
     const id = req.params.id;
     let find={
@@ -183,9 +183,9 @@ module.exports.edit = async (req,res)=>{
 //PATCH edit/:id
 module.exports.editPatch = async (req,res)=>{
     const permissions = res.locals.role.permissions;
-    if(!permissions.includes("category_edit")){
+    if(!permissions.includes("product_category_edit")){
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-        return res.redirect(`${systemConfig.prefixAdmin}/categories`)
+        return res.redirect(`${systemConfig.prefixAdmin}/product-categories`)
     }
     if(req.body.position){
         req.body.position = parseInt(req.body.position);
@@ -227,9 +227,9 @@ module.exports.changeMulti = async (req, res) => {
         let bulkOps = [];
         switch (typeChecked) {
             case "active":
-                if(!permissions.includes("category_edit")) {
+                if(!permissions.includes("product_category_edit")) {
                     req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-                    return res.redirect(`${systemConfig.prefixAdmin}/categories`)
+                    return res.redirect(`${systemConfig.prefixAdmin}/product-categories`)
                 }
                 for (const id of ids) {
                     const current = categories.find(item => item.id === id);
@@ -245,9 +245,9 @@ module.exports.changeMulti = async (req, res) => {
                 break;
 
             case "inactive":
-                if(!permissions.includes("category_edit")) {
+                if(!permissions.includes("product_category_edit")) {
                     req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-                    return res.redirect(`${systemConfig.prefixAdmin}/categories`)
+                    return res.redirect(`${systemConfig.prefixAdmin}/product-categories`)
                 }
                 for (const id of ids) {
                     const allChildIds = [id, ...getChildren(categories, id)];
@@ -261,9 +261,9 @@ module.exports.changeMulti = async (req, res) => {
                 break;
 
             case "delete-all":
-                if(!permissions.includes("category_delete")) {
+                if(!permissions.includes("product_category_delete")) {
                     req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-                    return res.redirect(`${systemConfig.prefixAdmin}/categories`)
+                    return res.redirect(`${systemConfig.prefixAdmin}/product-categories`)
                 }
                 for (const id of ids) {
                     const allChildIds = [id, ...getChildren(categories, id)];
@@ -285,9 +285,9 @@ module.exports.changeMulti = async (req, res) => {
                 break;
 
             case "change-position":
-                if(!permissions.includes("category_edit")) {   
+                if(!permissions.includes("product_category_edit")) {   
                     req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-                    return res.redirect(`${systemConfig.prefixAdmin}/categories`)
+                    return res.redirect(`${systemConfig.prefixAdmin}/product-categories`)
                 }   
                 for (const item of ids) {
                     const [id, position] = item.split("-");

@@ -1,17 +1,17 @@
 const categoryController = require("../../controllers/admin/product-category-controller");
-const categoryValidate = require("../../validates/admin/product-validate");
+const categoryValidate = require("../../validates/admin/category-validate");
 const express = require('express')
 const multer  = require('multer')
 const upload = multer();
 const middleware = require("../../middleware/admin/uploadCloud-middleware")
 const router = express.Router();
-const validateCreate = require("../../validates/admin/product-validate");
+
 router.get('/', categoryController.index);
 router.get("/create", categoryController.create)
 router.post(
     "/create",
     upload.single('thumbnail'),
-    validateCreate.create,
+    categoryValidate.create,
     middleware.upload,
     categoryController.createPost
 )

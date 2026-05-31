@@ -1,0 +1,68 @@
+extends ../../layouts/default.pug
+include ../../mixins/table-tree.pug
+include ../../mixins/filter-status.pug
+include ../../mixins/search.pug
+include ../../mixins/show-alert.pug
+include ../../mixins/change-multi.pug
+block main
+    if(role.permissions.includes('post_category_view'))
+        +alert-success(3000)
+        +alert-error(3000)
+        h1 DANH MỤC BÀI VIẾT
+        .card.mb-3
+            .card-header Bộ lọc và Tìm kiếm
+            .card-body
+                .row
+                    .col-6#filter-area
+                        +boxFilter(filterStatus)
+                    .col-6
+                        +boxSearch(keyword)  
+        .card.mb-3
+            .card-header Thay đổi
+            .card-body 
+                .row
+                    .col-10
+                        if(role.permissions.includes('post_category_edit'))
+                            +boxChange(`${prefixAdmin}/post-categories/change-multi`, 'category')
+                    .col-2
+                        if(role.permissions.includes('post_category_create'))
+                            a(
+                                href=`${prefixAdmin}/post-categories/create`
+                                class="btn btn-outline-success"
+                            ) + Thêm mới
+        .card.mb-3
+            .card-header Danh sách danh mục
+            .card-body
+                table(class="table table-hover table-sm" check-box-multi)
+                    thead
+                        tr
+                            th
+                                input(type="checkbox" name="checkAll")
+                            th STT
+                            th Hình ảnh
+                            th Tiêu đề
+                            th Vị trí
+                            th Trạng thái
+                            th Người tạo
+                            th Người sửa
+                            th Hành động
+                    tbody
+                        if categories.length > 0
+                            +table-tree(categoryTree)
+                        else
+                            tr
+                                td(colspan="8" class="text-center text-muted") Không có danh mục nào
+        form(
+        action=""
+        method="POST"
+        form-change-status
+        data-path=`${prefixAdmin}/post-categories/change-status`
+    )
+    form(
+        action=""
+        method="POST"
+        form-delete
+        data-path=`${prefixAdmin}/post-categories/delete`
+    )
+    script(src="/admin/js/change-multi.js") 
+    

@@ -1,0 +1,96 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+include ../../mixins/select-tree.pug
+block main
+    +alert-success(5000)
+    h1(class="mb-4") THÊM MỚI DANH MỤC BÀI VIẾT
+    form(
+        action=`${prefixAdmin}/post-categories/create` 
+        method="POST" 
+        enctype="multipart/form-data"
+        form-upload
+    )
+        //- 1. Tiêu đề (Title)
+        div(class="form-group")
+            label(for="title") Tiêu đề
+            input(
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                required 
+            )
+        //- 2. Danh mục cha (Parent ID) 
+        div(class="form-group")
+            label(for="parent_id") Danh mục cha
+            select(
+                name="parent_id"
+                id="parent_id"
+                class="form-control"
+            )
+                option(value="") -- Chọn danh mục cha --
+                if (categoryTree)
+                    +select-tree(categoryTree)
+        //- 3. Mô tả (Description)
+        div(class="form-group")
+            label(for="desc") Mô tả
+            textarea(
+                class="form-control textarea-mce"
+                id="desc"
+                name="description"
+                rows="5"
+            )
+        //- 4. Ảnh (Thumbnail)
+        div(class="form-group" upload-image)
+            label(for="thumbnail") Ảnh
+            input(
+                type="file"
+                class="form-control-file"
+                id="thumbnail"
+                name="thumbnail"
+                accept="image/*"
+                upload-image-input
+            )
+            div(class="box-image")
+                img(
+                    src=""
+                    upload-image-preview
+                    class="image-preview"
+                )
+                button(
+                    type="button"
+                    class="btn-remove-image"
+                ) ×
+        //- Vị trí (Position)
+        div(class="form-group")
+            label(for="position") Vị trí
+            input(
+                type="number"
+                class="form-control"
+                id="position"
+                name="position"
+                placeholder="Tự động tăng"
+                min="1"
+            )
+        //- 5. Trạng thái (Status)
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusActive"
+                name="status"
+                value="active"
+                checked
+            )
+            label(for="statusActive" class="form-check-label") Hoạt động
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusInActive"
+                name="status"
+                value="inactive"
+            )
+            label(for="statusInActive" class="form-check-label") Dừng hoạt động
+        div(class="form-group")
+            button(type="submit" class="btn btn-primary") Tạo mới

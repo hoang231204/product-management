@@ -25,6 +25,10 @@ mixin boxChange(path, type)
                             option(value="inactive") Chuyển trạng thái dừng hoạt động
                             option(value="pending") Chuyển trạng thái đang chờ
                             option(value="change-position") Thay đổi vị trí
+                        else if type === 'category'
+                            option(value="active") Kích hoạt
+                            option(value="inactive") Vô hiệu hóa
+                            option(value="change-position") Thay đổi vị trí
                         option(value="delete") Xóa
                 .form-group
                     input(
