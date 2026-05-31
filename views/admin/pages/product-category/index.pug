@@ -4,7 +4,7 @@ include ../../mixins/filter-status.pug
 include ../../mixins/search.pug
 include ../../mixins/show-alert.pug
 block main
-    if(role.permissions.includes('category_view'))
+    if(role.permissions.includes('product_category_view'))
         +alert-success(3000)
         +alert-error(3000)
         h1 DANH MỤC SẢN PHẨM
@@ -21,8 +21,8 @@ block main
             .card-body 
                 .row
                     .col-10
-                        if(role.permissions.includes('category_edit'))
-                            form(action=`${prefixAdmin}/categories/change-multi?_method=PATCH` method="POST" form-change-multi)
+                        if(role.permissions.includes('product_category_edit'))
+                            form(action=`${prefixAdmin}/product-categories/change-multi?_method=PATCH` method="POST" form-change-multi)
                                 select(name="type" class="form-control")
                                     option(value="") -- Chọn hành động --
                                     option(value="active") Kích hoạt
@@ -32,9 +32,9 @@ block main
                                 input(type="text" name="ids" value="" class="form-control")
                                 button(type="submit" class="btn btn-primary ml-2") Áp dụng
                     .col-2
-                        if(role.permissions.includes('category_create'))
+                        if(role.permissions.includes('product_category_create'))
                             a(
-                                href=`${prefixAdmin}/categories/create`
+                                href=`${prefixAdmin}/product-categories/create`
                                 class="btn btn-outline-success"
                             ) + Thêm mới
         .card.mb-3
