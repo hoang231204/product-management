@@ -253,6 +253,9 @@ module.exports.createPost = async (req, res)=>{
         if(req.body.position == ''){
             req.body.position = count + 1;
         }
+        else{
+            req.body.position = parseInt(req.body.position)
+        }
         req.body.createdBy = {
             account_id: res.locals.user._id
         }
