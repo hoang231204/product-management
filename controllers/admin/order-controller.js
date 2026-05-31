@@ -28,11 +28,17 @@ module.exports.index = async (req, res) => {
                 { "userInfor.address": regex }
             ];
         }
+        if(req.query.sortBy && req.query.sortType){
+            sort[req.query.sortBy] = req.query.sortType;
+        }
+        else{
+            sort.createdAt = -1;
+        }
         const countData = await Order.find(find).countDocuments();
         const objectPagination = pagination(req.query, countData);
         const orders = await Order
             .find(find).limit(objectPagination.limitPage).skip(objectPagination.skipPage)
-            .sort({ createdAt: -1 })
+            .sort(sort)
             .select('userInfor totalPrice status order_code _id updatedBy createdAt')
             .populate('updatedBy.account_id', 'fullname')
             .lean();
