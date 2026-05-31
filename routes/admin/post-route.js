@@ -4,6 +4,7 @@ const postController = require('../../controllers/admin/post-controller');
 const multer  = require('multer')
 const upload = multer();
 const middleware = require("../../middleware/admin/uploadCloud-middleware")
+const validate = require("../../validates/admin/post-validate")
 const router = express.Router();
 router.get("/",postController.index)
 router.get("/details/:id",postController.details)
@@ -11,6 +12,7 @@ router.get("/create",postController.create)
 router.post(
     "/create",
     upload.single('thumbnail'),
+    validate.create,
     middleware.upload,
     postController.postCreate
 );
@@ -18,6 +20,7 @@ router.get("/edit/:id",postController.edit)
 router.patch(
     "/edit/:id",
     upload.single('thumbnail'),
+    validate.edit,
     middleware.upload,
     postController.editPatch
 )
