@@ -139,6 +139,11 @@ module.exports.editPatch = async (req, res) => {
 }
 //GET /permission/:id
 module.exports.permission = async (req, res) => {
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("permission")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/roles`)
+    }
     const records = await Role.find().lean();
     res.render("admin/pages/role/permissions", {
         pageTitle: "Phân quyền",
@@ -147,6 +152,11 @@ module.exports.permission = async (req, res) => {
 }
 //PATCH /permission/:id
 module.exports.permissionPatch = async (req, res) => {
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("permission")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/roles`)
+    }
     const roles = JSON.parse(req.body.permissions);
     if(roles){
         for (const role of roles) {
