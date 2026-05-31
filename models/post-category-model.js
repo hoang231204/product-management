@@ -1,50 +1,41 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const slug = require('mongoose-slug-updater');
-
 mongoose.plugin(slug);
-
-const categorySchema = new mongoose.Schema({ 
-    title: {
-        type: String,
-        required: true 
-    },
+const schema = new mongoose.Schema({
+    title: String,
     parent_id: {
         type: String,
-        default: null,
-        ref: "ProductCategory" 
+        ref: "PostCategory",
+        default: null
     },
     description: String,
     thumbnail: String,
     status: {
         type: String,
-        enum: ['active', 'inactive'],
-        default: "active"
+        enum: ['active', 'inactive','pending'],
+        default: 'active'
     },
     position: Number,
-    slug: { 
-        type: String, 
-        slug: "title", 
-        unique: true 
-    },
-    deleted: {
+    slug: { type: String, slug: "title", unique:true },
+    deleted:{
         type: Boolean,
         default: false
     },
     createdBy:{
-        account_id:{
+        account_id: {
             type: String,
-            ref: "Account",
+            ref: "Account"
         },
         createdAt:{
             type: Date,
             default: Date.now
-        }
+        },  
     },
     deletedBy:{
-        account_id:{
+        account_id: {
             type: String,
-            ref: "Account",
-        },
+            ref: "Account"
+        },  
         deletedAt:{
             type: Date,
             default: Date.now
@@ -63,6 +54,5 @@ const categorySchema = new mongoose.Schema({
         }
     ]
 });
-
-const ProductCategory = mongoose.model('ProductCategory', categorySchema, "product_categories");
-module.exports = ProductCategory;
+const PostCategory = mongoose.model('PostCategory', schema, 'post_categories');
+module.exports = PostCategory;
