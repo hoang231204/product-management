@@ -266,7 +266,6 @@ module.exports.createPost = async (req, res)=>{
         req.flash("error", "Đã có lỗi xảy ra khi tạo sản phẩm.");
         res.redirect(`${systemConfig.prefixAdmin}/products/create`);
     }
-        
  }
 //GET EDIT
 module.exports.edit= async (req,res)=>{
