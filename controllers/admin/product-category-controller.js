@@ -13,7 +13,7 @@ module.exports.index =async (req,res)=>{
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
         return res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
     }
-    const filterStatus = filter(req.query).slice(0,3);
+    const filterStatus = filter(req.query,"category");
     const regex = keyword(req.query);
     let find={
         deleted: false

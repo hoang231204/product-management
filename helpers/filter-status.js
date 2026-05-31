@@ -12,12 +12,20 @@ module.exports = (query, type) => {
     ];
     const productStatuses = ["", "active", "inactive", "low_stock", "pending"];
     const orderStatuses = ["", "pending", "confirmed", "shipping", "delivered", "canceled"];
+    const blogStatuses = ["", "active", "inactive", "pending"];
+    const categoryStatuses = ["", "active", "inactive"];
     let filterStatus = [];
     if(type === 'order'){
         filterStatus = allStatuses.filter(item => orderStatuses.includes(item.status))
     }
     if(type === 'product'){
         filterStatus = allStatuses.filter(item => productStatuses.includes(item.status))
+    }
+    if(type === 'blog'){
+        filterStatus = allStatuses.filter(item => blogStatuses.includes(item.status))
+    }
+    if(type === 'category'){
+        filterStatus = allStatuses.filter(item => categoryStatuses.includes(item.status))
     }
     if(query.status){
         const index = filterStatus.findIndex(item => item.status == query.status)
