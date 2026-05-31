@@ -1,0 +1,129 @@
+extends ../../layouts/default.pug
+include ../../mixins/filter-status.pug
+include ../../mixins/search.pug
+include ../../mixins/pagination.pug
+include ../../mixins/change-multi.pug
+include ../../mixins/show-alert.pug
+include ../../mixins/sort.pug
+block main
+    +alert-success(5000)
+    if(role.permissions.includes("blog_view"))
+        h1 Trang bài viết
+        .card.mb-3
+            .card-header Bộ lọc và Tìm kiếm
+                .card-body
+                    .row
+                        .col-6#filter-area
+                            +boxFilter(filterStatus)
+
+                        .col-6
+                            +boxSearch(keyword)  
+        .card.mb-3
+            .card-header Sắp xếp
+                .card-body
+                    .row
+                        .col-4
+                            +boxSort('blog')
+        .card.mb-3
+            .card-header Thay đổi
+                .card-body 
+                    .row
+                        .col-10
+                            if(role.permissions.includes("blog_edit"))
+                                +boxChange(`${prefixAdmin}/blogs/change-multi?_method=PATCH`, 'blog')
+                        .col-2
+                            if(role.permissions.includes("blog_create"))
+                                a(
+                                    href=`${prefixAdmin}/blogs/create`
+                                    class="btn btn-outline-success"
+                                ) + Thêm mới
+        .card.mb-3
+            .card-header Danh sách bài viết
+                .card-body
+                    table(class="table table-hover table-sm" check-box-multi)
+                        thead
+                            tr
+                                th 
+                                    input(type="checkbox" name="checkAll")
+                                th STT
+                                th Hình ảnh
+                                th Tiêu đề
+                                th Danh mục
+                                th Mô tả
+                                th Vị trí
+                                th Trạng thái
+                                th Người tạo
+                                th Người sửa
+                                th Hành động
+                        tbody
+                            each item, index in posts
+                                tr
+                                    td
+                                        input(
+                                            type="checkbox"
+                                            name="id"
+                                            value=item.id
+                                            )
+                                    td #{index+1+objectPagination.skipPage}
+                                    td
+                                        img( src=item.thumbnail, alt=item.title,width="100px",height="auto")
+                                    td #{item.title}
+                                    td #{item.category_id ? item.category_id.title : 'Chưa có danh mục'}
+                                    td #{item.description}
+                                    td
+                                        input(
+                                            type="number"
+                                            value=item.position 
+                                            style="width:50px"
+                                            min="1"
+                                            name="position"
+                                        )
+                                    td
+                                        if(role.permissions.includes("blog_edit"))
+                                            if item.status == 'active'
+                                                a(
+                                                    href="javascript:;" 
+                                                    class="badge badge-success" 
+                                                    button-change-status 
+                                                    data-id=item._id  
+                                                    data-status=item.status
+                                                    data-next-status="inactive"
+                                                    ) Hoạt động
+                                            else if item.status == 'inactive'
+                                                a(
+                                                    href="javascript:;" 
+                                                    class="badge badge-danger" 
+                                                    button-change-status 
+                                                    data-id=item._id  
+                                                    data-status=item.status
+                                                    data-next-status="active"
+                                                    ) Không hoạt động
+                                    td
+                                        p #{item.createdBy.account_id.fullname}
+                                        p #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                                    td
+                                        if item.updatedBy && item.updatedBy.length > 0
+                                            p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
+                                            p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                        else
+                                            p Chưa có cập nhật
+                                    td
+                                        a(href=`${prefixAdmin}/posts/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
+                                        if(role.permissions.includes("blog_edit"))
+                                            a(href=`${prefixAdmin}/posts/edit/${item._id}` class="btn btn-warning btn-sm ml-1") Sửa
+                                        if(role.permissions.includes("blog_delete"))
+                                            button(class="btn btn-danger btn-sm ml-1" button-delete data-id=item._id) Xóa
+    form(
+        action=""
+        method="POST"
+        form-change-status
+        data-path=`${prefixAdmin}/posts/change-status`
+        ) 
+    form(
+        action=""
+        method="POST"
+        form-delete
+        data-path=`${prefixAdmin}/posts/delete`
+         )
+    +pagination(objectPagination)
+    script(src="/admin/js/change-multi.js") 

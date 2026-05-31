@@ -11,7 +11,7 @@
                             a(href=`${prefixAdmin}/products/recycle-bin`) Thùng rác
             if(role.permissions.includes("category_view"))
                 li
-                    a(href=`${prefixAdmin}/categories`) Quản lý danh mục
+                    a(href=`${prefixAdmin}/product-categories`) Quản lý danh mục
                     ul 
                         li 
                             a(href=`${prefixAdmin}/categories/recycle-bin`) Thùng rác
@@ -43,3 +43,15 @@
                     ul 
                         li 
                             a(href=`${prefixAdmin}/orders/recycle-bin`) Thùng rác
+            if(role.permissions.includes("blog_view"))
+                li
+                    a(href=`${prefixAdmin}/posts`) Quản lý bài viết
+                    ul 
+                        li 
+                            a(href=`${prefixAdmin}/posts/recycle-bin`) Thùng rác
+            if(role.permissions.includes("post_category_view"))
+                li
+                    a(href=`${prefixAdmin}/post-categories`) Quản lý danh mục bài viết
+                    ul 
+                        li 
+                            a(href=`${prefixAdmin}/post-categories/recycle-bin`) Thùng rác

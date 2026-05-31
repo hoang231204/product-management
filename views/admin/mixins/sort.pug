@@ -18,6 +18,11 @@ mixin boxSort(type)
                     else if type === 'order'
                         option(value="createdAt-desc") Mới nhất
                         option(value="createdAt-asc") Cũ nhất
+                    else if type === 'blog'
+                        option(value="createdAt-desc") Mới nhất
+                        option(value="createdAt-asc") Cũ nhất
+                        option(value="title-asc") Tiêu đề A - Z
+                        option(value="title-desc") Tiêu đề Z - A
             .col-4
                 button(
                     class="btn btn-danger"

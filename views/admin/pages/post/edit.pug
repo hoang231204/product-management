@@ -1,0 +1,142 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+include ../../mixins/select-tree.pug
+
+block main
+    +alert-error(5000)
+    +alert-success(5000)
+    h1(class="mb-4") Chỉnh sửa bài viết
+    
+    form(action=`${prefixAdmin}/posts/edit/${post._id}?_method=PATCH` id="form-edit-post" method="POST" enctype="multipart/form-data" form-upload)
+        
+        // Tiêu đề (Title)
+        div(class="form-group")
+            label(for="title") Tiêu đề
+            input(
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                value=post.title
+                required 
+            )
+        div(class="form-group")
+            label(for="category") Danh mục
+            select(
+                name="category"
+                id="category"
+                class="form-control"
+            )
+                option(value=categoryId) #{categoryTitle}
+                if (categoryTree)
+                    +select-tree(categoryTree)
+        // Mô tả (Description)
+        div(class="form-group")
+            label(for="desc") Mô tả
+            textarea(
+                class="form-control textarea-mce"
+                id="desc"
+                name="description"
+                rows="5"
+            )= post.description
+
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="featured"
+                name="featured"
+                value="1"
+                checked=(post.featured === "1")
+            )
+            label(class="form-check-label" for="featured") Nổi bật
+        
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="notFeatured"
+                name="featured"
+                value="0"
+                checked=(post.featured === "0")
+            )
+            label(class="form-check-label" for="notFeatured") Thường
+        div(class="form-group")
+            label(for="content") Nội dung
+            textarea(
+                class="form-control textarea-mce"
+                id="content"
+                name="content"
+                rows="5"
+            )= post.content
+        // Ảnh (Thumbnail)
+        div(class="form-group" upload-image)
+            label(for="thumbnail") Ảnh
+            input(
+                type="file"
+                class="form-control-file"
+                id="thumbnail"
+                name="thumbnail"
+                accept="image/*"
+                upload-image-input
+            )
+            div(class="box-image")
+                img(
+                    src=post.thumbnail
+                    upload-image-preview
+                    class="image-preview"
+                )
+                button(
+                    type="button"
+                    class="btn-remove-image"
+                    aria-label="Remove image"
+                ) ×
+        
+        // Vị trí (Position)
+        div(class="form-group")
+            label(for="position") Vị trí
+            input(
+                type="number"
+                class="form-control"
+                id="position"
+                name="position"
+                value=post.position
+                min="1"
+            )
+        
+        // Trạng thái (Status)
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusActive"
+                name="status"
+                value="active"
+                checked=(product.status === "active")
+            )
+            label(class="form-check-label" for="statusActive") Hoạt động
+        
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusInactive"
+                name="status"
+                value="inactive"
+                checked=(product.status === "inactive")
+            )
+            label(class="form-check-label" for="statusInactive") Dừng hoạt động
+        div(class="form-group form-check form-check-inline")
+            input(
+                type="radio"
+                class="form-check-input"
+                id="statusPending"
+                name="status"
+                value="pending"
+                checked=(product.status === "pending")
+            )
+            label(class="form-check-label" for="statusPending") Đang chờ
+        // Nút submit
+        div(class="form-group")
+            button(type="submit" class="btn btn-primary") Cập nhật bài viết
+            a(href=`${prefixAdmin}/posts` class="btn btn-secondary") Quay lại
