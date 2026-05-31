@@ -46,13 +46,21 @@ block main
                                                         height="40px"
                                                         style="object-fit: cover; border-radius: 50%;"
                                                     )
-                                                td.align-middle #{item.fullname}
+                                                td.align-middle
+                                                    if(item.fullname)
+                                                        p #{item.fullname}
+                                                    else
+                                                        p.em Chưa cập nhật
                                                 td.align-middle #{item.email}
-                                                td.align-middle #{item.phone}
+                                                td.align-middle
+                                                    if(item.phone)
+                                                        p #{item.phone}
+                                                    else
+                                                        p.em Chưa cập nhật
                                                 td.align-middle
                                                     p #{moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')}
                                                 td.align-middle
-                                                     if(item.updatedBy && item.updatedBy.length > 0)
+                                                    if(item.updatedBy && item.updatedBy.length > 0)
                                                         p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
                                                         p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
                                                     else
