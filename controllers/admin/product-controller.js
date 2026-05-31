@@ -39,6 +39,7 @@ module.exports.index = async (req, res) => {
             .sort(sort)
             .limit(objectPagination.limitPage)
             .skip(objectPagination.skipPage)
+            .populate("category_id","title")
             .populate("createdBy.account_id","fullname")
             .populate("updatedBy.account_id","fullname")
             .lean()
@@ -243,7 +244,7 @@ module.exports.edit= async (req,res)=>{
         res.status(404).send("Sản phẩm không tồn tại");
     }
 }
-//POST EDIT
+//PATCH EDIT
 module.exports.editPatch = async (req,res)=>{
     const permissions = res.locals.role.permissions;
     if(!permissions.includes("product_edit"))
@@ -254,6 +255,7 @@ module.exports.editPatch = async (req,res)=>{
     req.body.price = parseInt(req.body.price);
     req.body.discountPercentage = parseInt(req.body.discountPercentage);
     req.body.stock = parseInt(req.body.stock);
+    req.body.position = parseInt(req.body.position);
     const id = req.params.id;
     let updatedBy = {
         account_id: res.locals.user._id,
@@ -279,7 +281,7 @@ module.exports.details = async (req, res) => {
     }
     const product = await Product
         .findOne({ _id: req.params.id }) 
-        .populate("category", "title")
+        .populate("category_id", "title")
         .populate("createdBy.account_id", "fullname")
         .populate("updatedBy.account_id", "fullname")
         .lean();

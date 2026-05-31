@@ -8,7 +8,13 @@ block main
     .container.my-5
         h1.mb-4 #{product.title}
         div(class="border rounded p-2 text-center")
-            img(src=product.thumbnail class="img-fluid")
+            img(src=product.thumbnail class="img-fluid mb-3" style="max-height: 300px; object-fit: cover;")
+        div(class="mb-2")
+            b Danh mục: 
+            if product.category_id
+                span #{product.category_id.title}
+            else
+                span.text-muted Chưa có danh mục
         div(class="mb-2")
             b Trạng thái: 
             if product.featured === '1'

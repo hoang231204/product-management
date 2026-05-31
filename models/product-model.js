@@ -3,7 +3,7 @@ const slug = require('mongoose-slug-updater')
 mongoose.plugin(slug)
 const schema = new mongoose.Schema({ 
     title: String,
-    category:{
+    category_id:{
         type: String,
         ref: "ProductCategory",
         default: null

@@ -10,7 +10,6 @@ block main
                     th STT
                     th Hình ảnh
                     th Tiêu đề
-                    th Giá
                     th Trạng thái
                     th Người xóa
                     th Hoạt động
@@ -21,7 +20,6 @@ block main
                         td
                             img( src=item.thumbnail, alt="Sản phẩm 1",width="100px",height="auto")
                         td #{item.title}
-                        td #{item.price}$
                         td
                             if item.status == 'active'
                                 a(href="javascript:;" class="badge badge-success" ) Hoạt động
