@@ -12,6 +12,11 @@ const schema = new mongoose.Schema({
         default: 'active'
     },
     position: Number,
+    featured: {
+        type: String,
+        enum: ['0', '1'],
+        default: '0'
+    },
     post_category_id:{
         type: String,
         ref: "PostCategory",
