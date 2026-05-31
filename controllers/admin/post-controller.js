@@ -128,3 +128,48 @@ module.exports.postCreate = async (req, res) =>{
         res.redirect(`${systemConfig.prefixAdmin}/posts`)
     }
 }
+//GET /posts/edit/:id
+module.exports.edit = async (req, res) =>{
+    try {
+        const categories = await ProductCategory.find({deleted: false},{status: "active"});
+        const categoryTree = tree(categories);
+        const post = await Post.findById(req.params.id).populate("category_id");
+        const categoryId = post.category_id ? post.category_id._id : null;
+        const categoryTitle = post.category_id ? post.category_id.title : "N/A";
+        res.render("admin/pages/posts/edit",{
+            pageTitle: "Sửa bài viết",
+            post: post,
+            categoryTree: categoryTree,
+            categoryId: categoryId,
+            categoryTitle: categoryTitle
+        })
+    } catch (error) {
+        console.log(error);
+        req.flash("error","Có lỗi xảy ra trong quá trình xử lý!")
+        res.redirect(`${systemConfig.prefixAdmin}/posts`)
+    }
+}
+//PATCH /posts/edit/:id
+module.exports.editPatch = async (req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("blog_edit"))
+    {
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/posts`)
+    }
+    req.body.position = parseInt(req.body.position);
+    const id = req.params.id;
+    let updatedBy = {
+        account_id: res.locals.user._id,
+        updatedAt: new Date()
+    };
+    try {
+        await Post.updateOne({_id:id},{...req.body, $push: { updatedBy: updatedBy }});
+        req.flash("success","Cập nhật bài viết thành công!");
+        res.redirect(`${systemConfig.prefixAdmin}/posts`);
+    } catch (error) {
+        console.log(error);
+        req.flash("error","Cập nhật bài viết thất bại!");
+        res.redirect(`${systemConfig.prefixAdmin}/posts`);
+    }
+}
