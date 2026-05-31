@@ -24,4 +24,7 @@ router.patch(
 router.patch("/change-status/:status/:id",postController.changeStatus)
 router.patch("/change-multi",postController.changeMulti)
 router.patch("/delete/:id",postController.delete)
+router.get("/recycle-bin",postController.recycleBin)
+router.patch("/recycle-bin/restore/:id",postController.restore)
+router.patch("/recycle-bin/hard-delete/:id",postController.hardDelete)
 module.exports = router;

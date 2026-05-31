@@ -289,3 +289,59 @@ module.exports.delete = async (req, res) =>{
     }
     res.redirect(`${systemConfig.prefixAdmin}/posts`);
 }
+//GET /posts/recycle-bin
+module.exports.recycleBin = async (req, res) =>{
+    try{
+        const permissions = res.locals.role.permissions;
+        if(!permissions.includes("blog_view")){
+            req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+            return res.redirect(`${systemConfig.prefixAdmin}/posts`)
+        }
+        let find={};
+            find.deleted = true;
+            const posts = await Post.find(find).populate("deletedBy.account_id","fullname").lean();
+            res.render("admin/pages/post/recycle-bin",{
+                pageTitle:"Thùng rác",
+                posts: posts
+            })
+    }
+    catch(error){
+        console.log(error);
+        req.flash('error', 'Đã có lỗi xảy ra, không thể tải thùng rác!');
+        res.redirect(`${systemConfig.prefixAdmin}/posts`);
+    }
+}
+//PATCH /posts/recycle-bin/restore/:id
+module.exports.restore = async (req, res) =>{
+    try{
+        const dataId = req.params.id;
+        let updatedBy = {
+            account_id: res.locals.user._id,
+            updatedAt: new Date()
+        };
+        await Post.updateOne({_id:dataId},{deleted:false, $push: { updatedBy: updatedBy } });
+        req.flash('success', 'Khôi phục sản phẩm thành công!');
+        const backUrl = req.get("Referrer");
+        res.redirect(backUrl);
+    }
+    catch(error){
+        console.log(error);
+        req.flash('error', 'Đã có lỗi xảy ra, không thể khôi phục sản phẩm!');
+        res.redirect(`${systemConfig.prefixAdmin}/posts/recycle-bin`);
+    }
+}
+//PATCH /posts/recycle-bin/hard-delete/:id
+module.exports.hardDelete = async (req, res) =>{
+    try{
+        const dataId = req.params.id;
+        await Post.deleteOne({_id:dataId});
+        req.flash('success', 'Xóa vĩnh viễn sản phẩm thành công!');
+        const backUrl = req.get("Referrer");
+        res.redirect(backUrl);
+    }
+    catch(error){
+        console.log(error);
+        req.flash('error', 'Đã có lỗi xảy ra, không thể xóa vĩnh viễn sản phẩm!');
+        res.redirect(`${systemConfig.prefixAdmin}/posts/recycle-bin`);
+    }
+}
