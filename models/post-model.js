@@ -17,7 +17,7 @@ const schema = new mongoose.Schema({
         enum: ['0', '1'],
         default: '0'
     },
-    post_category_id:{
+    category_id:{
         type: String,
         ref: "PostCategory",
         default: null
