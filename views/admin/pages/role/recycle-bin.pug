@@ -24,7 +24,7 @@ block main
                                 td #{index + 1}
                                 td <b>#{item.title}</b>
                                 td #{item.description}
-                                td #{item.deletedBy.accountFullName}
+                                td #{item.deletedBy.account_id.fullname}
                                 td #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm')}
                                 td
                                     button(

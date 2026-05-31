@@ -1,10 +1,9 @@
 extends ../../layouts/default.pug
 block main
     .container-fluid.mt-4
-            h1 Thùng rác người dùng
-            
-            .card.mb-3
-                .card-header Danh sách người dùng đã xóa
+        h1 Thùng rác người dùng
+        .card.mb-3
+            .card-header Danh sách người dùng đã xóa
                 .card-body
                     table(class="table table-hover table-sm")
                         thead
@@ -14,6 +13,8 @@ block main
                             th Họ tên
                             th Email
                             th Số điện thoại
+                            th Người xóa
+                            th Thời gian xóa
                             th Trạng thái
                             th Hoạt động
                         tbody
@@ -26,6 +27,8 @@ block main
                                         td #{item.fullName}
                                         td #{item.email}
                                         td #{item.phone}
+                                        td #{item.deletedBy.account_id.fullname}
+                                        td #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm')}
                                         td
                                             if item.status === 'active'
                                                 span.badge.status-active Hoạt động

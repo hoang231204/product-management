@@ -45,7 +45,12 @@ module.exports.changeStatus = async(req, res) =>{
         req.flash('error', 'Không tìm thấy người dùng');
         return res.redirect('/admin/users');
     }
+    let updateBy={
+        account_id: res.locals.user._id,
+        updateAt: new Date()
+    }
     user.status = status;
+    user.updatedBy.push(updateBy);
     await user.save();
     req.flash('success', 'Cập nhật trạng thái thành công');
     res.redirect(`${systemConfig.prefixAdmin}/users`);
@@ -64,6 +69,11 @@ module.exports.delete = async(req, res) =>{
         return res.redirect(`${systemConfig.prefixAdmin}/users`);
     }
     user.deleted = true;
+    let deletedBy={
+        account_id: res.locals.user._id,
+        deletedAt: new Date()
+    }
+    user.deletedBy = deletedBy;
     await user.save();
     req.flash('success', 'Xóa người dùng thành công');
     res.redirect(`${systemConfig.prefixAdmin}/users`);
@@ -94,7 +104,11 @@ module.exports.editPatch = async (req, res) =>{
         return res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
     }
     const id = req.params.id;
-    await User.updateOne({_id: id}, req.body);
+    let updateBy={
+        account_id: res.locals.user._id,
+        updateAt: new Date()
+    }
+    await User.updateOne({_id: id}, {...req.body, $push: {updatedBy: updateBy}});
     req.flash('success', 'Cập nhật người dùng thành công');
     res.redirect(`${systemConfig.prefixAdmin}/users`);
 }
@@ -119,13 +133,27 @@ module.exports.recycleBin = async(req, res) =>{
 }
 //PATCH /admin/users/recycle-bin/restore
 module.exports.restore = async(req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("user_edit")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
+    }
     const id = req.params.id;
-    await User.updateOne({_id: id},{deleted: false});
+    let updateBy={
+        account_id: res.locals.user._id,
+        updateAt: new Date()
+    }
+    await User.updateOne({_id: id},{deleted: false, $push: {updatedBy: updateBy}});
     req.flash('success', 'Khôi phục người dùng thành công');
     res.redirect(`${systemConfig.prefixAdmin}/users/recycle-bin`);
 }
 //DELETE /admin/users/recycle-bin/hard-delete
 module.exports.hardDelete = async(req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("user_delete")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
+    }
     const id = req.params.id;
     await User.deleteOne({_id: id});
     req.flash('success', 'Xóa vĩnh viễn người dùng thành công');
