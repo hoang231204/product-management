@@ -22,5 +22,6 @@ router.patch(
     postController.editPatch
 )
 router.patch("/change-status/:status/:id",postController.changeStatus)
+router.patch("/change-multi",postController.changeMulti)
 router.patch("/delete/:id",postController.delete)
 module.exports = router;

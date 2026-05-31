@@ -10,16 +10,21 @@ mixin boxChange(path, type)
                     select(name="type" class="form-control")
                         option(disabled selected) Chọn hành động
                         if type === 'product'
-                            option(value="active") Hoạt động
-                            option(value="inactive") Dừng hoạt động
-                            option(value="pending") Đang chờ
-                            option(value="low_stock") Sắp hết
+                            option(value="active") Chuyển trạng thái hoạt động
+                            option(value="inactive") Chuyển trạng thái dừng hoạt động
+                            option(value="pending") Chuyển trạng thái đang chờ
+                            option(value="low_stock") Chuyển trạng thái sắp hết hàng
                             option(value="change-position") Thay đổi vị trí
                         else if type === 'order'
                             option(value="confirmed") Chuyển trạng thái đã xác nhận
                             option(value="shipping") Chuyển trạng thái đang giao hàng
                             option(value="delivered") Chuyển trạng thái đã giao hàng
                             option(value="canceled") Chuyển trạng thái hủy đơn
+                        else if type === 'blog'
+                            option(value="active") Chuyển trạng thái hoạt động
+                            option(value="inactive") Chuyển trạng thái dừng hoạt động
+                            option(value="pending") Chuyển trạng thái đang chờ
+                            option(value="change-position") Thay đổi vị trí
                         option(value="delete") Xóa
                 .form-group
                     input(

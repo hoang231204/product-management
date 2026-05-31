@@ -30,11 +30,11 @@ block main
                     .row
                         .col-10
                             if(role.permissions.includes("blog_edit"))
-                                +boxChange(`${prefixAdmin}/blogs/change-multi?_method=PATCH`, 'blog')
+                                +boxChange(`${prefixAdmin}/posts/change-multi?_method=PATCH`, 'blog')
                         .col-2
                             if(role.permissions.includes("blog_create"))
                                 a(
-                                    href=`${prefixAdmin}/blogs/create`
+                                    href=`${prefixAdmin}/posts/create`
                                     class="btn btn-outline-success"
                                 ) + Thêm mới
         .card.mb-3

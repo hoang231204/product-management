@@ -196,6 +196,67 @@ module.exports.changeStatus = async (req, res) =>{
         res.redirect(`${systemConfig.prefixAdmin}/posts`);
     }
 }
+//PATCH /posts/change-multi
+module.exports.changeMulti = async (req, res) =>{
+    try{
+        const idsChecked = req.body.ids; 
+        const typeChecked = req.body.type;
+        const ids = idsChecked.split(","); 
+        let updatedBy = {
+            account_id: res.locals.user._id,
+            updatedAt: new Date()
+        };
+        const permissions = res.locals.role.permissions;
+        switch (typeChecked) {
+            case "delete":
+                if(!permissions.includes("blog_delete")){
+                    req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+                    return res.redirect(`${systemConfig.prefixAdmin}/posts`)
+                }
+                await Post.updateMany(
+                { 
+                    _id: { $in: ids },
+                    deleted: false 
+                },
+                {
+                    $set: {
+                        deleted: true,
+                        deletedBy: {
+                            account_id: res.locals.user._id,
+                            deletedAt: new Date()
+                        }
+                    }
+                }
+            );
+                break;
+    
+            case "change-position":
+                if(!permissions.includes("blog_edit")) {
+                    req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+                    return res.redirect(`${systemConfig.prefixAdmin}/posts`)
+                }
+                for (const item of ids) {
+                    const [id, position] = item.split("-");
+                    const newPosition = parseInt(position);
+                    await Post.updateOne({ _id: id }, { position: newPosition, $push: { updatedBy: updatedBy } });
+                }
+                break;
+            default:
+                if(!permissions.includes("blog_edit")) {
+                    req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+                    return res.redirect(`${systemConfig.prefixAdmin}/posts`)
+                }
+                await Post.updateMany({ _id: { $in: ids } }, { status: typeChecked, $push: { updatedBy: updatedBy } }); 
+        }
+        req.flash('success', 'Cập nhật trạng thái thành công!');
+        res.redirect(`${systemConfig.prefixAdmin}/posts`);
+    }
+    catch(error){
+        console.log(error);
+        req.flash('error', 'Đã có lỗi xảy ra, không thể cập nhật trạng thái!');
+        res.redirect(`${systemConfig.prefixAdmin}/posts`);
+    }
+}
 //PATCH /posts/delete/:id
 module.exports.delete = async (req, res) =>{
     const permissions = res.locals.role.permissions;
