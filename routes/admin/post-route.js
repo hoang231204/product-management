@@ -21,4 +21,6 @@ router.patch(
     middleware.upload,
     postController.editPatch
 )
+router.patch("/change-status/:status/:id",postController.changeStatus)
+router.patch("/delete/:id",postController.delete)
 module.exports = router;

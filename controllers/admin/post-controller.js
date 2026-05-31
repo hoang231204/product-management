@@ -131,7 +131,7 @@ module.exports.postCreate = async (req, res) =>{
 //GET /posts/edit/:id
 module.exports.edit = async (req, res) =>{
     try {
-        const categories = await ProductCategory.find({deleted: false},{status: "active"});
+        const categories = await ProductCategory.find({deleted: false,status: "active"});
         const categoryTree = tree(categories);
         const post = await Post.findById(req.params.id).populate("category_id");
         const categoryId = post.category_id ? post.category_id._id : null;
@@ -172,4 +172,59 @@ module.exports.editPatch = async (req, res) =>{
         req.flash("error","Cập nhật bài viết thất bại!");
         res.redirect(`${systemConfig.prefixAdmin}/posts`);
     }
+}
+//PATCH /posts/change-status/:status/:id
+module.exports.changeStatus = async (req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("blog_edit"))    {
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/posts`)
+    }
+    const id = req.params.id;
+    const status = req.params.status;
+    let updatedBy = { 
+        account_id: res.locals.user._id,
+        updatedAt: new Date()
+    };
+    try {
+        await Post.updateOne({_id:id},{status: status, $push: { updatedBy: updatedBy }});
+        req.flash("success","Cập nhật trạng thái bài viết thành công!");
+        res.redirect(`${systemConfig.prefixAdmin}/posts`);
+    } catch (error) {
+        console.log(error);
+        req.flash("error","Cập nhật trạng thái bài viết thất bại!");
+        res.redirect(`${systemConfig.prefixAdmin}/posts`);
+    }
+}
+//PATCH /posts/delete/:id
+module.exports.delete = async (req, res) =>{
+    const permissions = res.locals.role.permissions;
+    if(!permissions.includes("blog_delete")){
+        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+        return res.redirect(`${systemConfig.prefixAdmin}/posts`)
+    }
+    try {
+        const idDel = req.params.id;
+        const accountId = res.locals.user._id;
+        await Post.updateOne(
+            { 
+                _id: idDel, 
+                deleted: false 
+            },
+            {
+                $set: {
+                    deleted: true,
+                    deletedBy: {
+                        account_id: accountId,
+                        deletedAt: new Date()
+                    }
+                }
+            }
+        );
+        req.flash('success', 'Xóa bài viết thành công!');
+    } catch (error) {
+        console.error("Lỗi xóa bài viết:", error);
+        req.flash('error', 'Đã có lỗi xảy ra, không thể xóa bài viết.');
+    }
+    res.redirect(`${systemConfig.prefixAdmin}/posts`);
 }
