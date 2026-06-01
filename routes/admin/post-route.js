@@ -5,7 +5,6 @@ const multer  = require('multer')
 const upload = multer();
 const middleware = require("../../middleware/admin/uploadCloud-middleware")
 const validate = require("../../validates/admin/post-validate")
-const router = express.Router();
 router.get("/",postController.index)
 router.get("/details/:id",postController.details)
 router.get("/create",postController.create)

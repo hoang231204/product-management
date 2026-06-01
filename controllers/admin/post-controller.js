@@ -3,7 +3,7 @@ const filter = require('../../helpers/filter-status');
 const search = require('../../helpers/search');
 const pagination = require('../../helpers/pagination');
 const systemConfig = require('../../config/system');
-const tree = require('../../helpers/tree');
+const tree = require('../../helpers/create-tree');
 const ProductCategory = require('../../models/product-category-model');
 //GET /posts
 module.exports.index = async (req, res) => {

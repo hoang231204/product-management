@@ -22,6 +22,10 @@ const schema = new mongoose.Schema({
         ref: "PostCategory",
         default: null
     },
+    author: {
+        type: String,
+        default: null
+    },
     slug: { type: String, slug: "title", unique:true },
     deleted:{
         type: Boolean,
