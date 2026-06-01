@@ -4,7 +4,7 @@ const search = require('../../helpers/search');
 const pagination = require('../../helpers/pagination');
 const systemConfig = require('../../config/system');
 const tree = require('../../helpers/create-tree');
-const ProductCategory = require('../../models/product-category-model');
+const PostCategory = require('../../models/post-category-model');
 //GET /posts
 module.exports.index = async (req, res) => {
     const permissions = res.locals.role.permissions;
@@ -92,7 +92,7 @@ module.exports.create = async (req, res) =>{
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
         return res.redirect(`${systemConfig.prefixAdmin}/posts`)
     }
-    const categories = await ProductCategory.find({status: "active", deleted: false});
+    const categories = await PostCategory.find({status: "active", deleted: false});
     const categoryTree = tree(categories);
     res.render("admin/pages/post/create", {
         pageTitle: "Tạo mới bài viết",
@@ -107,7 +107,7 @@ module.exports.postCreate = async (req, res) =>{
             req.flash("error","Bạn không có quyền thực hiện chức năng này!")
             return res.redirect(`${systemConfig.prefixAdmin}/posts`)
         }
-        const count = await Product.countDocuments()
+        const count = await Post.countDocuments()
         if(req.body.position == ''){
             req.body.position = count + 1;
         }
@@ -131,7 +131,7 @@ module.exports.postCreate = async (req, res) =>{
 //GET /posts/edit/:id
 module.exports.edit = async (req, res) =>{
     try {
-        const categories = await ProductCategory.find({deleted: false,status: "active"});
+        const categories = await PostCategory.find({deleted: false,status: "active"});
         const categoryTree = tree(categories);
         const post = await Post.findById(req.params.id).populate("category_id");
         const categoryId = post.category_id ? post.category_id._id : null;
