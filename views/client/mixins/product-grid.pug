@@ -7,3 +7,11 @@ mixin product-grid(products)
         each item in products
             .col-4.mb-3
                 +product-item(item)
+mixin blog-grid(blogs)
+    if(blogs && blogs.length === 0)
+        .col-12
+            p.text-center.text-muted Không có bài viết nào
+    else
+        each item in blogs
+            .col-4.mb-3
+                +blog-item(item)

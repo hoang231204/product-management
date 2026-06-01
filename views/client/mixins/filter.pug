@@ -1,0 +1,7 @@
+mixin category-filter(categories)
+  .category-filter
+    h4 Danh mục bài viết
+    ul.list-group
+      each item in categories
+        li.list-group-item
+          button(class=`btn btn-sm ml-1 btn-outline-success ${item.class}`,data-slug=item.slug, button-category) #{item.title}

@@ -9,3 +9,16 @@ mixin product-item(item)
       .inner-price-new #{item.priceNew}$
       .inner-price-old #{item.price}$
       .inner-discount -#{item.discountPercentage}%
+mixin blog-item(item)
+  .blog-item
+    .inner-image
+      img(src=item.thumbnail, alt="Hình ảnh", srcset="")
+      a(href=`/blogs/details/${item.slug}`) 
+        h3.inner-title #{item.title}
+      .inner-description #{item.description}
+      .inner-date #{item.createdAt}
+      .inner-author Tác giả: 
+        if(item.author)
+          | #{item.author}
+        else
+          | Không rõ

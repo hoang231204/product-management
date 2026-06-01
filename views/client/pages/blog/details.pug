@@ -1,0 +1,27 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+
+block main
+    .post-detail
+        .container.my-5
+            .row
+                .col-12
+                    h1(class="inner-title") #{post.title}
+                    div(class="inner-info my-3")
+                        if (post.category)
+                            span.mr-3 Danh mục: 
+                                a(href=`/blogs/${post.category.slug}`) #{post.category.title}
+                        
+                        span.text-muted Đăng ngày: #{moment(post.createdAt).format("DD/MM/YYYY")}
+                    .inner-thumb.my-4
+                        img(src=post.thumbnail, alt=post.title, class="img-fluid")
+
+            .row.mt-5
+                .col-12
+                    div(class="inner-content")
+                        .content-body !{post.content}
+            
+            .row.mt-5
+                .col-12
+                    div(class="inner-back")
+                        a(href="/blogs" class="btn btn-outline-secondary") Quay lại danh sách

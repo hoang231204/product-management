@@ -86,3 +86,21 @@ if(cancelButtons.length>0){
     })
   }
 }
+//FILTER
+const filterButtons = document.querySelectorAll("[button-category]")
+if(filterButtons.length>0){
+    let url = new URL(window.location.href)
+    filterButtons.forEach(button=>{
+        button.addEventListener("click",()=>{
+            const slug = button.getAttribute("data-slug")
+            if(slug){
+                url.searchParams.set("slugCategory", slug);
+                url.searchParams.set("page",1)
+            }
+            else{
+                url.searchParams.delete("slugCategory")
+            }
+            window.location.href = url;
+        })
+    })
+}
