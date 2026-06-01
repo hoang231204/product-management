@@ -9,9 +9,9 @@
                     ul 
                         li 
                             a(href=`${prefixAdmin}/products/recycle-bin`) Thùng rác
-            if(role.permissions.includes("category_view"))
+            if(role.permissions.includes("product_category_view"))
                 li
-                    a(href=`${prefixAdmin}/product-categories`) Quản lý danh mục
+                    a(href=`${prefixAdmin}/product-categories`) Quản lý danh mục sản phẩm
                     ul 
                         li 
                             a(href=`${prefixAdmin}/categories/recycle-bin`) Thùng rác
