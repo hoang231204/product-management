@@ -26,7 +26,7 @@ module.exports.index = async (req, res) =>{
         const objectPagination = pagination(req.query, count);
         const blogs = await Post.find(find).skip(objectPagination.skipPage).limit(objectPagination.limitPage).lean();
         res.render('client/pages/blog/index', {
-            path: 'blogs',
+            pageTitle: 'Danh sách bài viết',
             categories: categories,
             blogs: blogs,
             objectPagination: objectPagination
@@ -43,7 +43,7 @@ module.exports.details = async (req, res) =>{
         const slugBlog = req.params.slugBlog;
     const blog = await Post.findOne({slug: slugBlog}).lean();
         res.render('client/pages/blog/details', {
-            path: 'blogs',
+            pageTitle: 'Chi tiết bài viết',
             blog: blog
         });
     }

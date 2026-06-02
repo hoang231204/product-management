@@ -13,6 +13,6 @@ mixin pagination(objectPagination)
                 button(class="page-link" button-page=i) #{i}
 
         // Trang sau
-        if(objectPagination.currentPage != objectPagination.totalPage)
+        if(objectPagination.currentPage != objectPagination.totalPage && objectPagination.totalPage > 0)
             li(class="page-item")
             button(class="page-link" button-page = objectPagination.currentPage + 1) Kế tiếp
