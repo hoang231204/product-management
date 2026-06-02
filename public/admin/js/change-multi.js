@@ -1,4 +1,3 @@
-
 //CHANGEMULTI STATUS - DELETE - POSITION
 const checkboxMulti = document.querySelector("[check-box-multi]")
 if(checkboxMulti){

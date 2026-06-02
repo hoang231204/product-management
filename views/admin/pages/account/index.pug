@@ -71,6 +71,7 @@ block main
                                                             button-change-status
                                                             data-status=item.status
                                                             data-id=item.id
+                                                            data-next-status="inactive"
                                                         ) Hoạt động
                                                     else
                                                         button(
@@ -78,6 +79,7 @@ block main
                                                             button-change-status
                                                             data-status=item.status
                                                             data-id=item.id
+                                                            data-next-status="active"
                                                         ) Dừng hoạt động
                                             td 
                                                 if(item.createdBy && item.createdBy.account_id)

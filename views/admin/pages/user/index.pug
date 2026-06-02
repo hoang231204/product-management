@@ -73,6 +73,7 @@ block main
                                                                 button-change-status
                                                                 data-status=item.status
                                                                 data-id=item.id
+                                                                data-next-status="inactive"
                                                             ) Hoạt động
                                                         else
                                                             button(
@@ -80,6 +81,7 @@ block main
                                                                 button-change-status
                                                                 data-status=item.status
                                                                 data-id=item.id
+                                                                data-next-status="active"
                                                             ) Dừng hoạt động
                                                 td.align-middle
                                                     if(role.permissions.includes('user_edit'))
