@@ -276,25 +276,25 @@ module.exports.changeMulti = async (req, res) => {
         let bulkOps = [];
         switch (typeChecked) {
             case "active":
-                if(!permissions.includes("post_category_edit")) {
+                if(!permissions.includes("product_category_edit")) {
                     req.flash("error","Bạn không có quyền thực hiện chức năng này!")
                     return res.redirect(`${systemConfig.prefixAdmin}/post-categories`)
                 }
                 const idsSelectedSet = new Set(ids);
-
                 for (const id of ids) {
                     const current = categories.find(item => item._id.toString() === id);
-                    if (checkStatusParentsMulti(categories, current.parent_id?.toString(), idsSelectedSet)) {
-                        bulkOps.push({
-                            updateOne: {
-                                filter: { _id: id },
-                                update: { 
-                                    $set: { status: "active" }, 
-                                    $push: { updatedBy: updatedBy } 
-                                }
-                            }
-                        });
+                    const check = checkStatusParentsMulti(categories, current.parent_id?.toString(), idsSelectedSet);
+                    if (!check) {
+                        req.flash("error", `Không thể kích hoạt danh mục "${current.title}" khi danh mục cha chưa được kích hoạt!`);
+                        const backUrl = req.get("Referrer");
+                        return res.redirect(backUrl);
                     }
+                    bulkOps.push({
+                        updateOne: {
+                            filter: { _id: id },
+                            update: { $set: { status: "active" }, $push: { updatedBy: updatedBy } }
+                        }
+                    }); 
                 }
                 break;
 
