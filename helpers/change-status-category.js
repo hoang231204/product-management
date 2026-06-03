@@ -1,4 +1,4 @@
-const checkStatusParents = require("./check-status-parents");
+const checkStatusParents = require("./check-status-parent");
 const getChildren = require("./get-children");
 module.exports = (arr, status, id, req, res)=>{
     const ids = []

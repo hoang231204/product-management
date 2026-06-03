@@ -4,7 +4,8 @@ const tree = require("../../helpers/create-tree");
 const filter = require("../../helpers/filter-status")
 const keyword = require("../../helpers/search");
 const getChildren = require("../../helpers/get-children")
-const checkStatusParents = require("../../helpers/check-status-parents");
+const checkStatusParents = require("../../helpers/check-status-parent");
+const checkStatusParentsMulti = require("../../helpers/check-status-parents-multi");
 const changeStatusCategory = require("../../helpers/change-status-category");
 //GET /categories
 module.exports.index =async (req,res)=>{
@@ -86,7 +87,7 @@ module.exports.changeStatus = async (req,res)=>{
     let find={
         deleted: false,
     }
-    const categories = await Category.find(find);
+    const categories = await ProductCategory.find(find);
     let ids = changeStatusCategory(categories, status, id, req, res);
     if(!ids){
         req.flash("error", "Không thể kích hoạt danh mục khi danh mục cha chưa được kích hoạt!");
@@ -98,7 +99,7 @@ module.exports.changeStatus = async (req,res)=>{
         updatedAt: new Date()
     };
     await ProductCategory.updateMany({_id: {$in: ids}}, {status: status, $push: { updatedBy: updatedBy }});
-    req.flash("success", "Cập nhật trạng thái danh mục thành công!");
+    req.flash("success", `Cập nhật trạng thái danh mục thành công!`);
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
 }
@@ -231,16 +232,21 @@ module.exports.changeMulti = async (req, res) => {
                     req.flash("error","Bạn không có quyền thực hiện chức năng này!")
                     return res.redirect(`${systemConfig.prefixAdmin}/product-categories`)
                 }
+                const idsSelectedSet = new Set(ids);
                 for (const id of ids) {
-                    const current = categories.find(item => item.id === id);
-                    if (checkStatusParents(categories, current.parent_id)) {
-                        bulkOps.push({
-                            updateOne: {
-                                filter: { _id: id },
-                                update: { $set: { status: "active" }, $push: { updatedBy: updatedBy } }
-                            }
-                        });
+                    const current = categories.find(item => item._id.toString() === id);
+                    const check = checkStatusParentsMulti(categories, current.parent_id?.toString(), idsSelectedSet);
+                    if (!check) {
+                        req.flash("error", `Không thể kích hoạt danh mục "${current.title}" khi danh mục cha chưa được kích hoạt!`);
+                        const backUrl = req.get("Referrer");
+                        return res.redirect(backUrl);
                     }
+                    bulkOps.push({
+                        updateOne: {
+                            filter: { _id: id },
+                            update: { $set: { status: "active" }, $push: { updatedBy: updatedBy } }
+                        }
+                    }); 
                 }
                 break;
 
@@ -328,9 +334,9 @@ module.exports.recycleBin = async (req, res)=>{
 //PATCH /recycle-bin/restore/:id
 module.exports.restore = async (req, res)=>{
    const id = req.params.id;
-   const category = await ProductCategory.findOne({_id:id}).populate("parent_id","deleted");
-   if(category.parent_id && category.parent_id.deleted) {
-       req.flash("error", "Không thể khôi phục danh mục này vì danh mục cha đã bị xóa!");
+   const category = await ProductCategory.findOne({_id:id}).populate("parent_id","deleted status title");
+   if(category.parent_id && category.parent_id.deleted && category.parent_id.status === "active"){ {
+       req.flash("error", `Không thể khôi phục danh mục "${category.title}" khi danh mục cha "${category.parent_id.title}" đang bị xóa hoặc không hoạt động!`);
        const backUrl = req.get("Referrer");
        return res.redirect(backUrl);
    }
@@ -338,6 +344,7 @@ module.exports.restore = async (req, res)=>{
    req.flash("success", "Khôi phục danh mục thành công!");
    const backUrl = req.get("Referrer");
    res.redirect(backUrl);
+}
 }
 //DELETE /recycle-bin/hard-delete/:id
 module.exports.hardDelete = async (req, res)=>{

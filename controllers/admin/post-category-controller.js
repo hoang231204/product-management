@@ -4,7 +4,8 @@ const tree = require("../../helpers/create-tree");
 const filter = require("../../helpers/filter-status")
 const keyword = require("../../helpers/search");
 const getChildren = require("../../helpers/get-children")
-const checkStatusParents = require("../../helpers/check-status-parents");
+const checkStatusParents = require("../../helpers/check-status-parent");
+const checkStatusParentsMulti = require("../../helpers/check-status-parents-multi");
 const changeStatusCategory = require("../../helpers/change-status-category");
 //GET /categories
 module.exports.index =async (req,res)=>{
@@ -279,13 +280,18 @@ module.exports.changeMulti = async (req, res) => {
                     req.flash("error","Bạn không có quyền thực hiện chức năng này!")
                     return res.redirect(`${systemConfig.prefixAdmin}/post-categories`)
                 }
+                const idsSelectedSet = new Set(ids);
+
                 for (const id of ids) {
-                    const current = categories.find(item => item.id === id);
-                    if (checkStatusParents(categories, current.parent_id)) {
+                    const current = categories.find(item => item._id.toString() === id);
+                    if (checkStatusParentsMulti(categories, current.parent_id?.toString(), idsSelectedSet)) {
                         bulkOps.push({
                             updateOne: {
                                 filter: { _id: id },
-                                update: { $set: { status: "active" }, $push: { updatedBy: updatedBy } }
+                                update: { 
+                                    $set: { status: "active" }, 
+                                    $push: { updatedBy: updatedBy } 
+                                }
                             }
                         });
                     }
@@ -382,26 +388,27 @@ module.exports.recycleBin = async (req, res)=>{
 }
 //PATCH /recycle-bin/restore/:id
 module.exports.restore = async (req, res)=>{
-   const id = req.params.id;
-   const category = await PostCategory.findOne({_id:id}).populate("parent_id","deleted");
-   if(category.parent_id && category.parent_id.deleted) {
-       req.flash("error", "Không thể khôi phục danh mục này vì danh mục cha đã bị xóa!");
-       const backUrl = req.get("Referrer");
-       return res.redirect(backUrl);
-   }
-   let updatedBy = {
-       account_id: res.locals.user._id,
-       updatedAt: new Date()
-   };
-   try{
-        await PostCategory.updateOne({_id:id},{deleted:false, $push: { updatedBy: updatedBy }});
-        req.flash("success", "Khôi phục danh mục thành công!");
-   }
-    catch(error){
-       req.flash("error", "Có lỗi xảy ra khi khôi phục danh mục!");
-   }
-   const backUrl = req.get("Referrer");
-   res.redirect(backUrl);
+    const id = req.params.id;
+    const category = await PostCategory.findOne({_id:id}).populate("parent_id","deleted status title");
+    if(category.parent_id && category.parent_id.deleted && category.parent_id.status === "active"){ {
+        req.flash("error", `Không thể khôi phục danh mục "${category.title}" khi danh mục cha "${category.parent_id.title}" đang bị xóa hoặc không hoạt động!`);
+        const backUrl = req.get("Referrer");
+        return res.redirect(backUrl);
+    }
+    let updatedBy = {
+        account_id: res.locals.user._id,
+        updatedAt: new Date()
+    };
+    try{
+            await PostCategory.updateOne({_id:id},{deleted:false, $push: { updatedBy: updatedBy }});
+            req.flash("success", "Khôi phục danh mục thành công!");
+    }
+        catch(error){
+        req.flash("error", "Có lỗi xảy ra khi khôi phục danh mục!");
+    }
+    const backUrl = req.get("Referrer");
+    res.redirect(backUrl);
+    }
 }
 //DELETE /recycle-bin/hard-delete/:id
 module.exports.hardDelete = async (req, res)=>{
