@@ -246,7 +246,6 @@
         color: var(--md-primary);
     }
 
-    .header .inner-user,
     .header .inner-cart {
         display: flex;
         align-items: center;

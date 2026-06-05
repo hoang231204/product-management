@@ -10,7 +10,7 @@ header.header
               img(src=websiteInfor.logo, alt="Logo" width="40" height="40")
             else
               img(src="/client/images/logo.png", alt="Logo" width="40" height="40")
-      .col-2
+      .col-3
         .inner-search
           +boxSearch(keyword)
       .col-5
@@ -34,8 +34,8 @@ header.header
               | #{user.fullname} /
             a(href="/user/logout" class="text-dark text-decoration-none ms-2") Đăng xuất
           else
-            a(href="/user/login" class="text-dark text-decoration-none") Đăng nhập/ 
-            a(href="/user/register" class="text-dark text-decoration-none ms-2") Đăng ký
+            a(href="/user/login" class="text-dark text-decoration-none") Đăng nhập
+            a(href="/user/register" class="text-dark text-decoration-none") Đăng ký
       .col-1
         .inner-cart
           a(
