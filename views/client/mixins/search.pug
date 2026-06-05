@@ -1,5 +1,6 @@
 mixin boxSearch(keyword)
-     form(
+      form(
+          id="form-search"
         method="get"
         action="/search"
      )
@@ -11,3 +12,5 @@ mixin boxSearch(keyword)
                 class="form-control"
                 value = keyword
             )
+            .input-group-append
+                button(type="submit" class="btn btn-primary") Tìm

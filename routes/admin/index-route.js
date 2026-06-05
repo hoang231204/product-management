@@ -10,7 +10,6 @@ const postRoute = require('./post-route');
 const postCategoryRoute = require('./post-category-route');
 const settingGeneralRoute = require('./setting-general-route');
 const privateRoute = require('../../middleware/admin/private-route');
-const websiteInfor = require('../../middleware/admin/website-infor');
 const myProfileRoute = require('./my-profile-route');
 const PATH_ADMIN = require('../../config/system')
 module.exports = (app)=>{
