@@ -127,7 +127,6 @@ if(buttonsEdit.length>0){
 
 // PREVIEW IMAGE
 const formCreate = document.querySelector("[form-upload]")
-console.log(formCreate)
 if(formCreate){
     const uploadImage= formCreate.querySelector("[upload-image]")
     const uploadImageInput = document.querySelector("[upload-image-input]")

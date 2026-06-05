@@ -1,0 +1,188 @@
+extends ../../layouts/default.pug
+include ../../mixins/show-alert.pug
+block main
+    +alert-success(3000)
+    +alert-error(3000)
+    h1.mb-4 Cấu hình thông tin website
+    .card.mb-4
+        .card-header Thông tin chung
+        .card-body
+            form(
+                action=`${prefixAdmin}/settings/website-infor?_method=PATCH` 
+                method="POST"
+                enctype="multipart/form-data"
+                form-upload
+            )
+                //- Tên Website
+                .form-group.mb-3
+                    label(for="websiteName") Tên website
+                    if(setting && setting.websiteName)
+                        input(
+                            type="text" 
+                            class="form-control" 
+                            id="websiteName" 
+                            name="websiteName" 
+                            value=setting.websiteName
+                        )
+                    else
+                        input(
+                            type="text" 
+                            class="form-control" 
+                            id="websiteName" 
+                            name="websiteName" 
+                            value=""
+                            placeholder="Nhập tên website"
+                        )
+                    //- Logo Website
+                .form-group.mb-3
+                    div(class="form-group" upload-image)
+                        label(for="logo") Ảnh
+                        input(
+                            type="file"
+                            class="form-control-file"
+                            id="logo"
+                            name="logo"
+                            accept="image/*"
+                            upload-image-input
+                        )
+                        if(setting && setting.logo)
+                            div(class="box-image")
+                                img(
+                                    src=setting.logo
+                                    upload-image-preview
+                                    class="image-preview"
+                                )
+                                button(
+                                    type="button"
+                                    class="btn-remove-image"
+                                    aria-label="Remove image"
+                                ) ×
+                        else 
+                            div(class="box-image")
+                                img(
+                                    src=""
+                                    upload-image-preview
+                                    class="image-preview"
+                                )
+                                button(
+                                        type="button"
+                                        class="btn-remove-image"
+                                        aria-label="Remove image"
+                                    ) ×
+
+                    //- Email
+                .form-group.mb-3
+                    label(for="email") Email
+                    if(setting && setting.email)
+                        input(
+                            type="email" 
+                            class="form-control" 
+                            id="email" 
+                            name="email" 
+                            value=setting.email
+                        )
+                    else
+                        input(
+                            type="email" 
+                            class="form-control" 
+                            id="email" 
+                            name="email" 
+                            value=""
+                            placeholder="Nhập email"
+                        )
+
+                    //- Số điện thoại
+                .form-group.mb-3
+                    label(for="phone") Số điện thoại
+                    if(setting && setting.phone)
+                        input(
+                            type="text" 
+                            class="form-control" 
+                            id="phone" 
+                            name="phone" 
+                            value=setting.phone
+                        )
+                    else
+                        input(
+                            type="text" 
+                            class="form-control" 
+                            id="phone" 
+                            name="phone" 
+                            value=""
+                            placeholder="Nhập số điện thoại"
+                        )   
+
+                    //- Địa chỉ
+                .form-group.mb-3
+                    label(for="address") Địa chỉ
+                    if(setting && setting.address)
+                        input(
+                            type="text" 
+                            class="form-control" 
+                            id="address" 
+                            name="address" 
+                            value=setting.address
+                        )
+                    else
+                        input(
+                            type="text" 
+                            class="form-control" 
+                            id="address" 
+                            name="address" 
+                            value=""
+                            placeholder="Nhập địa chỉ"
+                        )
+
+                    //- Copyright
+                .form-group.mb-3
+                    label(for="copyright") Copyright
+                    if(setting && setting.copyright)
+                        input(
+                            type="text" 
+                            class="form-control" 
+                            id="copyright" 
+                            name="copyright" 
+                            value=setting.copyright
+                        )
+                    else
+                        input(
+                            type="text" 
+                            class="form-control" 
+                            id="copyright" 
+                            name="copyright" 
+                            value=""
+                            placeholder="Nhập thông tin bản quyền"
+                        )
+                .card.mb-4
+                    .card-header Mạng xã hội
+                    .card-body
+                        .row
+                            .col-md-6
+                                .form-group
+                                    label(for="facebook") Facebook
+                                    input.form-control(
+                                        type="text" 
+                                        id="facebook" 
+                                        name="social.facebook" 
+                                        value=(setting ? setting.social.facebook : "")
+                                    )
+                            .col-md-6
+                                .form-group
+                                    label(for="tiktok") TikTok
+                                    input.form-control(
+                                        type="text" 
+                                        id="tiktok" 
+                                        name="social.tiktok" 
+                                        value=(setting ? setting.social.tiktok : "")
+                                    )
+                            .col-md-6
+                                .form-group
+                                    label(for="youtube") YouTube
+                                    input.form-control(
+                                        type="text" 
+                                        id="youtube" 
+                                        name="social.youtube" 
+                                        value=(setting ? setting.social.youtube : "")
+                                    )
+
+                button(type="submit" class="btn btn-primary") Cập nhật

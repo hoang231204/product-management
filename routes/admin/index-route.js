@@ -24,5 +24,5 @@ module.exports = (app)=>{
     app.use(PATH_ADMIN.prefixAdmin+"/orders",privateRoute.requireLogin,orderRoute)
     app.use(PATH_ADMIN.prefixAdmin+"/posts",privateRoute.requireLogin,postRoute)
     app.use(PATH_ADMIN.prefixAdmin+"/post-categories",privateRoute.requireLogin,postCategoryRoute) 
-    app.use(PATH_ADMIN.prefixAdmin+"/setting",privateRoute.requireLogin,settingGeneralRoute)
+    app.use(PATH_ADMIN.prefixAdmin+"/settings",privateRoute.requireLogin,settingGeneralRoute)
 }
