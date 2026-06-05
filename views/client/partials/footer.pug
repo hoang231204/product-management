@@ -1,3 +1,39 @@
-footer.footer 
-    | Copyright 2026 © SanPham. All rights reserved. Designed by 
-    a(href="" target="_blank") Ria
+footer.footer
+    .container
+        .row
+            //- Cột 1: Thông tin liên hệ
+            .col-md-3
+                img(src=(websiteInfor ? websiteInfor.logo : "") alt=(websiteInfor ? websiteInfor.websiteName : "") style="width: 150px; margin-bottom: 15px;")
+                p Mọi thắc mắc liên hệ: 
+                    br
+                    strong #{websiteInfor ? websiteInfor.phone : ""}
+                p.small #{websiteInfor ? websiteInfor.address : ""}
+
+            //- Cột 2: Hệ thống Showroom (Dạng tĩnh hoặc text)
+            .col-md-3
+                h5 HỆ THỐNG CỬA HÀNG
+                p.small 
+                    strong Địa chỉ: 
+                    | #{websiteInfor ? websiteInfor.address : ""}
+                p.small GIỜ HOẠT ĐỘNG: 9h30 – 21h30 (cả T7, CN)
+
+            //- Cột 3: Hỗ trợ khách hàng
+            .col-md-3
+                h5 HỖ TRỢ KHÁCH HÀNG
+                ul.list-unstyled
+                    li: a(href="#") Cách thức mua hàng
+                    li: a(href="#") Chính sách bảo mật
+                    li: a(href="#") Chính sách bảo hành
+
+            //- Cột 4: Về chúng tôi
+            .col-md-3
+                h5 VỀ CHÚNG TÔI
+                ul.list-unstyled
+                    li: a(href="#") Giới thiệu
+                    li: a(href="#") Hệ thống Showroom
+                    li: a(href="#") Liên hệ
+
+        //- Dòng dưới cùng
+        .row.mt-4.border-top.pt-3
+            .col-md-12.text-center
+                p #{websiteInfor ? websiteInfor.copyright : "Copyright 2026 © SanPham. All rights reserved."}
