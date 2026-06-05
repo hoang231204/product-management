@@ -1,0 +1,49 @@
+extends ../../layouts/default.pug
+include ../../mixins/setting-item.pug
+block main
+    .card.mb-4
+        .card-header Cài đặt chung
+            .card-body
+                .row
+                    +setting-item("fas fa-info-circle", "Thông tin Website", "Thiết lập thông tin website", "#")
+                    +setting-item("fas fa-language", "Ngôn ngữ", "Thiết lập ngôn ngữ website", "#")
+                    +setting-item("fas fa-envelope", "Cấu hình email", "Thiết lập cấu hình email", "#")
+                    +setting-item("fas fa-building", "Tỉnh thành", "Quản lý tỉnh thành", "#")
+                    +setting-item("fas fa-align-left", "Thuộc tính mở rộng", "Tùy chỉnh thuộc tính sản phẩm", "#")
+                    +setting-item("fas fa-paper-plane", "Form liên hệ", "Quản lý thông tin form", "#")
+                    +setting-item("fab fa-facebook", "Mạng xã hội", "Cấu hình thông tin MXH", "#")
+                    +setting-item("fas fa-code", "Mã nhúng", "Quản lý mã nhúng", "#")
+                    +setting-item("fas fa-sms", "Sms Brandname", "Thiết lập sms brandname", "#")
+    .card.mb-4
+        .card-header Bán hàng
+            .card-body
+                .row
+                    +setting-item("fas fa-box", "Sản phẩm", "Thiết lập cấu hình sản phẩm", "#")
+                    +setting-item("fas fa-shopping-basket", "Đơn hàng", "Thiết lập cấu hình đơn hàng", "#")
+                    +setting-item("fas fa-print", "Mẫu in", "Thiết lập cấu hình mẫu in", "#")
+                    +setting-item("fas fa-truck-loading", "Nguồn đơn hàng", "Quản lý nguồn tạo đơn", "#")
+                    +setting-item("fas fa-truck", "Vận chuyển", "Cấu hình phương thức vận chuyển", "#")
+                    +setting-item("fas fa-shipping-fast", "Hãng vận chuyển", "Thiết lập hãng vận chuyển", "#")
+    .card.mb-4
+        .card-header Tiền tệ
+            .card-body
+                .row
+                    +setting-item("fas fa-money-bill", "Tiền tệ", "Thiết lập tiền tệ hệ thống", "#")
+                    +setting-item("fas fa-university", "Cổng thanh toán", "Thiết lập cổng thanh toán", "#")
+                    +setting-item("fas fa-wallet", "Điểm khách hàng", "Thiết lập điểm khách hàng", "#")
+                    +setting-item("fas fa-network-wired", "Affiliate", "Thiết lập cấu hình Affiliate", "#")
+    .card.mb-4
+        .card-header Tài khoản
+            .card-body
+                .row
+                    +setting-item("fas fa-users", "Danh sách tài khoản", "Thiết lập tài khoản", "#")
+                    +setting-item("fas fa-user-cog", "Nhóm quyền", "Thiết lập nhóm quyền", "#")
+                    +setting-item("fas fa-user-edit", "Phân quyền", "Thiết lập phân quyền", "#")
+                    +setting-item("fas fa-pen-nib", "Duyệt bài viết", "Thiết lập quyền duyệt", "#")
+    .card.mb-4
+        .card-header Hệ thống
+            .card-body
+                .row
+                    +setting-item("fas fa-laptop-code", "Đổi chế độ", "Thay đổi chế độ website", "#")
+                    +setting-item("fas fa-trash-alt", "Xóa Cache", "Xóa bộ nhớ lưu trữ", "#")
+                    +setting-item("fas fa-atom", "API", "Thiết lập thông tin API", "#")

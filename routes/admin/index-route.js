@@ -8,6 +8,7 @@ const userRoute = require('./user-route');
 const orderRoute = require('./order-route');
 const postRoute = require('./post-route');
 const postCategoryRoute = require('./post-category-route');
+const settingGeneralRoute = require('./setting-general-route');
 const privateRoute = require('../../middleware/admin/private-route');
 const myProfileRoute = require('./my-profile-route');
 const PATH_ADMIN = require('../../config/system')
@@ -22,5 +23,6 @@ module.exports = (app)=>{
     app.use(PATH_ADMIN.prefixAdmin+"/users",privateRoute.requireLogin,userRoute)
     app.use(PATH_ADMIN.prefixAdmin+"/orders",privateRoute.requireLogin,orderRoute)
     app.use(PATH_ADMIN.prefixAdmin+"/posts",privateRoute.requireLogin,postRoute)
-    app.use(PATH_ADMIN.prefixAdmin+"/post-categories",privateRoute.requireLogin,postCategoryRoute)  
+    app.use(PATH_ADMIN.prefixAdmin+"/post-categories",privateRoute.requireLogin,postCategoryRoute) 
+    app.use(PATH_ADMIN.prefixAdmin+"/setting",privateRoute.requireLogin,settingGeneralRoute)
 }

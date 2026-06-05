@@ -55,3 +55,6 @@
                     ul 
                         li 
                             a(href=`${prefixAdmin}/post-categories/recycle-bin`) Thùng rác
+            if(role.permissions.includes("setting_general_view"))
+                li
+                    a(href=`${prefixAdmin}/setting/general`) Cài đặt chung
