@@ -28,6 +28,7 @@ module.exports.index = async (req, res) => {
                 { "userInfor.address": regex }
             ];
         }
+        let sort = {};
         if(req.query.sortBy && req.query.sortType){
             sort[req.query.sortBy] = req.query.sortType;
         }
