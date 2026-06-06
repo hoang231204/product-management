@@ -6,11 +6,12 @@ include ../../mixins/change-multi.pug
 include ../../mixins/sort.pug
 include ../../mixins/pagination.pug
 block main
-    +alert-success(3000)
-    +alert-error(3000)
     if(role.permissions.includes("order_view"))
-        h1.mb-4 Quản lý đơn hàng
-        .card.mb-3
+        +alert-success(3000)
+        +alert-error(3000)
+        .container.my-5
+            .card.mb-3
+                h3.text-center Quản lý đơn hàng
                 .card-header Bộ lọc và Tìm kiếm
                     .card-body
                         .row
@@ -21,114 +22,117 @@ block main
                                 +boxSearch(keyword)
                             .col-1 
                                 a(href=`${prefixAdmin}/orders` class="btn btn-secondary") Reset  
-        .card.mb-3
-            .card-header Thay đổi
-                .card-body 
-                    .row
-                        .col-12
-                            if(role.permissions.includes("order_edit"))
-                                +boxChange(`${prefixAdmin}/orders/change-multi?_method=PATCH`, 'order')
-        .card.mb-3
-            .card-header Sắp xếp
-                .card-body
-                    .row
-                        .col-8
-                            +boxSort('order')
-        .card.mb-3
-            .card-header Danh sách đơn hàng
-                .card-body
-                    table(class="table table-hover table-sm" check-box-multi)
-                        thead
-                            tr
-                                th 
-                                    input(type="checkbox" name="checkAll")
-                                th STT
-                                th Mã đơn hàng
-                                th Họ tên
-                                th Số điện thoại
-                                th Địa chỉ
-                                th Tổng tiền
-                                th Thời gian đặt hàng
-                                th Người cập nhật
-                                th Trạng thái
-                                th Hành động
-                        tbody
-                            if orders && orders.length > 0
-                                each item, index in orders
+            .card.mb-3.action-box
+                .card-header Thay đổi
+                    .card-body 
+                        .row
+                            .col-12
+                                if(role.permissions.includes("order_edit"))
+                                    +boxChange(`${prefixAdmin}/orders/change-multi?_method=PATCH`, 'order')
+            .card.mb-3.action-box
+                .card-header Sắp xếp
+                    .card-body
+                        .row
+                            .col-8
+                                +boxSort('order')
+            .card.mb-3
+                .card-header Danh sách đơn hàng
+                    .card-body
+                        table(class="table table-hover table-sm" check-box-multi)
+                            thead
+                                tr.text-center
+                                    th
+                                        input(type="checkbox" name="checkAll")
+                                    th STT
+                                    th Mã đơn hàng
+                                    th Họ tên
+                                    th Số điện thoại
+                                    th Địa chỉ
+                                    th Tổng tiền
+                                    th Thời gian đặt hàng
+                                    th Người cập nhật
+                                    th Trạng thái
+                                    th Hành động
+                            tbody
+                                if orders && orders.length > 0
+                                    each item, index in orders
+                                        tr.text-center
+                                            td 
+                                                input(type="checkbox" name="id" value=item._id)
+                                            td #{index + 1}
+                                            td #{item.order_code}
+                                            td #{item.userInfor.fullname}
+                                            td #{item.userInfor.phone}
+                                            td #{item.userInfor.address}
+                                            td #{item.totalPrice.toLocaleString()}$
+                                            td
+                                                p #{moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                                            td
+                                                if item.updatedBy && item.updatedBy.length > 0
+                                                    p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
+                                                    p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                                else
+                                                    p Chưa có cập nhật
+                                            td
+                                                if(role.permissions.includes("order_edit"))
+                                                    if item.status == 'pending'
+                                                        a(
+                                                            href="javascript:;" 
+                                                            class="badge badge-success" 
+                                                            button-change-status 
+                                                            data-id=item._id  
+                                                            data-status=item.status
+                                                            data-next-status="confirmed"
+                                                        ) Chờ xử lý
+                                                    else if item.status == 'confirmed'
+                                                        a(
+                                                            href="javascript:;" 
+                                                            class="badge badge-danger" 
+                                                            button-change-status 
+                                                            data-id=item._id  
+                                                            data-status=item.status
+                                                            data-next-status="shipping"
+                                                        ) Đã xác nhận
+                                                    else if item.status == 'shipping'
+                                                        a(
+                                                            href="javascript:;" 
+                                                            class="badge badge-warning" 
+                                                            button-change-status 
+                                                            data-id=item._id  
+                                                            data-status=item.status
+                                                            data-next-status="delivered"
+                                                        ) Đang giao
+                                                    else if item.status == 'delivered'
+                                                        a(
+                                                            href="javascript:;" 
+                                                            class="badge badge-primary" 
+                                                            button-change-status 
+                                                            data-id=item._id  
+                                                            data-status=item.status
+                                                        ) Đã giao
+                                                    else 
+                                                        a(
+                                                            href="javascript:;" 
+                                                            class="badge badge-secondary" 
+                                                            button-change-status 
+                                                            data-id=item._id  
+                                                            data-status=item.status
+                                                        ) Đã hủy
+                                            td.text-center
+                                                .row.justify-content-center
+                                                    a(href=`${prefixAdmin}/orders/details/${item._id}` class="btn btn-info btn-sm ml-1")
+                                                        i.fas.fa-eye
+                                                    if(role.permissions.includes("order_delete"))
+                                                        button(
+                                                            type="button"
+                                                            class="btn btn-danger btn-sm ml-1"
+                                                            button-delete
+                                                            data-id=item._id
+                                                        )
+                                                            i.fas.fa-trash
+                                else
                                     tr
-                                        td 
-                                            input(type="checkbox" name="id" value=item._id)
-                                        td #{index + 1}
-                                        td #{item.order_code}
-                                        td #{item.userInfor.fullname}
-                                        td #{item.userInfor.phone}
-                                        td #{item.userInfor.address}
-                                        td #{item.totalPrice.toLocaleString()}$
-                                        td
-                                            p #{moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-                                        td
-                                            if item.updatedBy && item.updatedBy.length > 0
-                                                p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
-                                                p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
-                                            else
-                                                p Chưa có cập nhật
-                                        td
-                                            if(role.permissions.includes("order_edit"))
-                                                if item.status == 'pending'
-                                                    a(
-                                                        href="javascript:;" 
-                                                        class="badge badge-success" 
-                                                        button-change-status 
-                                                        data-id=item._id  
-                                                        data-status=item.status
-                                                        data-next-status="confirmed"
-                                                    ) Chờ xử lý
-                                                else if item.status == 'confirmed'
-                                                    a(
-                                                        href="javascript:;" 
-                                                        class="badge badge-danger" 
-                                                        button-change-status 
-                                                        data-id=item._id  
-                                                        data-status=item.status
-                                                        data-next-status="shipping"
-                                                    ) Đã xác nhận
-                                                else if item.status == 'shipping'
-                                                    a(
-                                                        href="javascript:;" 
-                                                        class="badge badge-warning" 
-                                                        button-change-status 
-                                                        data-id=item._id  
-                                                        data-status=item.status
-                                                        data-next-status="delivered"
-                                                    ) Đang giao
-                                                else if item.status == 'delivered'
-                                                    a(
-                                                        href="javascript:;" 
-                                                        class="badge badge-primary" 
-                                                        button-change-status 
-                                                        data-id=item._id  
-                                                        data-status=item.status
-                                                    ) Đã giao
-                                                else 
-                                                    a(
-                                                        href="javascript:;" 
-                                                        class="badge badge-secondary" 
-                                                        button-change-status 
-                                                        data-id=item._id  
-                                                        data-status=item.status
-                                                    ) Đã hủy
-                                        td
-                                            a(href=`${prefixAdmin}/orders/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
-                                            if(role.permissions.includes("order_delete"))
-                                                button(
-                                                    type="button"
-                                                    class="btn btn-danger btn-sm"
-                                                    button-delete
-                                                    data-id=item._id
-                                                ) Xóa
-                            else
-                                tr
-                                    td(colspan="7" class="text-center") Không có đơn hàng nào!  
+                                        td(colspan="7" class="text-center") Không có đơn hàng nào!  
         form(
             action=""
             method="POST"
