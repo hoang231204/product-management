@@ -3,9 +3,8 @@ include ../../mixins/show-alert.pug
 block main
     +alert-success(3000)
     +alert-error(3000)
-    h1.mb-4 Cấu hình thông tin website
     .card.mb-4
-        .card-header Thông tin chung
+        .card-header Cài đặt thông tin website
         .card-body
             form(
                 action=`${prefixAdmin}/settings/website-infor?_method=PATCH` 
