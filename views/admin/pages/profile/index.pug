@@ -2,22 +2,37 @@ extends ../../layouts/default.pug
 
 block main
     .container.my-5
-        h1.mb-4 Thông tin cá nhân
-        
-        .row
-            .col-4.text-center
-                img(
-                    src=(user.avatar ? user.avatar : "/admin/images/avatar-default.png")
-                    class="img-fluid rounded-circle border"
-                    style="width: 150px; height: 150px; object-fit: cover;"
-                )
-            .col-8
-                div(class="mb-2") <b>Họ tên:</b> #{user.fullname}
-                div(class="mb-2") <b>Email:</b> #{user.email}
-                div(class="mb-2") <b>Số điện thoại:</b> #{user.phone}
-                div(class="mb-2") 
-                b Trạng thái: 
-                span #{user.status === "active" ? "Hoạt động" : "Dừng hoạt động"}
-                div(class="mb-3") <b>Phân quyền:</b> #{role.title}
-                a(href=`${prefixAdmin}/my-profile/edit` class="btn btn-primary") Chỉnh sửa hồ sơ
-        
+        .card.profile-card
+            h2.mb-4.text-center Thông tin cá nhân
+            
+            .row
+                //- Cột trái: Avatar
+                .col-md-4.text-center.d-flex.flex-column.align-items-center.justify-content-center
+                    img(
+                        src=(user.avatar ? user.avatar : "/admin/images/avatar-default.png")
+                        class="avatar-img img-fluid mb-3"
+                    )
+                    h4.mt-2 #{user.fullname}
+                    p.text-muted #{role.title}
+
+                //- Cột phải: Thông tin
+                .col-md-8.profile-info
+                    .info-item
+                        b Email: 
+                        | #{user.email}
+                    
+                    .info-item
+                        b Số điện thoại: 
+                        | #{user.phone ? user.phone : "Chưa cập nhật"}
+                    
+                    .info-item
+                        b Trạng thái: 
+                        if (user.status === "active")
+                            span.badge.bg-success Hoạt động
+                        else
+                            span.badge.bg-danger Dừng hoạt động
+                    
+                    .mt-4
+                        a(href=`${prefixAdmin}/my-profile/edit` class="btn btn-primary px-4") 
+                            i.fa.fa-edit.mr-2
+                            | Chỉnh sửa hồ sơ
