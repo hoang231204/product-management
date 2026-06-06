@@ -1,7 +1,7 @@
 mixin boxSort(type)
     div(sort)
-        .row
-            .col-8
+        .row.justify-content-start.align-items-center
+            .col-10
                 select(
                     class="form-control" 
                     name="sort"
@@ -23,7 +23,7 @@ mixin boxSort(type)
                         option(value="createdAt-asc") Cũ nhất
                         option(value="title-asc") Tiêu đề A - Z
                         option(value="title-desc") Tiêu đề Z - A
-            .col-4
+            .col-2
                 button(
                     class="btn btn-danger"
                     sort-clear
