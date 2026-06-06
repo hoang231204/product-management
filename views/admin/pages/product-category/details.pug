@@ -3,61 +3,63 @@ include ../../mixins/show-alert.pug
 
 block main
     +alert-success(5000)
-    
+
     .container.my-5
-        h1.mb-4.font-weight-bold CHI TIẾT DANH MỤC
-        
-        if category
-            .row
-                //- Ảnh bên trái
-                .col-4
-                    div(class="border rounded p-2 text-center bg-white")
-                        img(
-                            src=(category.thumbnail ? category.thumbnail : "/admin/images/no-image.png")
-                            class="img-fluid"
-                        )
-                
-                //- Thông tin bên phải
-                .col-8
-                    div(class="mb-2") <b>Tiêu đề:</b> #{category.title}
-                    div(class="mb-2") <b>Danh mục cha:</b> #{parentName ? parentName : "Không có"}
-                    div(class="mb-2") 
-                        b Vị trí: 
-                        span.badge.bg-info.text-white #{category.position}
-                    
-                    div(class="mb-2")
-                        b Trạng thái: 
-                        if category.status === "active"
-                            span.badge.bg-success.text-white Hoạt động
-                        else
-                            span.badge.bg-danger.text-white Dừng hoạt động
+        .detail-card
+            if category
+                h1.mb-4.text-primary #{category.title}
+                .row
+                    //- Cột trái: Ảnh và Thông tin chính
+                    .col-md-4
+                        div(class="border-0 text-center")
+                            img(
+                                src=(category.thumbnail ? category.thumbnail : "/admin/images/no-image.png")
+                                class="img-fluid img-detail mb-3"
+                                style="max-height: 300px; object-fit: cover;"
+                            )
+                        .info-box.mt-3
+                            p <b>Danh mục cha:</b> #{parentName ? parentName : "Không có"}
+                            p <b>Vị trí:</b> #{category.position}
+                            p <b>Trạng thái:</b> 
+                                if category.status === "active"
+                                    span.badge.badge-success Hoạt động
+                                else
+                                    span.badge.badge-danger Dừng hoạt động
 
-                    div(class="mb-3")
-                        b Mô tả:
-                        div(class="mt-1 p-3 bg-light border rounded") !{category.description || "<i>Không có mô tả</i>"}
+                    //- Cột phải: Mô tả và Lịch sử
+                    .col-md-8
+                        h5.mb-3 Mô tả chi tiết:
+                        .description-box
+                            | !{category.description || "<i>Không có mô tả</i>"}
+                        
+                        .mt-4.pt-3.border-top
+                            h5.mb-3 Thông tin hệ thống:
+                            if category.createdBy && category.createdBy.account_id
+                                p <b>Người tạo:</b> #{category.createdBy.account_id.fullname}
+                                p.small.text-muted #{moment(category.createdBy.createdAt).format('DD/MM/YYYY HH:mm')}
+                            
+                            .mt-3
+                                b Lịch sử cập nhật:
+                                if category.updatedBy && category.updatedBy.length > 0
+                                    each item in category.updatedBy
+                                        if item.account_id
+                                            .history-item
+                                                div <b>#{item.account_id.fullname}</b> đã cập nhật
+                                                div.small.text-muted #{moment(item.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                else
+                                    p.text-muted.small Chưa có cập nhật nào.
 
-                    //- Phần Log: Người tạo
-                    if category.createdBy && category.createdBy.account_id
-                        div(class="mt-4 pt-2 border-top")
-                            div <b>Người tạo:</b> #{category.createdBy.account_id.fullname}
-                            div.small.text-muted #{moment(category.createdBy.createdAt).format('DD/MM/YYYY HH:mm')}
-
-                    //- Phần Log: Lịch sử cập nhật (Giống Product)
-                    if category.updatedBy && category.updatedBy.length > 0
-                        div(class="mt-3")
-                            b Lịch sử cập nhật:
-                            each item in category.updatedBy
-                                if item.account_id
-                                    div(class="small border-bottom py-1 d-flex justify-content-between")
-                                        span #{item.account_id.fullname} 
-                                        span.text-muted #{moment(item.updatedAt).fromNow()}
-
-            //- Cụm nút bấm
-            div(class="mt-4")
-                if(role.permissions.includes('product_category_edit'))
-                    a(href=`${prefixAdmin}/product-categories/${category._id}/edit` class="btn btn-warning btn-sm mr-2") Chỉnh sửa
-                a(href=`${prefixAdmin}/product-categories` class="btn btn-secondary btn-sm") Quay lại
-
-        else
-            .alert.alert-warning Không tìm thấy danh mục này!
-            a(href=`${prefixAdmin}/product-categories` class="btn btn-secondary btn-sm") Quay lại danh sách
+                //- Cụm nút bấm
+                .mt-4
+                    if(role.permissions.includes('product_category_edit'))
+                        a(href=`${prefixAdmin}/product-categories/${category._id}/edit` class="btn btn-warning mr-2") 
+                            i.fa.fa-edit.mr-1
+                            | Chỉnh sửa
+                    a(href=`${prefixAdmin}/product-categories` class="btn btn-secondary") 
+                        i.fa.fa-arrow-left.mr-1
+                        | Quay lại danh sách
+            else
+                .alert.alert-warning Không tìm thấy danh mục này!
+                a(href=`${prefixAdmin}/product-categories` class="btn btn-secondary") 
+                    i.fa.fa-arrow-left.mr-1
+                    | Quay lại danh sách

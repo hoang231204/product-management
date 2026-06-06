@@ -1,35 +1,33 @@
 extends ../../layouts/default.pug
-include ../../mixins/table-tree.pug
 include ../../mixins/filter-status.pug
 include ../../mixins/search.pug
+include ../../mixins/pagination.pug
 include ../../mixins/change-multi.pug
 include ../../mixins/show-alert.pug
+include ../../mixins/table-tree.pug
+
 block main
     if(role.permissions.includes('product_category_view'))
         +alert-success(3000)
         +alert-error(3000)
-        h1 DANH MỤC SẢN PHẨM
         .card.mb-3
-            .card-header Bộ lọc và Tìm kiếm
+            h3.text-center Quản lý danh mục sản phẩm
             .card-body
-                .row
-                    .col-6#filter-area
+                .row.align-items-center.mb-3
+                    .col-lg-8
                         +boxFilter(filterStatus)
-                    .col-6
-                        +boxSearch(keyword)  
-        .card.mb-3
-            .card-header Thay đổi
-            .card-body 
-                .row
-                    .col-10
-                        if(role.permissions.includes('product_category_edit'))
+                    .col-lg-4
+                        +boxSearch(keyword)
+                .row.align-items-center.action-box.mb-3
+                    .col-lg-9
+                        if(role.permissions.includes("product_category_edit"))
                             +boxChange(`${prefixAdmin}/product-categories/change-multi?_method=PATCH`, 'category')
-                    .col-2
-                        if(role.permissions.includes('product_category_create'))
-                            a(
-                                href=`${prefixAdmin}/product-categories/create`
-                                class="btn btn-outline-success"
-                            ) + Thêm mới
+                    .col-lg-3.text-lg-right
+                        if(role.permissions.includes("product_category_create"))
+                            a(href=`${prefixAdmin}/product-categories/create` class="btn btn-success")
+                                i.fa.fa-plus.mr-2
+                                | Thêm mới
+                            
         .card.mb-3
             .card-header Danh sách danh mục
             .card-body
