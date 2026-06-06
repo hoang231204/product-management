@@ -1,7 +1,5 @@
 extends ../../layouts/default.pug
-
 block main
-    h1.mb-4 Tổng quan
     .row.mt-4
         .col-12
             .card.mb-4
@@ -91,11 +89,11 @@ block main
                     h6 Doanh thu trong tháng
                     h4 #{monthRevenue.toLocaleString()} VNĐ
         .col-md-4
-            .card.bg-danger.text-white.mb-3
+            .card.bg-dark.text-white.mb-3
                 .card-body
                     h6 Doanh thu năm #{selectedYear}
                     h4 #{yearRevenue.toLocaleString()} VNĐ
-    .row.mb-4
+    .row.mb-4.action-box
         .col-md-3
             label Chọn năm cần thông kê:
             select(id="yearSelect" class="form-control" onchange="changeYear(this.value)")
