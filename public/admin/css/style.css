@@ -287,3 +287,17 @@ label { color: #a2a3b7; font-weight: 500; margin-bottom: 8px; }
     align-items: center;
     padding: 0 20px;
 }
+.detail-card {
+    padding: 30px !important; /* Thêm padding để tạo khoảng cách với lề */
+}
+/* Đảm bảo tất cả các loại card đều có padding và khoảng cách đẹp */
+.card.form-card, 
+.card {
+    padding: 30px !important; 
+    margin-bottom: 20px;
+}
+
+/* Đảm bảo h2 hoặc các tiêu đề trong card không bị dính sát mép */
+.card h2 {
+    margin-bottom: 20px !important;
+}
