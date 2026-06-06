@@ -1,29 +1,39 @@
 extends ../../layouts/default.pug
 include ../../mixins/show-alert.pug
+
 block main
+    +alert-error(5000)
     +alert-success(5000)
-    h1 THÊM MỚI VAI TRÒ
-    form(
-        action=`${prefixAdmin}/roles/create` 
-        method="POST" 
-        form-upload
-    )
-        div(class="form-group")
-            label(for="title") Tiêu đề
-            input(
-                type="text"
-                class="form-control"
-                id="title"
-                name="title"
-                required 
+
+    .container.my-5
+        .card.form-card
+            h2(class="mb-4 text-center") Thêm mới vai trò
+            form(
+                action=`${prefixAdmin}/roles/create` 
+                method="POST" 
+                form-upload
             )
-        div(class="form-group")
-            label(for="desc") Mô tả
-            textarea(
-                class="form-control textarea-mce"
-                id="desc"
-                name="description"
-                rows="5"
-            )
-        div(class="form-group")
-            button(type="submit" class="btn btn-primary") Tạo mới
+                .row
+                    .col-12
+                        .form-group
+                            label Tiêu đề *
+                            input(
+                                type="text"
+                                class="form-control"
+                                name="title"
+                                required 
+                            )
+                
+                .row
+                    .col-12
+                        .form-group
+                            label Mô tả
+                            textarea(
+                                class="form-control textarea-mce"
+                                name="description"
+                                rows="5"
+                            )
+                
+                .text-right.mt-4
+                    button(type="submit" class="btn btn-primary px-5 mr-2") Tạo mới
+                    a(href=`${prefixAdmin}/roles` class="btn btn-secondary") Quay lại

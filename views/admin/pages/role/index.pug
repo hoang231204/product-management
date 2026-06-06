@@ -1,59 +1,63 @@
 extends ../../layouts/default.pug
 include ../../mixins/show-alert.pug
+
 block main
     if(role.permissions.includes('role_view'))
         +alert-success(5000)
-        h1  DANH SÁCH NHÓM QUYỀN
-        
-        .card.mb-3
-        .card-header 
-            .card-body 
-                .row
-                    .col-2
+        .container.my-5
+            .card.mb-3
+                h3.text-center Quản lý nhóm quyền
+                .card-header
+                .card-body
+                    .d-flex.justify-content-end
                         if(role.permissions.includes('role_create'))
-                            a(
-                                href=`${prefixAdmin}/roles/create`
-                                class="btn btn-outline-success"
-                            ) + Thêm mới
-        .card.mb-3
-            .card-header Danh sách nhóm quyền
-            .card-body
-                table(class="table table-hover table-sm" check-box-multi)
-                    thead
-                        tr
-                        th STT
-                        th Tiêu đề
-                        th Mô tả ngắn
-                        th Người tạo 
-                        th Người sửa
-                        th Hành động
-                    tbody
-                        each item, index in roles 
-                            tr
-                            td #{index+1}
-                            td #{item.title}
-                            td !{item.description}
-                            td
-                                if(item.createdBy && item.createdBy.account_id)
-                                    p #{item.createdBy.account_id.fullname}
-                                    p #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-                                else
-                                    p.em Chưa có thông tin người tạo
-                            td
-                                if(item.updatedBy && item.updatedBy.length > 0)
-                                    p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
-                                    p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
-                                else
-                                    p.em Chưa được cập nhật
-                            td
-                                a(href=`${prefixAdmin}/roles/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
-                                if(role.permissions.includes('role_edit'))
-                                    a(href=`${prefixAdmin}/roles/edit/${item._id}` class="btn btn-warning btn-sm") Sửa
-                                if(role.permissions.includes('role_delete'))
-                                    button(class="btn btn-danger btn-sm ml-1" button-delete idDel=item._id) Xóa
-    form(
-        action=""
-        method="POST"
-        form-delete
-        data-path=`${prefixAdmin}/roles/delete`
-        )
+                            a(href=`${prefixAdmin}/roles/create` class="btn btn-outline-success") + Thêm mới
+
+            //- Bảng danh sách
+            .card.mb-3
+                .card-header Danh sách nhóm quyền
+                .card-body
+                    table(class="table table-hover table-sm" check-box-multi)
+                        thead
+                            tr.text-center
+                                th STT
+                                th Tiêu đề
+                                th Mô tả ngắn
+                                th Người tạo 
+                                th Người sửa
+                                th Hành động
+                        tbody
+                            each item, index in roles 
+                                tr.text-center
+                                    td #{index + 1}
+                                    td #{item.title}
+                                    td !{item.description}
+                                    td
+                                        if(item.createdBy && item.createdBy.account_id)
+                                            div #{item.createdBy.account_id.fullname}
+                                            div.small.text-muted #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                                        else
+                                            p Chưa cập nhật
+                                    td
+                                        if(item.updatedBy && item.updatedBy.length > 0)
+                                            div #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
+                                            div.small.text-muted #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                        else
+                                            p Chưa cập nhật
+                                    td
+                                        .row.justify-content-center
+                                            a(href=`${prefixAdmin}/roles/details/${item._id}` class="btn btn-info btn-sm mr-1")
+                                                i.fa.fa-eye
+                                            if(role.permissions.includes('role_edit'))
+                                                a(href=`${prefixAdmin}/roles/edit/${item._id}` class="btn btn-warning btn-sm mr-1")
+                                                    i.fa.fa-edit
+                                            if(role.permissions.includes('role_delete'))
+                                                button(class="btn btn-danger btn-sm" button-delete data-id=item._id)
+                                                    i.fa.fa-trash
+
+            form(
+                action=""
+                method="POST"
+                form-delete
+                data-path=`${prefixAdmin}/roles/delete`
+            )

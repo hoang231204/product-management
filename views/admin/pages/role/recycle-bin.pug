@@ -1,42 +1,41 @@
 extends ../../layouts/default.pug
-
-
 block main 
     .container-fluid.mt-4
-        h1 Thùng rác nhóm quyền
-        
         .card.mb-3
             .card-header Danh sách nhóm quyền đã xóa
             .card-body
                 table(class="table table-hover table-sm")
                     thead
-                        tr
-                        th STT
-                        th Tên nhóm quyền
-                        th Mô tả ngắn
-                        th Người xóa
-                        th Thời gian xóa
-                        th Hoạt động
+                        tr.text-center
+                            th STT
+                            th Tên nhóm quyền
+                            th Mô tả ngắn
+                            th Người xóa
+                            th Thời gian xóa
+                            th Hoạt động
                     tbody
                         if roles.length > 0
                             each item, index in roles
-                                tr
-                                td #{index + 1}
-                                td <b>#{item.title}</b>
-                                td #{item.description}
-                                td #{item.deletedBy.account_id.fullname}
-                                td #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm')}
-                                td
-                                    button(
-                                        class="btn btn-success btn-sm" 
-                                        button-restore 
-                                        data-id=item.id
-                                        ) Khôi phục
-                                    button(
-                                        class="btn btn-danger btn-sm ml-1" 
-                                        button-hard-delete 
-                                        data-id=item.id
-                                        ) Xóa vĩnh viễn
+                                tr.text-center
+                                    td #{index + 1}
+                                    td <b>#{item.title}</b>
+                                    td #{item.description}
+                                    td #{item.deletedBy.account_id.fullname}
+                                    td #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm')}
+                                    td
+                                        .row.justify-content-center
+                                            button(
+                                                class="btn btn-success btn-sm" 
+                                                button-restore 
+                                                data-id=item.id
+                                                )
+                                                    i.fa.fa-undo
+                                            button(
+                                                class="btn btn-danger btn-sm ml-1" 
+                                                button-hard-delete 
+                                                data-id=item.id
+                                                ) 
+                                                    i.fa.fa-trash
                         else 
                             tr 
                                 td(colspan="7" class="text-center") Thùng rác trống
