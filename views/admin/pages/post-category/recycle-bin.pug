@@ -19,7 +19,7 @@ block main
                         tbody
                             if categories.length > 0
                                 each item, index in categories
-                                    tr
+                                    tr.text-center
                                         td #{index + 1}
                                         td
                                             img(src=item.thumbnail, alt=item.title, width="100px", height="auto")
@@ -27,8 +27,11 @@ block main
                                         td #{item.deletedBy.account_id.fullName}
                                         td #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm')}
                                         td
-                                            button(class="btn btn-success btn-sm" button-restore data-id=item.id) Khôi phục
-                                            button(class="btn btn-danger btn-sm ml-1" button-hard-delete data-id=item.id) Xóa vĩnh viễn
+                                            .row.justify-content-center
+                                                button(class="btn btn-success btn-sm" button-restore data-id=item.id)
+                                                    i.fas.fa-undo
+                                                button(class="btn btn-danger btn-sm ml-1" button-hard-delete data-id=item.id)
+                                                    i.fas.fa-trash
                             else 
                                 tr 
                                     td(colspan="6" class="text-center") Thùng rác trống

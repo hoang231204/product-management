@@ -4,108 +4,115 @@ include ../../mixins/select-tree.pug
 
 block main
     +alert-success(5000)
-    h1(class="mb-4") CHỈNH SỬA DANH MỤC BÀI VIẾT
-    form(
-        action=`${prefixAdmin}/post-categories/edit/${category._id}?_method=PATCH` 
-        method="POST" 
-        enctype="multipart/form-data"
-        form-upload
-    )
-        //- 1. Tiêu đề (Title)
-        div(class="form-group")
-            label(for="title") Tiêu đề
-            input(
-                type="text"
-                class="form-control"
-                id="title"
-                name="title"
-                value=category.title
-                required 
-            )
-        
-        //- 2. Danh mục cha (Parent ID) 
-        div(class="form-group")
-            label(for="parent_id") Danh mục cha
-            select(
-                name="parent_id"
-                id="parent_id"
-                class="form-control"
-            )
-                option(value=parentId) #{parentName}
-                if (categoryTree)
-                    +select-tree(categoryTree)
-        
-        //- 3. Mô tả (Description)
-        div(class="form-group")
-            label(for="desc") Mô tả
-            textarea(
-                class="form-control textarea-mce"
-                id="desc"
-                name="description"
-                rows="5"
-            )= category.description
-        
-        //- 4. Ảnh (Thumbnail)
-        div(class="form-group" upload-image)
-            label(for="thumbnail") Ảnh
-            input(
-                type="file"
-                class="form-control-file"
-                id="thumbnail"
-                name="thumbnail"
-                accept="image/*"
-                upload-image-input
-            )
-            div(class="box-image")
-                img(
-                    src=category.thumbnail
-                    upload-image-preview
-                    class="image-preview"
-                )
-                button(
-                    type="button"
-                    class="btn-remove-image"
-                    aria-label="Remove image"
-                ) ×
-        //- Vị trí (Position)
-        div(class="form-group")
-            label(for="position") Vị trí
-            input(
-                type="number"
-                class="form-control"
-                id="position"
-                name="position"
-                placeholder="Tự động tăng"
-                min="1"
-                value=category.position
-            )
-        
-        //- 5. Trạng thái (Status)
-        div(class="form-group")
-            label Trạng thái
-            div(class="form-check form-check-inline")
-                input(
-                    type="radio"
-                    class="form-check-input"
-                    id="statusActive"
-                    name="status"
-                    value="active"
-                    checked=(category.status === 'active')
-                )
-                label(for="statusActive" class="form-check-label") Hoạt động
+    
+    .container.my-5
+        .card.form-card
+            h1(class="mb-4 text-center") CHỈNH SỬA DANH MỤC BÀI VIẾT
             
-            div(class="form-check form-check-inline")
-                input(
-                    type="radio"
-                    class="form-check-input"
-                    id="statusInActive"
-                    name="status"
-                    value="inactive"
-                    checked=(category.status === 'inactive')
-                )
-                label(for="statusInActive" class="form-check-label") Dừng hoạt động
-        
-        //- Buttons
-        div(class="form-group")
-            button(type="submit" class="btn btn-primary") Cập nhật
-            a(href=`${prefixAdmin}/post-categories` class="btn btn-secondary ms-2") Quay lại
+            form(
+                action=`${prefixAdmin}/post-categories/edit/${category._id}?_method=PATCH` 
+                method="POST" 
+                enctype="multipart/form-data"
+                form-upload
+            )
+                .row
+                    //- Cột trái: Thông tin chính
+                    .col-md-8
+                        .form-group.mb-3
+                            label(for="title" class="font-weight-bold") Tiêu đề *
+                            input(
+                                type="text"
+                                class="form-control"
+                                id="title"
+                                name="title"
+                                value=category.title
+                                required 
+                            )
+
+                        .form-group.mb-3.action-box
+                            label(for="parent_id" class="font-weight-bold") Danh mục cha
+                            select(
+                                name="parent_id"
+                                id="parent_id"
+                                class="form-control"
+                            )
+                                option(value=parentId) #{parentName}
+                                if (categoryTree)
+                                    +select-tree(categoryTree)
+
+                        .form-group.mb-3
+                            label(for="position" class="font-weight-bold") Vị trí
+                            input(
+                                type="number"
+                                class="form-control"
+                                id="position"
+                                name="position"
+                                placeholder="Tự động tăng"
+                                min="1"
+                                value=category.position
+                            )
+
+                    //- Cột phải: Ảnh
+                    .col-md-4
+                        .form-group.mb-3(upload-image)
+                            label(for="thumbnail" class="font-weight-bold") Ảnh danh mục
+                            input(
+                                type="file"
+                                class="form-control-file d-block mb-2"
+                                id="thumbnail"
+                                name="thumbnail"
+                                accept="image/*"
+                                upload-image-input
+                            )
+                            div(class="box-image border p-2 text-center rounded")
+                                img(
+                                    src=category.thumbnail
+                                    upload-image-preview
+                                    class="image-preview img-fluid"
+                                    style="max-height: 150px;"
+                                )
+                                button(
+                                    type="button"
+                                    class="btn-remove-image btn btn-danger btn-sm mt-2"
+                                    aria-label="Remove image"
+                                ) X
+
+                //- Mô tả
+                .form-group.mb-3
+                    label(for="desc" class="font-weight-bold") Mô tả
+                    textarea(
+                        class="form-control textarea-mce"
+                        id="desc"
+                        name="description"
+                        rows="5"
+                    )= category.description
+
+                //- Trạng thái
+                .form-group.mb-4
+                    label.d-block.font-weight-bold Trạng thái
+                    .form-check.form-check-inline
+                        input(
+                            type="radio"
+                            class="form-check-input"
+                            id="statusActive"
+                            name="status"
+                            value="active"
+                            checked=(category.status === 'active')
+                        )
+                        label(for="statusActive" class="form-check-label") Hoạt động
+                    
+                    .form-check.form-check-inline
+                        input(
+                            type="radio"
+                            class="form-check-input"
+                            id="statusInActive"
+                            name="status"
+                            value="inactive"
+                            checked=(category.status === 'inactive')
+                        )
+                        label(for="statusInActive" class="form-check-label") Dừng hoạt động
+
+                //- Buttons
+                .text-center.mt-4
+                    button(type="submit" class="btn btn-primary px-5 mr-2") Cập nhật
+                    a(href=`${prefixAdmin}/post-categories` class="btn btn-secondary px-4") Quay lại
