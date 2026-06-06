@@ -3,10 +3,9 @@
         .row.align-items-center
             .col-3
                 .inner-logo
-                    a(href=`${prefixAdmin}/dashboard`) ADMIN
-                    
+                    a(href=`${prefixAdmin}/dashboard`) TRANG QUẢN TRỊ
             .col-9
-                div(class ="dropdown" )
-                    a(href=`${prefixAdmin}/my-profile` class="btn btn-outline-primary") #{user.fullname}
-                div(class="text-right")
-                    a(href=`${prefixAdmin}/auth/logout` class="btn btn-outline-danger") Đăng xuất
+                // Gom chung vào 1 div để dễ căn lề phải
+                .d-flex.justify-content-end.align-items-center.gap-3
+                    a(href=`${prefixAdmin}/my-profile` class="btn btn-outline-light btn-sm") #{user.fullname}
+                    a(href=`${prefixAdmin}/auth/logout` class="btn btn-danger btn-sm") Đăng xuất
