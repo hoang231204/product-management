@@ -1,4 +1,4 @@
-mixin table-tree(items, level = 1)
+mixin table-tree(items, level = 1, type)
     if items && items.length > 0
         each item in items
             tr
@@ -60,11 +60,27 @@ mixin table-tree(items, level = 1)
                         p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
                     else
                         p Chưa có cập nhật
-                td
-                    a(href=`${prefixAdmin}/post-categories/details/${item._id}` class="btn btn-info btn-sm") Chi tiết
-                    if(role.permissions.includes('post_category_edit') || role.permissions.includes('product_category_edit'))
-                        a(href=`${prefixAdmin}/post-categories/edit/${item._id}` class="btn btn-primary btn-sm ml-1") Sửa
-                    if(role.permissions.includes('post_category_delete') || role.permissions.includes('product_category_delete'))
-                        button(class="btn btn-danger btn-sm ml-1" button-delete data-id=item._id) Xóa
+                td.text-center
+                    if(type === "post_category")
+                        .row.justify-content-center.gap-2
+                            a(href=`${prefixAdmin}/post-categories/details/${item._id}` class="btn btn-info btn-sm ml-1")
+                                i.fas.fa-eye
+                            if(role.permissions.includes('post_category_edit'))
+                                a(href=`${prefixAdmin}/post-categories/edit/${item._id}` class="btn btn-primary btn-sm ml-1")
+                                    i.fas.fa-edit
+                            if(role.permissions.includes('post_category_delete') )
+                                button(class="btn btn-danger btn-sm ml-1" button-delete data-id=item._id)
+                                    i.fas.fa-trash
+                    else if(type === "product_category")
+                        .row.justify-content-center.gap-2
+                            a(href=`${prefixAdmin}/product-categories/details/${item._id}` class="btn btn-info btn-sm ml-1")
+                                i.fas.fa-eye
+                            if(role.permissions.includes('product_category_edit'))
+                                a(href=`${prefixAdmin}/product-categories/edit/${item._id}` class="btn btn-primary btn-sm ml-1")
+                                    i.fas.fa-edit
+                            if(role.permissions.includes('product_category_delete') )
+                                button(class="btn btn-danger btn-sm ml-1" button-delete data-id=item._id)
+                                    i.fas.fa-trash
+                    
             if item.children && item.children.length > 0
                 +table-tree(item.children, level + 1)
