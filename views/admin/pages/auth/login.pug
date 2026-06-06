@@ -1,20 +1,84 @@
 extends ../../layouts/auth.pug
 include ../../mixins/show-alert.pug
+
 block main
-    div(class="alert-container")
-        +alert-success(5000)
-        +alert-error(5000)
+    style.
+        body {
+            /* Gradient Dark Mode Background */
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .login-card {
+            background: #1f1f3a !important; /* Màu nền card tối hơn nền một chút để tạo chiều sâu */
+            color: #ffffff;
+            border-radius: 20px !important;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-control {
+            background-color: #16213e !important;
+            border: 1px solid #30475e !important;
+            color: #fff !important;
+            border-radius: 10px !important;
+            padding: 12px 15px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #4e73df !important;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25) !important;
+        }
+
+        .btn-primary {
+            /* Gradient button */
+            background: linear-gradient(90deg, #4e73df, #224abe) !important;
+            border: none !important;
+            border-radius: 10px !important;
+            padding: 12px !important;
+            font-weight: 600;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.2);
+            transform: translateY(-2px);
+        }
+
+        label {
+            color: #a2a3b7;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .text-muted {
+            color: #707185 !important;
+        }
+
+    //- Nội dung
+    +alert-error(5000)
+    +alert-success(5000)
+    
     .container
         .row.justify-content-center
-            .col-md-5.col-lg-4
-                .card.shadow.border-0
-                    .card-body.p-5
-                        h2.text-center.mb-4.font-weight-bold Đăng nhập
+            .col-12.col-md-6.col-lg-5
+                .card.login-card.p-4
+                    .card-body
+                        h2.text-center.mb-4.text-white Đăng nhập
                         form(
                             action=`${prefixAdmin}/auth/login`
                             method="POST"
                         )
-                            div(class="form-group")
+                            .form-group
                                 label(for="email") Email
                                 input(
                                     type="email"
@@ -25,7 +89,7 @@ block main
                                     required
                                 )
 
-                            div(class="form-group")
+                            .form-group.mt-3
                                 label(for="password") Mật khẩu
                                 input(
                                     type="password"
@@ -34,9 +98,11 @@ block main
                                     name="password"
                                     required
                                 )
+                            
                             button(
                                 type="submit"
                                 class="btn btn-primary btn-block mt-4"
                             ) Đăng nhập
+                            
                             .text-center.mt-3
-                                a(href="/" class="small text-muted") Quay lại trang chủ
+                                a(href="/" class="small text-muted" style="text-decoration: none;") Quay lại trang chủ
