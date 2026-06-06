@@ -6,50 +6,38 @@ block main
     +alert-success(5000)
 
     .container.my-5
-        h1.mb-4 #{product.title}
-        div(class="border rounded p-2 text-center")
-            img(src=product.thumbnail class="img-fluid mb-3" style="max-height: 300px; object-fit: cover;")
-        div(class="mb-2")
-            b Danh mục: 
-            if product.category_id
-                span #{product.category_id.title}
-            else
-                span.text-muted Chưa có danh mục
-        div(class="mb-2")
-            b Trạng thái: 
-            if product.featured === '1'
-                span.badge.bg-success Nổi bật
-            else
-                span.badge.bg-secondary Thường
-        div(class="mb-2") <b>Giá:</b> #{product.price}$
-        div(class="mb-2")
-            b Trạng thái: 
-            if product.status === 'active'
-                span.badge.bg-success Hoạt động
-            else
-                span.badge.bg-danger Dừng hoạt động
-        div(class="mb-3")
-            b Mô tả:
-            div(class="mt-1 p-2 bg-light border rounded") !{product.description}
-        
-        div(class="mt-4 pt-2 border-top")
-            if product.createdBy && product.createdBy.account_id
-                div <b>Người tạo:</b> #{product.createdBy.account_id.fullname}
-                div.small.text-muted #{moment(product.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-        
-        div(class="mt-3")
-            if product.updatedBy && product.updatedBy.length > 0
-                b Lịch sử cập nhật:
-                each item in product.updatedBy
-                    if item.account_id
-                        div(class="small border-bottom py-1")
-                            span #{item.account_id.fullname} 
-                            span.text-muted.ml-2 - #{moment(item.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
-            else 
-                div(class="mt-3")
-                    b Lịch sử cập nhật:
-                    div Chưa có cập nhật nào
-        div(class="mt-4")
-            if role.permissions.includes("product_edit")
-                a(href=`${prefixAdmin}/products/edit/${product._id}` class="btn btn-warning btn-sm mr-2") Sửa
-            a(href=`${prefixAdmin}/products` class="btn btn-secondary btn-sm") Quay lại
+        .detail-card
+            h1.mb-4.text-primary #{product.title}
+            .row
+                .col-md-4
+                    div(class="border-0 text-center")
+                        img(src=product.thumbnail class="img-fluid img-detail mb-3" style="max-height: 300px; object-fit: cover;")
+                    .info-box.mt-3
+                        p <b>Danh mục:</b> #{product.category_id ? product.category_id.title : "Chưa có"}
+                        p <b>Giá:</b> <span class="text-success font-weight-bold">#{product.price}$</span>
+                        p <b>Trạng thái:</b> #{product.status === 'active' ? "Hoạt động" : "Dừng"}
+                        p <b>Nổi bật:</b> #{product.featured === '1' ? "Có" : "Không"}
+
+                .col-md-8
+                    h5.mb-3 Mô tả chi tiết:
+                    .description-box
+                        | !{product.description}
+                    
+                    .mt-4.pt-3.border-top
+                        h5.mb-3 Lịch sử cập nhật:
+                        if product.updatedBy && product.updatedBy.length > 0
+                            each item in product.updatedBy
+                                if item.account_id
+                                    .history-item
+                                        div <b>#{item.account_id.fullname}</b> đã cập nhật
+                                        div.small.text-muted #{moment(item.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                        else
+                            p.text-muted Chưa có cập nhật nào.
+            .mt-4
+                if role.permissions.includes("product_edit")
+                    a(href=`${prefixAdmin}/products/edit/${product._id}` class="btn btn-warning mr-2") 
+                        i.fa.fa-edit.mr-1 
+                        | Sửa sản phẩm
+                a(href=`${prefixAdmin}/products` class="btn btn-secondary") 
+                    i.fa.fa-arrow-left.mr-1 
+                    | Quay lại danh sách
