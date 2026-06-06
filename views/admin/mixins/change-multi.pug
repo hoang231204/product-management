@@ -1,41 +1,40 @@
 mixin boxChange(path, type)
-    .card-body
-        form(
-            action= path
-            method="POST"
-            form-change-multi
-        )
-            .d-flex.align-items-start
-                .form-group
-                    select(name="type" class="form-control")
-                        option(disabled selected) Chọn hành động
-                        if type === 'product'
-                            option(value="active") Chuyển trạng thái hoạt động
-                            option(value="inactive") Chuyển trạng thái dừng hoạt động
-                            option(value="pending") Chuyển trạng thái đang chờ
-                            option(value="low_stock") Chuyển trạng thái sắp hết hàng
-                            option(value="change-position") Thay đổi vị trí
-                        else if type === 'order'
-                            option(value="confirmed") Chuyển trạng thái đã xác nhận
-                            option(value="shipping") Chuyển trạng thái đang giao hàng
-                            option(value="delivered") Chuyển trạng thái đã giao hàng
-                            option(value="canceled") Chuyển trạng thái hủy đơn
-                        else if type === 'blog'
-                            option(value="active") Chuyển trạng thái hoạt động
-                            option(value="inactive") Chuyển trạng thái dừng hoạt động
-                            option(value="pending") Chuyển trạng thái đang chờ
-                            option(value="change-position") Thay đổi vị trí
-                        else if type === 'category'
-                            option(value="active") Kích hoạt
-                            option(value="inactive") Vô hiệu hóa
-                            option(value="change-position") Thay đổi vị trí
-                        option(value="delete") Xóa
-                .form-group
-                    input(
-                        type="text"
-                        name="ids"
-                        value=""
-                        class="form-control d-none" 
-                        readonly
-                    )
+    form(
+        action= path
+        method="POST"
+        form-change-multi
+    )
+        .row.justify-content-start.align-items-center
+            .col-5
+                select(name="type" class="form-control")
+                    option(disabled selected) Chọn hành động
+                    if type === 'product'
+                        option(value="active") Chuyển trạng thái hoạt động
+                        option(value="inactive") Chuyển trạng thái dừng hoạt động
+                        option(value="pending") Chuyển trạng thái đang chờ
+                        option(value="low_stock") Chuyển trạng thái sắp hết hàng
+                        option(value="change-position") Thay đổi vị trí
+                    else if type === 'order'
+                        option(value="confirmed") Chuyển trạng thái đã xác nhận
+                        option(value="shipping") Chuyển trạng thái đang giao hàng
+                        option(value="delivered") Chuyển trạng thái đã giao hàng
+                        option(value="canceled") Chuyển trạng thái hủy đơn
+                    else if type === 'blog'
+                        option(value="active") Chuyển trạng thái hoạt động
+                        option(value="inactive") Chuyển trạng thái dừng hoạt động
+                        option(value="pending") Chuyển trạng thái đang chờ
+                        option(value="change-position") Thay đổi vị trí
+                    else if type === 'category'
+                        option(value="active") Kích hoạt
+                        option(value="inactive") Vô hiệu hóa
+                        option(value="change-position") Thay đổi vị trí
+                    option(value="delete") Xóa
+            input(
+                type="text"
+                name="ids"
+                value=""
+                class="form-control d-none" 
+                readonly
+            )
+            .col-3  
                 button(type="submit" class="btn btn-primary ml-2") Áp dụng
