@@ -1,112 +1,73 @@
 extends ../../layouts/default.pug
 include ../../mixins/show-alert.pug
+
 block main
     +alert-error(5000)
     +alert-success(5000)
+
     .container.my-5
-        .row
-            .col-md-8.col-lg-6
-                h1.mb-4.font-weight-bold Thêm mới tài khoản
-                form(
-                    action=`${prefixAdmin}/accounts/create`
-                    method="POST"
-                    enctype="multipart/form-data"
-                    form-upload
-                )
-                    //- Họ tên
-                    div(class="form-group mb-3")
-                        label(for="fullname" class="form-label") Họ tên *
-                        input(
-                            type="text"
-                            class="form-control"
-                            id="fullname"
-                            name="fullname"
-                            required
-                            )
+        .card.form-card
+            h2(class="mb-4 text-center") Thêm mới tài khoản
+            form(
+                action=`${prefixAdmin}/accounts/create` 
+                id="form-create-account" 
+                method="POST" 
+                enctype="multipart/form-data" 
+                form-upload
+            )
+                .row
+                    .col-md-6
+                        .form-group
+                            label Họ tên *
+                            .action-box
+                                input(type="text" class="form-control" name="fullname" required)
+                    .col-md-6
+                        .form-group
+                            label Email *
+                            .action-box
+                                input(type="email" class="form-control" name="email" required)
+                
+                .row
+                    .col-md-6
+                        .form-group
+                            label Mật khẩu *
+                            .action-box
+                                input(type="password" class="form-control" name="password" required)
+                    .col-md-6
+                        .form-group
+                            label Số điện thoại
+                            .action-box
+                                input(type="text" class="form-control" name="phone")
 
-                    //- Email
-                    div(class="form-group mb-3")
-                        label(for="email" class="form-label") Email *
-                        input(
-                            type="email"
-                            class="form-control"
-                            id="email"
-                            name="email"
-                            required
-                            )
+                .row
+                    .col-md-6
+                        .form-group
+                            label Phân quyền
+                            .action-box
+                                select(name="role_id" class="form-control")
+                                    option(disabled selected) -- Chọn vai trò --
+                                    each role in roles
+                                        option(value=role._id) #{role.title}
+                    .col-md-6
+                        .form-group
+                            label Trạng thái
+                            .action-box
+                                .d-flex.gap-3.mt-2
+                                    .form-check.form-check-inline
+                                        input(type="radio" class="form-check-input" id="statusActive" name="status" value="active" checked)
+                                        label(for="statusActive" class="form-check-label") Hoạt động
+                                    .form-check.form-check-inline
+                                        input(type="radio" class="form-check-input" id="statusInActive" name="status" value="inactive")
+                                        label(for="statusInActive" class="form-check-label") Dừng hoạt động
 
-                    //- Mật khẩu
-                    div(class="form-group mb-3")
-                        label(for="password" class="form-label") Mật khẩu *
-                        input(
-                            type="password"
-                            class="form-control"
-                            id="password"
-                            name="password"
-                            required
-                            )
+                .row
+                    .col-md-6
+                        .form-group(upload-image)
+                            label Avatar
+                            input(type="file" class="form-control-file" name="avatar" accept="image/*" upload-image-input)
+                            .box-image
+                                img(src="", upload-image-preview class="image-preview")
+                                button(type="button" class="btn-remove-image") ×
 
-                    //- Số điện thoại
-                    div(class="form-group mb-3")
-                        label(for="phone" class="form-label") Số điện thoại
-                        input(
-                            type="text"
-                            class="form-control"
-                            id="phone"
-                            name="phone"
-                            )
-
-                    //- Avatar
-                    div(class="form-group mb-3" upload-image)
-                        label(for="avatar" class="form-label") Avatar
-                        input(
-                            type="file"
-                            class="form-control-file d-block"
-                            id="avatar"
-                            name="avatar"
-                            accept="image/*"
-                            upload-image-input
-                            )
-                        div(class="box-image")
-                            img(
-                                src=""
-                                upload-image-preview
-                                class="image-preview"
-                                )
-                            button(
-                                type="button"
-                                class="btn-remove-image"
-                                aria-label="Remove image"
-                                ) ×
-                    //- Phân quyền (Role)
-                    div(class="form-group mb-3")
-                        label(for="role_id" class="form-label") Phân quyền
-                        select(name="role_id" id="role_id" class="form-control")
-                            option(disabled selected) -- Chọn vai trò --
-                            each role in roles
-                                option(value=role._id) #{role.title}
-                    //- Trạng thái
-                    div(class="form-group mb-4")
-                        div(class="form-check form-check-inline")
-                            input(
-                                type="radio"
-                                class="form-check-input"
-                                id="statusActive"
-                                name="status"
-                                value="active"
-                                checked
-                            )
-                            label(for="statusActive" class="form-check-label") Hoạt động
-                        div(class="form-check form-check-inline")
-                            input(
-                                type="radio"
-                                class="form-check-input"
-                                id="statusInActive"
-                                name="status"
-                                value="inactive"
-                            )
-                            label(for="statusInActive" class="form-check-label") Dừng hoạt động
-
-                    //- Nút tạo mới
-                    div(class="form-group")
-                        button(type="submit" class="btn btn-primary") Tạo mới
+                .text-right.mt-4.text-center
+                    button(type="submit" class="btn btn-primary px-5") Tạo mới
