@@ -1,121 +1,118 @@
 extends ../../layouts/default.pug
 include ../../mixins/show-alert.pug
 include ../../mixins/select-tree.pug
+
 block main
     +alert-error(5000)
-    h1(class="mb-4") Thêm mới bài viết
-    form(action=`${prefixAdmin}/posts/create` id="form-create-post" method="POST" enctype="multipart/form-data" form-upload)
-        // Tiêu đề (Title)
-        div(class="form-group")
-            label(for="title") Tiêu đề
-            input(
-                type="text"
-                class="form-control"
-                id="title"
-                name="title"
-                required 
+    
+    .container.my-5
+        .card.form-card
+            h1(class="mb-4 text-center") THÊM MỚI BÀI VIẾT
+            
+            form(
+                action=`${prefixAdmin}/posts/create` 
+                id="form-create-post" 
+                method="POST" 
+                enctype="multipart/form-data" 
+                form-upload
             )
-        div(class="form-group")
-            label(for="category_id") Danh mục
-            select(
-                name="category_id"
-                id="category_id"
-                class="form-control"
-            )
-                option(disabled selected) -- Chọn danh mục --
-                if (categoryTree)
-                    +select-tree(categoryTree)
-        // Mô tả (Description)
-        div(class="form-group")
-            label(for="desc") Mô tả
-            textarea(
-                class="form-control textarea-mce"
-                id="desc"
-                name="description"
-                rows="5"
-            )
-        // Nội dung (Content)
-        div(class="form-group")
-            label(for="content") Nội dung
-            textarea(
-                class="form-control textarea-mce"
-                id="content"
-                name="content"
-                rows="10"
-            )
-        div(class="form-group form-check form-check-inline")
-            input(
-                type="radio"
-                class="form-check-input"
-                id="featured"
-                name="featured"
-                value="1"
-            )
-            label(for="featured" class="form-check-label") Nổi bật
-        div(class="form-group form-check form-check-inline")
-            input(
-                type="radio"
-                class="form-check-input"
-                id="notFeatured"
-                name="featured"
-                value="0"
-                checked
-            )
-            label(for="notFeatured" class="form-check-label") Thường
-        // Ảnh (Thumbnail)
-        div(class="form-group" upload-image)
-            label(for="thumbnail") Ảnh
-            input(
-                type="file"
-                class="form-control-file"
-                id="thumbnail"
-                name="thumbnail"
-                accept="image/*"
-                upload-image-input
-            )
-            div(class="box-image")
-              img(
-                  src=""
-                  upload-image-preview
-                  class="image-preview"
-                )
-              button(
-                  type="button"
-                  class="btn-remove-image"
-                  aria-label="Remove image"
-                ) ×
-               
-        // Vị trí (Position)
-        div(class="form-group")
-            label(for="position") Vị trí
-            input(
-                type="number"
-                class="form-control"
-                id="position"
-                name="position"
-                placeholder="Tự động tăng"
-                min="1"
-            )
-        // Trạng thái (Status)
-        div(class="form-group form-check form-check-inline")
-            input(
-                type="radio"
-                class="form-check-input"
-                id="statusActive"
-                name="status"
-                value="active"
-                checked
-            )
-            label(for="statusActive" class="form-check-label") Hoạt động
-        div(class="form-group form-check form-check-inline")
-            input(
-                type="radio"
-                class="form-check-input"
-                id="statusInActive"
-                name="status"
-                value="inactive"
-            )
-            label(for="statusInActive" class="form-check-label") Dừng hoạt động
-        // Nút Tạo mới (Submit Button)
-        div(class="form-group")
-            button(type="submit" class="btn btn-primary") Tạo mới
+                .row
+                    //- Cột trái: Nội dung chính
+                    .col-md-8
+                        .form-group.mb-3
+                            label(for="title" class="font-weight-bold") Tiêu đề *
+                            input(
+                                type="text"
+                                class="form-control"
+                                id="title"
+                                name="title"
+                                required 
+                            )
+                        
+                        .form-group.mb-3
+                            label(for="desc" class="font-weight-bold") Mô tả
+                            textarea(
+                                class="form-control textarea-mce"
+                                id="desc"
+                                name="description"
+                                rows="5"
+                            )
+                        
+                        .form-group.mb-3
+                            label(for="content" class="font-weight-bold") Nội dung
+                            textarea(
+                                class="form-control textarea-mce"
+                                id="content"
+                                name="content"
+                                rows="10"
+                            )
+
+                    //- Cột phải: Meta dữ liệu
+                    .col-md-4
+                        .form-group.mb-3
+                            label(for="category_id" class="font-weight-bold") Danh mục
+                            .action-box
+                                select(
+                                    name="category_id"
+                                    id="category_id"
+                                    class="form-control"
+                                )
+                                    option(disabled selected) -- Chọn danh mục --
+                                    if (categoryTree)
+                                        +select-tree(categoryTree)
+
+                        .form-group.mb-3(upload-image)
+                            label(for="thumbnail" class="font-weight-bold") Ảnh đại diện
+                            input(
+                                type="file"
+                                class="form-control-file d-block mb-2"
+                                id="thumbnail"
+                                name="thumbnail"
+                                accept="image/*"
+                                upload-image-input
+                            )
+                            div(class="box-image border p-2 text-center rounded")
+                                img(
+                                    src=""
+                                    upload-image-preview
+                                    class="image-preview img-fluid"
+                                    style="max-height: 150px;"
+                                )
+                                button(
+                                    type="button"
+                                    class="btn-remove-image btn btn-danger btn-sm mt-2"
+                                    aria-label="Remove image"
+                                ) Xóa ảnh
+
+                        .form-group.mb-3
+                            label(for="position" class="font-weight-bold") Vị trí
+                            input(
+                                type="number"
+                                class="form-control"
+                                id="position"
+                                name="position"
+                                placeholder="Tự động tăng"
+                                min="1"
+                            )
+
+                        .form-group.mb-3
+                            label.d-block.font-weight-bold Bài viết nổi bật
+                            .form-check.form-check-inline
+                                input(type="radio" class="form-check-input" id="featured" name="featured" value="1")
+                                label(for="featured" class="form-check-label") Nổi bật
+                            .form-check.form-check-inline
+                                input(type="radio" class="form-check-input" id="notFeatured" name="featured" value="0" checked)
+                                label(for="notFeatured" class="form-check-label") Thường
+
+                        .form-group.mb-4
+                            label.d-block.font-weight-bold Trạng thái
+                            .form-check.form-check-inline
+                                input(type="radio" class="form-check-input" id="statusActive" name="status" value="active" checked)
+                                label(for="statusActive" class="form-check-label") Hoạt động
+                            .form-check.form-check-inline
+                                input(type="radio" class="form-check-input" id="statusInActive" name="status" value="inactive")
+                                label(for="statusInActive" class="form-check-label") Dừng hoạt động
+
+                //- Nút submit
+                .text-center.mt-4
+                    button(type="submit" class="btn btn-primary px-5") Tạo mới
