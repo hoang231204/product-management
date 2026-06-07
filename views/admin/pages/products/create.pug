@@ -4,10 +4,9 @@ include ../../mixins/select-tree.pug
 
 block main
     +alert-error(5000)
-
-    .container.my-5
+    .container.my-3
         .card.form-card
-            h2(class="mb-4 text-center") Thêm mới sản phẩm
+            h3(class="mb-4 text-center") Thêm mới sản phẩm
             form(action=`${prefixAdmin}/products/create` id="form-create-product" method="POST" enctype="multipart/form-data" form-upload)
                 .row
                     .col-12
