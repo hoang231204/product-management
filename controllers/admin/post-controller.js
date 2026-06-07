@@ -87,17 +87,22 @@ module.exports.details = async (req, res) =>{
 }
 //GET /posts/create
 module.exports.create = async (req, res) =>{
-    const permissions = res.locals.role.permissions;
-    if(!permissions.includes("blog_create")){
-        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-        return res.redirect(`${systemConfig.prefixAdmin}/posts`)
+    try {
+            const permissions = res.locals.role.permissions;
+        if(!permissions.includes("blog_create")){
+            req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+            return res.redirect(`${systemConfig.prefixAdmin}/posts`)
+        }
+        const categories = await PostCategory.find({status: "active", deleted: false});
+        const categoryTree = tree(categories);
+        res.render("admin/pages/post/create", {
+            pageTitle: "Tạo mới bài viết",
+            categoryTree: categoryTree
+        });
+    } catch (error) {
+        req.flash("error","Có lỗi xảy ra trong quá trình xử lý!")
+        res.redirect(`${systemConfig.prefixAdmin}/posts`)
     }
-    const categories = await PostCategory.find({status: "active", deleted: false});
-    const categoryTree = tree(categories);
-    res.render("admin/pages/post/create", {
-        pageTitle: "Tạo mới bài viết",
-        categoryTree: categoryTree
-    });
 }
 //POST /posts/create
 module.exports.postCreate = async (req, res) =>{
@@ -118,7 +123,7 @@ module.exports.postCreate = async (req, res) =>{
             account_id: res.locals.user._id
         }
         const post = new Post(req.body)
-        post.save();
+        await post.save();
         req.flash('success', 'Tạo bài viết thành công!');
         res.redirect(`${systemConfig.prefixAdmin}/posts`)
     }

@@ -37,6 +37,13 @@ module.exports.websiteInforPatch = async (req, res) => {
         req.flash('error', 'Bạn không có quyền thực hiện hành động này!');
         return res.redirect(`${systemConfig.prefixAdmin}/setting/website-infor`);
     }
-    await Setting.updateOne(req.body);
-    res.redirect(`${systemConfig.prefixAdmin}/setting/website-infor`);
+    try{
+        await Setting.updateOne(req.body);
+        req.flash('success', 'Cập nhật thông tin website thành công!');
+        res.redirect(`${systemConfig.prefixAdmin}/setting/website-infor`);
+    }
+    catch(err){
+        req.flash('error', 'Có lỗi xảy ra, vui lòng thử lại sau!');
+        res.redirect(`${systemConfig.prefixAdmin}/setting/website-infor`);
+    }
 }

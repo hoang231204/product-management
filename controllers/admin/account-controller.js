@@ -1,33 +1,64 @@
 const Account = require("../../models/account-model")
 const Role = require("../../models/role-model")
 const systemConfig = require("../../config/system")
+const filter = require("../../helpers/filter-status")
+const search = require("../../helpers/search")
+const pagination = require("../../helpers/pagination")
 const md5 = require("md5")
 //GET /admin/accounts
 module.exports.index = async (req, res) =>{
-    const permissions = res.locals.role.permissions;
-    if(!permissions.includes("account_view")){
-        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-        return res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
+    try{
+        const permissions = res.locals.role.permissions;
+        if(!permissions.includes("account_view")){
+            req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+            return res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
+        }
+        const filterStatus = filter(req.query, 'account');
+        const regex = search(req.query);
+        let find= {deleted: false};
+        if(req.query.status){
+            find.status = req.query.status;
+        }
+        if(req.query.keyword){
+            find.$or = [
+                { fullname: { $regex: req.query.keyword, $options: "i" } },
+                { email: { $regex: req.query.keyword, $options: "i" } }
+            ];
+        }
+        const countData = await Account.countDocuments(find);
+        const objectPagination = pagination(req.query,countData)
+        const accounts = await Account
+            .find(find)
+            .select("-password -token")
+            .populate("role_id", "title")
+            .populate("createdBy.account_id", "fullname")
+            .populate("updatedBy.account_id", "fullname")
+            .lean()
+        res.render("admin/pages/account/index",{
+            pageTitle: "Quản lý tài khoản",
+            filterStatus: filterStatus,
+            keyword: req.query.keyword || "",
+            objectPagination: objectPagination,
+            accounts: accounts
+        })
     }
-    let find= {deleted: false};
-    const accounts = await Account
-        .find(find)
-        .select("-password -token")
-        .populate("role_id", "title")
-        .populate("createdBy.account_id", "fullname")
-        .populate("updatedBy.account_id", "fullname")
-        .lean()
-    res.render("admin/pages/account/index",{
-        pageTitle: "Quản lý tài khoản",
-        accounts: accounts
-    })
+    catch(error){
+        req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
+        res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
+    }
 }
 //GET /admin/accounts/create
 module.exports.create = async (req, res) =>{
-    const roles = await Role.find().select("_id title");
-    res.render("admin/pages/account/create", {
-        roles: roles
-    });
+    try{
+        const roles = await Role.find().select("_id title");
+        res.render("admin/pages/account/create", {
+            roles: roles
+        });
+    }
+    catch(error){
+        req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
 }
 //POST /admin/accounts/create
 module.exports.createPost = async (req, res) =>{
@@ -47,10 +78,16 @@ module.exports.createPost = async (req, res) =>{
     req.body.createdBy = {
         account_id: res.locals.user._id
     }
-    const account = new Account(req.body);
-    await account.save();
-    req.flash('success', 'Tạo tài khoản thành công!');
-    res.redirect(`${systemConfig.prefixAdmin}/accounts`);
+    try{
+        const account = new Account(req.body);
+        await account.save();
+        req.flash('success', 'Tạo tài khoản thành công!');
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`);
+    }
+    catch(error){
+        req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
 }
 //GET /admin/accounts/details/:id
 module.exports.details = async (req, res) =>{
@@ -60,28 +97,40 @@ module.exports.details = async (req, res) =>{
         return res.redirect(`${systemConfig.prefixAdmin}/accounts`)
     }
     const id = req.params.id;
-    const account = await Account
+    try{
+        const account = await Account
         .findOne({ _id: id})
         .select("-password -token")
         .populate("role_id", "title")
         .populate("createdBy.account_id", "fullname")
         .populate("updatedBy.account_id", "fullname")
         .lean();
-    res.render("admin/pages/account/details", {
-        pageTitle: "Chi tiết tài khoản",  
-        account: account
-    });
+        res.render("admin/pages/account/details", {
+            pageTitle: "Chi tiết tài khoản",  
+            account: account
+        });
+    }
+    catch(error){
+        req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
 }
 //GET /admin/accounts/edit/:id
 module.exports.edit = async (req, res) =>{
-    const id = req.params.id;
-    const account = await Account.findOne({ _id: id }).select("-password -token").populate("role_id", "title");
-    const roles = await Role.find().select("_id title");
-    res.render("admin/pages/account/edit", {
-        pageTitle: "Chỉnh sửa tài khoản",
-        account: account,
-        roles: roles
-    });
+    try{
+        const id = req.params.id;
+        const account = await Account.findOne({ _id: id }).select("-password -token").populate("role_id", "title");
+        const roles = await Role.find().select("_id title");
+        res.render("admin/pages/account/edit", {
+            pageTitle: "Chỉnh sửa tài khoản",
+            account: account,
+            roles: roles
+        });
+    }
+    catch(error){
+        req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
 }
 //PATCH /admin/accounts/edit/:id
 module.exports.editPatch = async (req, res) =>{
@@ -106,9 +155,15 @@ module.exports.editPatch = async (req, res) =>{
         account_id: res.locals.user._id,
         updatedAt: new Date()
     };
-    await Account.updateOne({_id: id}, {...req.body, $push: { updatedBy: updatedBy }});
-    req.flash('success', 'Cập nhật tài khoản thành công!');
-    res.redirect(`${systemConfig.prefixAdmin}/accounts`);
+    try{
+        await Account.updateOne({_id: id}, {...req.body, $push: { updatedBy: updatedBy }});
+        req.flash('success', 'Cập nhật tài khoản thành công!');
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`);
+    }
+    catch(error){
+        req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
 }
 //PATCH /admin/accounts/delete/:id
 module.exports.delete = async (req, res) =>{
@@ -119,12 +174,13 @@ module.exports.delete = async (req, res) =>{
     }
     const id = req.params.id;
     const accountId = res.locals.user._id;
-    await Account.updateOne(
-        { 
-                _id: id, 
-                deleted: false 
-            },
-            {
+    try{
+        await Account.updateOne(
+            { 
+                    _id: id, 
+                    deleted: false 
+                },
+                {
                 $set: {
                     deleted: true,
                     deletedBy: {
@@ -136,6 +192,11 @@ module.exports.delete = async (req, res) =>{
     );
     req.flash('success', 'Xóa tài khoản thành công!');
     res.redirect(`${systemConfig.prefixAdmin}/accounts`);
+    }
+    catch(error){
+        req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
 }
 //PATCH /admin/accounts/change-status/:id
 module.exports.changeStatus = async (req, res) =>{
@@ -150,34 +211,57 @@ module.exports.changeStatus = async (req, res) =>{
         account_id: res.locals.user._id,
         updatedAt: new Date()
     };
-    await Account.updateOne({_id: id}, {status: status, $push: { updatedBy: updatedBy }});
-    req.flash('success', 'Cập nhật trạng thái thành công!');
-    res.redirect(`${systemConfig.prefixAdmin}/accounts`);
+    try{
+        await Account.updateOne({_id: id}, {status: status, $push: { updatedBy: updatedBy }});
+        req.flash('success', 'Cập nhật trạng thái thành công!');
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`);
+    }
+    catch(error){
+        req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
 }
 //GET /admin/accounts/recycle-bin
 module.exports.recycleBin = async (req, res) =>{
-    const accounts = await Account
-        .find({deleted: true})
-        .select("-password -token")
-        .populate("role_id", "title")
-        .populate("deletedBy.account_id", "fullname")
-        .lean();
-    res.render("admin/pages/account/recycle-bin", {
-        pageTitle: "Thùng rác tài khoản",
-        accounts: accounts
-    })
+    try{
+        const accounts = await Account
+            .find({deleted: true})
+            .select("-password -token")
+            .populate("role_id", "title")
+            .populate("deletedBy.account_id", "fullname")
+            .lean();
+        res.render("admin/pages/account/recycle-bin", {
+            pageTitle: "Thùng rác tài khoản",
+            accounts: accounts
+        })
+    } catch(error){
+        req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    }
+    
 }
 //PATCH /admin/accounts/recycle-bin/restore/:id
 module.exports.restore = async (req, res) =>{
     const id = req.params.id;
-    await Account.updateOne({_id: id}, {deleted: false,deletedBy: null});
-    req.flash('success', 'Khôi phục tài khoản thành công!');
+    try{
+        await Account.updateOne({_id: id}, {deleted: false,deletedBy: null});
+        req.flash('success', 'Khôi phục tài khoản thành công!');
+    } catch(error){
+        req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
+        res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+    } 
     res.redirect(`${systemConfig.prefixAdmin}/accounts/recycle-bin`);
 } 
 //DELETE /admin/accounts/recycle-bin/hard-delete/:id
 module.exports.hardDelete = async (req, res) =>{
-    const id = req.params.id;
-    await Account.deleteOne({_id: id});
-    req.flash('success', 'Xóa vĩnh viễn tài khoản thành công!');
-    res.redirect(`${systemConfig.prefixAdmin}/accounts/recycle-bin`);
+    try{
+        const id = req.params.id;
+        await Account.deleteOne({_id: id});
+        req.flash('success', 'Xóa vĩnh viễn tài khoản thành công!');
+        res.redirect(`${systemConfig.prefixAdmin}/accounts/recycle-bin`);
+    }
+    catch(error){
+        req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
+        res.redirect(`${systemConfig.prefixAdmin}/accounts/recycle-bin`);
+    }
 } 

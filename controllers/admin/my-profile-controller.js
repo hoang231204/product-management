@@ -14,13 +14,19 @@ module.exports.edit = async (req, res) =>{
 }
 //PATCH /admin/my-profile/edit
 module.exports.editPatch = async (req, res) =>{
-    if(req.body.password){
+    try{
+        if(req.body.password){
         req.body.password = md5(req.body.password);
+        }
+        else{
+            delete req.body.password;
+        }
+        await Account.updateOne({_id: res.locals.user._id}, req.body);
+        req.flash('success', 'Cập nhật thông tin thành công!');
+        res.redirect(`${systemConfig.prefixAdmin}/my-profile`);
     }
-    else{
-        delete req.body.password;
+    catch(error){
+        req.flash('error', 'Đã xảy ra lỗi khi cập nhật thông tin!');
+        res.redirect(`${systemConfig.prefixAdmin}/my-profile/edit`);
     }
-    await Account.updateOne({_id: res.locals.user._id}, req.body);
-    req.flash('success', 'Cập nhật thông tin thành công!');
-    res.redirect(`${systemConfig.prefixAdmin}/my-profile`);
 }

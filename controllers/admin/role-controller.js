@@ -2,20 +2,26 @@ const Role = require("../../models/role-model");
 const systemConfig = require("../../config/system")
 //GET 
 module.exports.index = async (req, res) => {
-    const permissions = res.locals.role.permissions;
-    if(!permissions.includes("role_view")){
-        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-        return res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
+    try{
+        const permissions = res.locals.role.permissions;
+        if(!permissions.includes("role_view")){
+            req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+            return res.redirect(`${systemConfig.prefixAdmin}/dashboard`)
+        }
+        const roles = await Role
+            .find()
+            .populate("createdBy.account_id", "fullname")
+            .populate("updatedBy.account_id", "fullname")
+            .lean();
+        res.render("admin/pages/role/index", {
+            pageTitle: "Quản lý vai trò",
+            roles: roles
+        })
     }
-    const roles = await Role
-        .find()
-        .populate("createdBy.account_id", "fullname")
-        .populate("updatedBy.account_id", "fullname")
-        .lean();
-    res.render("admin/pages/role/index", {
-        pageTitle: "Quản lý vai trò",
-        roles: roles
-    })
+    catch(error){
+        req.flash("error", "Đã xảy ra lỗi khi tải danh sách vai trò!");
+        res.redirect(`${systemConfig.prefixAdmin}/dashboard`);
+    }
 }
 //GET /create
 module.exports.create = async (req, res) => {
@@ -60,15 +66,21 @@ module.exports.details = async (req, res) => {
         _id: id,
         deleted: false
     }
-    const role = await Role
-    .findOne(find)
-    .populate("createdBy.account_id", "fullname")
-    .populate("updatedBy.account_id", "fullname")
-    .lean();
-    res.render("admin/pages/role/details", {
-        pageTitle: "Chi tiết vai trò",
-        role: role
-    })
+    try{
+        const role = await Role
+        .findOne(find)
+        .populate("createdBy.account_id", "fullname")
+        .populate("updatedBy.account_id", "fullname")
+        .lean();
+        res.render("admin/pages/role/details", {
+            pageTitle: "Chi tiết vai trò",
+            role: role
+        })
+    }
+    catch(error){
+        req.flash("error", "Đã xảy ra lỗi khi tải chi tiết vai trò!");
+        res.redirect(`${systemConfig.prefixAdmin}/roles`);
+    }
 }
 //PATCH /delete/:id
 module.exports.delete = async (req, res) => {
@@ -103,16 +115,22 @@ module.exports.delete = async (req, res) => {
 }
 //GET /edit/:id
 module.exports.edit = async (req, res) => {
-    const id = req.params.id;
-    let find={
-        _id: id,
-        deleted: false
+    try{
+        const id = req.params.id;
+        let find={
+            _id: id,
+            deleted: false
+        }
+        const role = await Role.findOne(find).lean();
+        res.render("admin/pages/role/edit", {
+            pageTitle: "Chỉnh sửa vai trò",
+            role: role
+        })
     }
-    const role = await Role.findOne(find).lean();
-    res.render("admin/pages/role/edit", {
-        pageTitle: "Chỉnh sửa vai trò",
-        role: role
-    })
+    catch(error){
+        req.flash("error", "Đã xảy ra lỗi khi tải trang chỉnh sửa vai trò!");
+        res.redirect(`${systemConfig.prefixAdmin}/roles`);
+    }
 }
 //PATCH /edit/:id
 module.exports.editPatch = async (req, res) => {
@@ -139,40 +157,58 @@ module.exports.editPatch = async (req, res) => {
 }
 //GET /permission/:id
 module.exports.permission = async (req, res) => {
-    const permissions = res.locals.role.permissions;
-    if(!permissions.includes("permission")){
-        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-        return res.redirect(`${systemConfig.prefixAdmin}/roles`)
+    try{
+        const permissions = res.locals.role.permissions;
+        if(!permissions.includes("permission")){
+            req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+            return res.redirect(`${systemConfig.prefixAdmin}/roles`)
+        }
+        const records = await Role.find().lean();
+        res.render("admin/pages/role/permissions", {
+            pageTitle: "Phân quyền",
+            records: records
+        })
     }
-    const records = await Role.find().lean();
-    res.render("admin/pages/role/permissions", {
-        pageTitle: "Phân quyền",
-        records: records
-    })
+    catch(error){
+        req.flash("error", "Đã xảy ra lỗi khi tải trang phân quyền!");
+        res.redirect(`${systemConfig.prefixAdmin}/roles`);
+    }
 }
 //PATCH /permission/:id
 module.exports.permissionPatch = async (req, res) => {
-    const permissions = res.locals.role.permissions;
-    if(!permissions.includes("permission")){
-        req.flash("error","Bạn không có quyền thực hiện chức năng này!")
-        return res.redirect(`${systemConfig.prefixAdmin}/roles`)
-    }
-    const roles = JSON.parse(req.body.permissions);
-    if(roles){
-        for (const role of roles) {
-            await Role.updateOne({ _id: role.id }, { permissions: role.permissions });
+    try{
+        const permissions = res.locals.role.permissions;
+        if(!permissions.includes("permission")){
+            req.flash("error","Bạn không có quyền thực hiện chức năng này!")
+            return res.redirect(`${systemConfig.prefixAdmin}/roles`)
         }
+        const roles = JSON.parse(req.body.permissions);
+        if(roles){
+            for (const role of roles) {
+                await Role.updateOne({ _id: role.id }, { permissions: role.permissions });
+            }
+        }
+        req.flash("success", "Cập nhật quyền thành công!");
+        res.redirect(`${systemConfig.prefixAdmin}/roles/permissions`);
     }
-    req.flash("success", "Cập nhật quyền thành công!");
-    res.redirect(`${systemConfig.prefixAdmin}/roles/permissions`);
+    catch(error){
+        req.flash("error", "Đã xảy ra lỗi khi cập nhật quyền!");
+        res.redirect(`${systemConfig.prefixAdmin}/roles/permissions`);
+    }
 }
 //GET /recycle-bin
 module.exports.recycleBin = async (req, res) => {
-    const roles = await Role.find({ deleted: true }).populate("deletedBy.account_id", "fullname").lean();
-    res.render("admin/pages/role/recycle-bin", {
-        pageTitle: "Thùng rác vai trò",
-        roles: roles
-    })
+    try{
+        const roles = await Role.find({ deleted: true }).populate("deletedBy.account_id", "fullname").lean();
+        res.render("admin/pages/role/recycle-bin", {
+            pageTitle: "Thùng rác vai trò",
+            roles: roles
+        })
+    }
+    catch(error){
+        req.flash("error", "Đã xảy ra lỗi khi tải trang thùng rác!");
+        res.redirect(`${systemConfig.prefixAdmin}/roles`);
+    }
 }
 //PATCH /recycle-bin/restore/:id
 module.exports.restore = async (req, res) => {
