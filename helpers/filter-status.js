@@ -14,6 +14,7 @@ module.exports = (query, type) => {
     const orderStatuses = ["", "pending", "confirmed", "shipping", "delivered", "canceled"];
     const blogStatuses = ["", "active", "inactive", "pending"];
     const categoryStatuses = ["", "active", "inactive"];
+    const userStatuses = ["", "active", "inactive"];
     let filterStatus = [];
     if(type === 'order'){
         filterStatus = allStatuses.filter(item => orderStatuses.includes(item.status))
@@ -26,6 +27,9 @@ module.exports = (query, type) => {
     }
     if(type === 'category'){
         filterStatus = allStatuses.filter(item => categoryStatuses.includes(item.status))
+    }
+    if(type === 'user' || type === 'account'){
+        filterStatus = allStatuses.filter(item => userStatuses.includes(item.status))
     }
     if(query.status){
         const index = filterStatus.findIndex(item => item.status == query.status)
