@@ -28,6 +28,9 @@ mixin boxChange(path, type)
                         option(value="active") Kích hoạt
                         option(value="inactive") Vô hiệu hóa
                         option(value="change-position") Thay đổi vị trí
+                    else if type === 'user'
+                        option(value="active") Kích hoạt
+                        option(value="inactive") Vô hiệu hóa
                     option(value="delete") Xóa
             input(
                 type="text"

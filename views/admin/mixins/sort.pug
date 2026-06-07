@@ -23,6 +23,12 @@ mixin boxSort(type)
                         option(value="createdAt-asc") Cũ nhất
                         option(value="title-asc") Tiêu đề A - Z
                         option(value="title-desc") Tiêu đề Z - A
+                    else if type === 'account'|| type === 'user' 
+                        option(value="createdAt-desc") Mới nhất
+                        option(value="createdAt-asc") Cũ nhất
+                        option(value="name-asc") Họ tên A - Z
+                        option(value="name-desc") Họ tên Z - A
+                    
             .col-2
                 button(
                     class="btn btn-danger"
