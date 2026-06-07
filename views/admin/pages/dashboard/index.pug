@@ -1,123 +1,125 @@
 extends ../../layouts/default.pug
 block main
-    .row.mt-4
-        .col-12
-            .card.mb-4
-                .card-header Thông tin tài khoản
-                .card-body
-                    if (user.avatar)
-                        img(
-                            src=user.avatar
-                            style="height: 100px; margin-bottom: 15px;"
-                        )
-                    else
-                        img(
-                            src="/images/default-avatar.png"
-                            style="height: 100px; margin-bottom: 15px;"
-                            alt="Avatar mặc định"
-                        ) 
-                    if (user.fullname)
-                        p Họ tên: <b>#{user.fullname}</b>
-                    if (user.email)
-                        p Email: <b>#{user.email}</b>
-                    if (user.phone)
-                        p Số điện thoại: <b>#{user.phone}</b>
-                    else
-                        p Số điện thoại: <b>Chưa cập nhật</b>
-                    if (role.title)
-                        p Phân quyền: <b>#{role.title}</b>
-    .row
-        .col-6
-            .card.mb-4
-                .card-header Danh mục sản phẩm
-                .card-body
-                    p Số lượng: <b>#{statistic.categoryProduct.total}</b>
-                    p Hoạt động: <b>#{statistic.categoryProduct.active}</b>
-                    p Dừng hoạt động: <b>#{statistic.categoryProduct.inactive}</b>
-        .col-6
-            .card.mb-4
-                .card-header Sản phẩm
-                .card-body
-                    p Số lượng: <b>#{statistic.product.total}</b>
-                    p Hoạt động: <b>#{statistic.product.active}</b>
-                    p Dừng hoạt động: <b>#{statistic.product.inactive}</b>
-    .row
-        .col-6
-            .card.mb-4
-                .card-header Tài khoản quản trị
-                .card-body
-                    p Số lượng: <b>#{statistic.account.total}</b>
-                    p Hoạt động: <b>#{statistic.account.active}</b>
-                    p Dừng hoạt động: <b>#{statistic.account.inactive}</b>
-        .col-6
-            .card.mb-4
-                .card-header Tài khoản người dùng
-                .card-body
-                    p Số lượng: <b>#{statistic.user.total}</b>
-                    p Hoạt động: <b>#{statistic.user.active}</b>
-                    p Dừng hoạt động: <b>#{statistic.user.inactive}</b>
-    .row
-        .col-md-3
-            .card.bg-primary.text-white.mb-3
-                .card-body
-                    h6 Tổng đơn hàng
-                    h3 #{totalOrders}
-        .col-md-3
-            .card.bg-info.text-white.mb-3
-                .card-body
-                    h6 Số đơn trong ngày
-                    h3 #{ordersToday}
-        .col-md-3
-            .card.bg-success.text-white.mb-3
-                .card-body
-                    h6 Số đơn trong tháng
-                    h3 #{ordersMonth}
-        .col-md-3
-            .card.bg-warning.text-dark.mb-3
-                .card-body
-                    h6 Đơn hàng chờ xử lý
-                    h3 #{pendingOrders}
-    .row
-        .col-md-4
-            .card.bg-secondary.text-white.mb-3
-                .card-body
-                    h6 Doanh thu trong ngày
-                    h4 #{todayRevenue.toLocaleString()} VNĐ
-        .col-md-4
-            .card.bg-dark.text-white.mb-3
-                .card-body
-                    h6 Doanh thu trong tháng
-                    h4 #{monthRevenue.toLocaleString()} VNĐ
-        .col-md-4
-            .card.bg-dark.text-white.mb-3
-                .card-body
-                    h6 Doanh thu năm #{selectedYear}
-                    h4 #{yearRevenue.toLocaleString()} VNĐ
-    .row.mb-4.action-box
-        .col-md-3
-            label Chọn năm cần thông kê:
-            select(id="yearSelect" class="form-control" onchange="changeYear(this.value)")
-                - var years = [2024, 2025, 2026]
-                each year in years
-                    option(value=year selected=(selectedYear == year)) #{year}
-    .row
-        .col-md-12
-            .card.bg-light.mb-3
-                .card-body
-                    h6 🏆 Sản phẩm bán chạy nhất năm #{selectedYear}
-                    if bestSeller
-                        h4 #{bestSeller.productInfo.title}
-                        p Đã bán: 
-                        b #{bestSeller.totalSold} sản phẩm
-                    else
-                        p Chưa có dữ liệu bán hàng trong năm này.
-    .row
-        .col-12
-            .card
-                .card-header
-                    h3 Biểu đồ doanh thu năm #{selectedYear}
+    .container
+        .row
+            .col-12
+                .card.mb-4
+                    .card-header Thông tin tài khoản
                     .card-body
-                        canvas(id="revenueChart" style="height: 300px;")
+                        if (user.avatar)
+                            img(
+                                src=user.avatar
+                                style="height: 100px; margin-bottom: 15px;"
+                            )
+                        else
+                            img(
+                                src="/images/default-avatar.png"
+                                style="height: 100px; margin-bottom: 15px;"
+                                alt="Avatar mặc định"
+                            ) 
+                        if (user.fullname)
+                            p Họ tên: <b>#{user.fullname}</b>
+                        if (user.email)
+                            p Email: <b>#{user.email}</b>
+                        if (user.phone)
+                            p Số điện thoại: <b>#{user.phone}</b>
+                        else
+                            p Số điện thoại: <b>Chưa cập nhật</b>
+                        if (role.title)
+                            p Phân quyền: <b>#{role.title}</b>
+        .row
+            .col-6
+                .card.mb-4
+                    .card-header Danh mục sản phẩm
+                    .card-body
+                        p Số lượng: <b>#{statistic.categoryProduct.total}</b>
+                        p Hoạt động: <b>#{statistic.categoryProduct.active}</b>
+                        p Dừng hoạt động: <b>#{statistic.categoryProduct.inactive}</b>
+            .col-6
+                .card.mb-4
+                    .card-header Sản phẩm
+                    .card-body
+                        p Số lượng: <b>#{statistic.product.total}</b>
+                        p Hoạt động: <b>#{statistic.product.active}</b>
+                        p Dừng hoạt động: <b>#{statistic.product.inactive}</b>
+        .row
+            .col-6
+                .card.mb-4
+                    .card-header Tài khoản quản trị
+                    .card-body
+                        p Số lượng: <b>#{statistic.account.total}</b>
+                        p Hoạt động: <b>#{statistic.account.active}</b>
+                        p Dừng hoạt động: <b>#{statistic.account.inactive}</b>
+            .col-6
+                .card.mb-4
+                    .card-header Tài khoản người dùng
+                    .card-body
+                        p Số lượng: <b>#{statistic.user.total}</b>
+                        p Hoạt động: <b>#{statistic.user.active}</b>
+                        p Dừng hoạt động: <b>#{statistic.user.inactive}</b>
+        .row
+            .col-md-3
+                .card.mb-3
+                    .card-body.bg-primary.text-white.rounded-lg
+                        h6 Tổng đơn hàng
+                        h3 #{totalOrders}
+            .col-md-3
+                .card.mb-3
+                    .card-body.bg-success.text-white.rounded-lg
+                        h6 Số đơn trong ngày
+                        h3 #{ordersToday}
+            .col-md-3
+                .card.mb-3
+                    .card-body.bg-info.text-white.rounded-lg
+                        h6 Số đơn trong tháng
+                        h3 #{ordersMonth}
+            .col-md-3
+                .card.mb-3
+                    .card-body.bg-warning.text-dark.rounded-lg
+                        h6 Đơn hàng chờ xử lý
+                        h3 #{pendingOrders}
+        .row
+            .col-md-4
+                .card.e.mb-3
+                    .card-body
+                        h6 Doanh thu trong ngày
+                        h4 #{todayRevenue.toLocaleString()} VNĐ
+            .col-md-4
+                .card.mb-3
+                    .card-body
+                        h6 Doanh thu trong tháng
+                        h4 #{monthRevenue.toLocaleString()} VNĐ
+            .col-md-4
+                .card.mb-3
+                    .card-body
+                        h6 Doanh thu năm #{selectedYear}
+                        h4 #{yearRevenue.toLocaleString()} VNĐ
+        .row.mb-4
+            .col-md-3
+                .action-box
+                    label Chọn năm cần thông kê:
+                    select(id="yearSelect" class="form-control" onchange="changeYear(this.value)")
+                        - var years = [2024, 2025, 2026]
+                        each year in years
+                            option(value=year selected=(selectedYear == year)) #{year}
+        .row
+            .col-md-12
+                .card.bg-light.mb-3
+                    .card-body
+                        h6 🏆 Sản phẩm bán chạy nhất năm #{selectedYear}
+                        if bestSeller
+                            h4 #{bestSeller.productInfo.title}S
+                            p Đã bán: 
+                            b #{bestSeller.totalSold} sản phẩm
+                        else
+                            p Chưa có dữ liệu bán hàng trong năm này.
+        .row
+            .col-12
+                .card
+                    .card-header
+                        h3 Biểu đồ doanh thu năm #{selectedYear}
+                        .card-body
+                            canvas(id="revenueChart" style="height: 300px;")
 
     script(src="https://cdn.jsdelivr.net/npm/chart.js")
     script.

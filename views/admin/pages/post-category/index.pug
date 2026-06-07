@@ -8,47 +8,51 @@ block main
     if(role.permissions.includes('post_category_view'))
         +alert-success(3000)
         +alert-error(3000)
-       
-        .card.mb-3
-            h3.text-center Quản lý danh mục bài viết
-            .card-body
-                .row.align-items-center.mb-3
-                    .col-lg-8
-                        +boxFilter(filterStatus)
-                    .col-lg-4
-                        +boxSearch(keyword)
-                .row.align-items-center.action-box.mb-3
-                    .col-lg-9
-                        if(role.permissions.includes("post_category_edit"))
-                            +boxChange(`${prefixAdmin}/post-categories/change-multi`, 'category')
-                    .col-lg-3.text-lg-right
-                        if(role.permissions.includes("post_category_create"))
-                            a(href=`${prefixAdmin}/post-categories/create` class="btn btn-success")
-                                i.fa.fa-plus.mr-2
-                                | Thêm mới
-        .card.mb-3
-            .card-header Danh sách danh mục
-            .card-body
-                table(class="table table-hover table-sm" check-box-multi)
-                    thead
-                        tr
-                            th
-                                input(type="checkbox" name="checkAll")
-                            th STT
-                            th Hình ảnh
-                            th Tiêu đề
-                            th Vị trí
-                            th Trạng thái
-                            th Người tạo
-                            th Người sửa
-                            th Hành động
-                    tbody
-                        if categories.length > 0
-                            +table-tree(categoryTree, 1, "post_category")
-                        else
+        .container.my-3
+            .card.mb-3
+                h3.text-center Quản lý danh mục bài viết
+                .card-header Bộ lọc và Tìm kiếm
+                    .card-body
+                        .row.align-items-center.mb-3
+                            .col-lg-8
+                                +boxFilter(filterStatus)
+                            .col-lg-4
+                                +boxSearch(keyword)
+            .card.mb-3
+                .card-header Thay đổi
+                    .card-body
+                        .row.align-items-center.action-box.mb-3
+                            .col-lg-8
+                                if(role.permissions.includes("post_category_edit"))
+                                    +boxChange(`${prefixAdmin}/post-categories/change-multi`, 'category')
+                            .col-lg-3.text-lg-right
+                                if(role.permissions.includes("post_category_create"))
+                                    a(href=`${prefixAdmin}/post-categories/create` class="btn btn-success")
+                                        i.fa.fa-plus.mr-2
+                                        | Thêm mới
+            .card.mb-3
+                .card-header Danh sách danh mục
+                .card-body
+                    table(class="table table-hover table-sm" check-box-multi)
+                        thead
                             tr
-                                td(colspan="8" class="text-center text-muted") Không có danh mục nào
-        form(
+                                th
+                                    input(type="checkbox" name="checkAll")
+                                th STT
+                                th Hình ảnh
+                                th Tiêu đề
+                                th Vị trí
+                                th Trạng thái
+                                th Người tạo
+                                th Người sửa
+                                th Hành động
+                        tbody
+                            if categories.length > 0
+                                +table-tree(categoryTree, 1, "post_category")
+                            else
+                                tr
+                                    td(colspan="8" class="text-center text-muted") Không có danh mục nào
+            form(
         action=""
         method="POST"
         form-change-status

@@ -1,103 +1,115 @@
 extends ../../layouts/default.pug
+include ../../mixins/filter-status.pug
+include ../../mixins/search.pug
+include ../../mixins/pagination.pug
+include ../../mixins/change-multi.pug
 include ../../mixins/show-alert.pug
 include ../../mixins/sort.pug
-
 block main
     if(role.permissions.includes("user_view"))
         +alert-success(5000)
-        .card.mb-3
-            h3.text-center Quản lý người dùng
-            .card-body
-                .row.align-items-center.mb-3
-                    .col-lg-8
-                    .col-lg-4
-                .row.align-items-center.mb-3.action-box
-                    .col-lg-4
-                        .d-flex.align-items-center
-                            div(style="flex-grow: 1")
-                
-                .row.align-items-center.action-box.mb-3
-                    .col-lg-9
-                    .col-lg-3.text-lg-right
-                        if(role.permissions.includes("user_create"))
-                            a(href=`${prefixAdmin}/users/create` class="btn btn-success")
-                                i.fa.fa-plus.mr-2
-                                | Thêm mới
-
-        .card.mb-3
-            .card-header Danh sách người dùng
-            .card-body
-                .table-responsive
-                    table(class="table table-hover table-sm" check-box-multi)
-                        thead
-                            tr.text-center
-                                th
-                                    input(type="checkbox" name="checkAll")
-                                th STT
-                                th Avatar
-                                th Họ tên
-                                th Email
-                                th Số điện thoại
-                                th Trạng thái
-                                th Hành động
-                        tbody
-                            if(users.length > 0)
-                                each item, index in users
+        .container.my-3
+            .card.mb-3
+                h3.text-center Quản lý người dùng
+                .card-header Bộ lọc và Tìm kiếm
+                    .card-body
+                        .row.align-items-center.mb-3
+                            .col-lg-8
+                                +boxFilter(filterStatus)
+                            .col-lg-4
+                                +boxSearch(keyword)
+                .card-header Sắp xếp
+                    .card-body
+                        .row.align-items-center.mb-3.action-box
+                            .col-lg-4
+                                .d-flex.align-items-center
+                                    div(style="flex-grow: 1")
+                                        +boxSort('user')
+                .card-header Thay đổi
+                    .card-body
+                        .row.align-items-center.action-box.mb-3
+                            .col-lg-8
+                                if(role.permissions.includes("user_edit"))
+                                    +boxChange(`${prefixAdmin}/users/change-multi?_method=PATCH`, 'user')
+                            .col-lg-3.text-lg-right
+                                if(role.permissions.includes("user_create"))
+                                    a(href=`${prefixAdmin}/users/create` class="btn btn-success")
+                                        i.fa.fa-plus.mr-2
+                                        | Thêm mới
+            .card.mb-3
+                .card-header Danh sách người dùng
+                    .card-body
+                        .table-responsive
+                            table(class="table table-hover table-sm" check-box-multi)
+                                thead
                                     tr.text-center
-                                        td
-                                            input(
-                                                type="checkbox"
-                                                name="id"
-                                                value=item.id
-                                            )
-                                        td #{index + 1}
-                                        td
-                                            img(
-                                                src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png")
-                                                alt=item.fullname
-                                                width="50px"
-                                                height="50px"
-                                                style="object-fit: cover; border-radius: 50%;"
-                                            )
-                                        td.font-weight-bold #{item.fullname}
-                                        td #{item.email}
-                                        td #{item.phone ? item.phone : "Chưa cập nhật"}
-                                        td
-                                            if(role.permissions.includes("user_edit"))
-                                                if(item.status == 'active')
-                                                    a(
-                                                        href="javascript:;" 
-                                                        class="badge badge-success" 
-                                                        button-change-status 
-                                                        data-id=item.id  
-                                                        data-status=item.status
-                                                        data-next-status="inactive"
-                                                    ) Hoạt động
-                                                else
-                                                    a(
-                                                        href="javascript:;" 
-                                                        class="badge badge-danger" 
-                                                        button-change-status 
-                                                        data-id=item.id  
-                                                        data-status=item.status
-                                                        data-next-status="active"
-                                                    ) Dừng hoạt động
-                                            else
-                                                span(class=`badge ${item.status == 'active' ? 'badge-success' : 'badge-danger'}`) #{item.status == 'active' ? 'Hoạt động' : 'Dừng hoạt động'}
-                                        td
-                                            .row.justify-content-center.gap-2
-                                                a(href=`${prefixAdmin}/users/details/${item._id}` class="btn btn-info btn-sm")
-                                                    i.fas.fa-eye
-                                                if(role.permissions.includes("user_edit"))
-                                                    a(href=`${prefixAdmin}/users/edit/${item._id}` class="btn btn-warning btn-sm mx-1")
-                                                        i.fas.fa-edit
-                                                if(role.permissions.includes("user_delete"))
-                                                    button(class="btn btn-danger btn-sm" button-delete data-id=item._id)
-                                                        i.fas.fa-trash
-                            else
-                                tr
-                                    td(colspan="8" class="text-center py-4") 
-                                        em Không tìm thấy người dùng nào.
+                                        th
+                                            input(type="checkbox" name="checkAll")
+                                        th STT
+                                        th Avatar
+                                        th Họ tên
+                                        th Email
+                                        th Số điện thoại
+                                        th Trạng thái
+                                        th Hành động
+                                tbody
+                                    if(users.length > 0)
+                                        each item, index in users
+                                            tr.text-center
+                                                td
+                                                    input(
+                                                        type="checkbox"
+                                                        name="id"
+                                                        value=item.id
+                                                    )
+                                                td #{index + 1}
+                                                td
+                                                    img(
+                                                        src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png")
+                                                        alt=item.fullname
+                                                        width="50px"
+                                                        height="50px"
+                                                        style="object-fit: cover; border-radius: 50%;"
+                                                    )
+                                                td.font-weight-bold #{item.fullname}
+                                                td #{item.email}
+                                                td #{item.phone ? item.phone : "Chưa cập nhật"}
+                                                td
+                                                    if(role.permissions.includes("user_edit"))
+                                                        if(item.status == 'active')
+                                                            a(
+                                                                href="javascript:;" 
+                                                                class="badge badge-success" 
+                                                                button-change-status 
+                                                                data-id=item.id  
+                                                                data-status=item.status
+                                                                data-next-status="inactive"
+                                                            ) Hoạt động
+                                                        else
+                                                            a(
+                                                                href="javascript:;" 
+                                                                class="badge badge-danger" 
+                                                                button-change-status 
+                                                                data-id=item.id  
+                                                                data-status=item.status
+                                                                data-next-status="active"
+                                                            ) Dừng hoạt động
+                                                    else
+                                                        span(class=`badge ${item.status == 'active' ? 'badge-success' : 'badge-danger'}`) #{item.status == 'active' ? 'Hoạt động' : 'Dừng hoạt động'}
+                                                td
+                                                    .row.justify-content-center.gap-2
+                                                        a(href=`${prefixAdmin}/users/details/${item._id}` class="btn btn-info btn-sm")
+                                                            i.fas.fa-eye
+                                                        if(role.permissions.includes("user_edit"))
+                                                            a(href=`${prefixAdmin}/users/edit/${item._id}` class="btn btn-warning btn-sm mx-1")
+                                                                i.fas.fa-edit
+                                                        if(role.permissions.includes("user_delete"))
+                                                            button(class="btn btn-danger btn-sm" button-delete data-id=item._id)
+                                                                i.fas.fa-trash
+                                    else
+                                        tr
+                                            td(colspan="8" class="text-center py-4") 
+                                                em Không tìm thấy người dùng nào.
 
         form(
             action=""

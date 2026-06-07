@@ -8,10 +8,10 @@ block main
             .card.mb-3
                 h3.text-center Quản lý nhóm quyền
                 .card-header
-                .card-body
-                    .d-flex.justify-content-end
-                        if(role.permissions.includes('role_create'))
-                            a(href=`${prefixAdmin}/roles/create` class="btn btn-outline-success") + Thêm mới
+                    .card-body
+                        .d-flex.justify-content-end
+                            if(role.permissions.includes('role_create'))
+                                a(href=`${prefixAdmin}/roles/create` class="btn btn-outline-success") + Thêm mới
 
             //- Bảng danh sách
             .card.mb-3

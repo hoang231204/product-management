@@ -26,14 +26,14 @@ block main
                 .card-header Thay đổi
                     .card-body 
                         .row
-                            .col-12
+                            .col-8
                                 if(role.permissions.includes("order_edit"))
                                     +boxChange(`${prefixAdmin}/orders/change-multi?_method=PATCH`, 'order')
-            .card.mb-3.action-box
+            .card.mb-3
                 .card-header Sắp xếp
                     .card-body
                         .row
-                            .col-8
+                            .col-8.action-box
                                 +boxSort('order')
             .card.mb-3
                 .card-header Danh sách đơn hàng
