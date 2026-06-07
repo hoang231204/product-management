@@ -126,23 +126,29 @@ if(buttonsEdit.length>0){
 
 
 // PREVIEW IMAGE
-const formCreate = document.querySelector("[form-upload]")
-if(formCreate){
-    const uploadImage= formCreate.querySelector("[upload-image]")
-    const uploadImageInput = document.querySelector("[upload-image-input]")
-    const uploadImagePreview = document.querySelector("[upload-image-preview]")
+const formCreate = document.querySelector("[form-upload]");
 
-    uploadImageInput.addEventListener("change",(event)=>{
-    const [file] = event.target.files;
-    if(file){
-      uploadImagePreview.src = URL.createObjectURL(file)
+if (formCreate) {
+    const uploadImage = formCreate.querySelector("[upload-image]");
+    const uploadImageInput = uploadImage.querySelector("[upload-image-input]");
+    const uploadImagePreview = uploadImage.querySelector("[upload-image-preview]");
+    const boxImage = uploadImage.querySelector(".box-image");
+    const buttonRemoveImage = uploadImage.querySelector(".btn-remove-image");
+    if (!uploadImagePreview.src || uploadImagePreview.src === window.location.href) {
+        boxImage.classList.add("d-none");
     }
-  })
-  const buttonRemoveImage = document.querySelector(".btn-remove-image")
-  buttonRemoveImage.addEventListener("click",()=>{
-    uploadImageInput.value = "";
-    uploadImagePreview.src = "";
-  })
+    uploadImageInput.addEventListener("change", (event) => {
+        const [file] = event.target.files;
+        if (file) {
+            uploadImagePreview.src = URL.createObjectURL(file);
+            boxImage.classList.remove("d-none"); 
+        }
+    });
+    buttonRemoveImage.addEventListener("click", () => {
+        uploadImageInput.value = "";
+        uploadImagePreview.src = ""; 
+        boxImage.classList.add("d-none"); 
+    });
 }
 //SORT
 const sort = document.querySelector("[sort]");
