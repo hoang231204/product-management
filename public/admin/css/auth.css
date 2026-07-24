@@ -1,0 +1,121 @@
+body {
+    /* Gradient Dark Mode Background */
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.login-card {
+    background: #1f1f3a !important; /* Màu nền card tối hơn nền một chút để tạo chiều sâu */
+    color: #ffffff;
+    border-radius: 20px !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-control {
+    background-color: #16213e !important;
+    border: 1px solid #30475e !important;
+    color: #fff !important;
+    border-radius: 10px !important;
+    padding: 12px 15px;
+    transition: all 0.3s;
+}
+
+.form-control:focus {
+    border-color: #4e73df !important;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25) !important;
+}
+
+.btn-primary {
+    /* Gradient button */
+    background: linear-gradient(90deg, #4e73df, #224abe) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    font-weight: 600;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.2);
+    transform: translateY(-2px);
+}
+
+label {
+    color: #a2a3b7;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.text-muted {
+    color: #707185 !important;
+}
+/* Container chính */
+[show-alert] {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 300px;
+    max-width: 450px;
+    animation: slideInRight 0.4s ease-out;
+    color: #fff;
+    font-weight: 500;
+}
+
+/* Hiệu ứng trượt vào từ bên phải */
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Nút close hiện đại */
+[show-alert] [close-alert] {
+    margin-left: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 14px;
+}
+
+[show-alert] [close-alert]:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Tùy chỉnh màu sắc dựa trên loại alert */
+[show-alert].alert-success {
+    background-color: #27ae60;
+    border-left: 5px solid #1e8449;
+}
+
+[show-alert].alert-danger {
+    background-color: #e74c3c;
+    border-left: 5px solid #c0392b;
+}
+/* Hiệu ứng khi ẩn alert */
+.alert-hidden {
+    opacity: 0;
+    transform: translateX(100%); /* Trượt ra phải khi biến mất */
+    transition: all 0.5s ease;
+    pointer-events: none; /* Không cho click khi đang ẩn */
+}
