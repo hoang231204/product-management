@@ -38,15 +38,51 @@ if (showAlert.length > 0) {
 //CHANGE QUANTITY
 const quantityInputs = document.querySelectorAll(`input[name="quantity"]`);
 if(quantityInputs.length > 0){
-  let url = new URL(window.location.href);
+    const cartCard = document.querySelector(".cart-card");
+    const cartSummary = document.querySelector(".cart-summary");
+    const setCartLoading = () => {
+      if(cartCard){
+        cartCard.classList.add("is-loading");
+      }
+      if(cartSummary){
+        cartSummary.classList.add("is-loading");
+      }
+    }
+
+    const updateCartQuantity = (productId, nextQuantity) => {
+      const quantity = Math.max(1, Number(nextQuantity) || 1);
+      setCartLoading();
+      window.location.href = `/carts/update/${productId}?quantity=${quantity}`;
+    }
+
     quantityInputs.forEach(input=>{
         input.addEventListener("change",(event)=>{
-          console.log(input)
           const newQuantity = event.target.value;
           const productId = input.getAttribute("product-id");
-          window.location.href = `/cart/update/${productId}?quantity=${newQuantity}`;
+          updateCartQuantity(productId, newQuantity);
         })
     })
+
+    const qtyButtons = document.querySelectorAll("[cart-qty-action]");
+    if(qtyButtons.length > 0){
+      qtyButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          const control = button.closest(".cart-qty-control");
+          if(!control){
+            return;
+          }
+          const input = control.querySelector('input[name="quantity"]');
+          if(!input){
+            return;
+          }
+          const action = button.getAttribute("cart-qty-action");
+          const currentValue = Number(input.value) || 1;
+          const nextQuantity = action === "increase" ? currentValue + 1 : currentValue - 1;
+          const productId = input.getAttribute("product-id");
+          updateCartQuantity(productId, nextQuantity);
+        })
+      })
+    }
 }
 // PREVIEW IMAGE
 const formCreate = document.querySelector("[form-upload]")
@@ -104,3 +140,18 @@ if(filterButtons.length>0){
         })
     })
 }
+//PAGINATION
+    const buttonsPage = document.querySelectorAll(".page-link")
+    if(buttonsPage){
+        let url = new URL(window.location.href)
+        buttonsPage.forEach(button =>{
+            button.addEventListener("click",()=>{
+                const buttonPage = button.getAttribute("button-page")
+
+                    url.searchParams.set("page",buttonPage)
+
+                
+                window.location.href = url;
+            })
+        })
+    }
