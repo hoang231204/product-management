@@ -1,24 +1,40 @@
 mixin product-item(item)
   .product-item
     .inner-image
-      img(src=item.thumbnail, alt="Hình ảnh", srcset="")
+      a(href=`/products/details/${item.slug}`)
+        img(src=item.thumbnail, alt=item.title)
       if(item.featured == "1")
         .inner-featured Nổi bật
-      a(href=`/products/details/${item.slug}`) 
-        h3.inner-title #{item.title}
-      .inner-price-new #{item.priceNew}$
-      .inner-price-old #{item.price}$
-      .inner-discount -#{item.discountPercentage}%
+      if(item.discountPercentage && item.discountPercentage > 0)
+        .inner-discount -#{item.discountPercentage}%
+    
+    .p-3.d-flex.flex-column.flex-grow-1
+      h3.inner-title.mb-2
+        a(href=`/products/details/${item.slug}`) #{item.title}
+      
+      .mt-auto.pt-2.d-flex.align-items-baseline.gap-2.flex-wrap
+        .inner-price-new #{item.priceNew ? item.priceNew.toLocaleString('vi-VN') : item.price} VND
+        if(item.discountPercentage && item.discountPercentage > 0 && item.price)
+          .inner-price-old #{item.price.toLocaleString('vi-VN')} VND
+        else
+          .inner-price-old Chưa có mã giảm giá
+
 mixin blog-item(item)
   .blog-item
     .inner-image
-      img(src=item.thumbnail, alt="Hình ảnh", srcset="")
-      a(href=`/blogs/details/${item.slug}`) 
-        h3.inner-title #{item.title}
-      .inner-description #{item.description}
-      .inner-date #{item.createdAt}
-      .inner-author Tác giả: 
-        if(item.author)
-          | #{item.author}
-        else
-          | Không rõ
+      a(href=`/blogs/details/${item.slug}`)
+        img(src=item.thumbnail, alt=item.title)
+    
+    .p-3.d-flex.flex-column.flex-grow-1
+      h3.inner-title.mb-2
+        a(href=`/blogs/details/${item.slug}`) #{item.title}
+      if(item.description)
+        .inner-description #{item.description}
+      .mt-auto.pt-2.d-flex.justify-content-between.align-items-center.small.text-muted
+        if(item.createdAt)
+          span.inner-date
+            i.fa-regular.fa-calendar.me-1
+            | #{moment ? moment(item.createdAt).format('DD/MM/YYYY') : item.createdAt}
+        span.inner-author
+          i.fa-regular.fa-user.me-1
+          | #{item.author ? item.author : 'Admin'}

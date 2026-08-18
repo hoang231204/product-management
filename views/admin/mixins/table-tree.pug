@@ -1,86 +1,90 @@
 mixin table-tree(items, level = 1, type)
     if items && items.length > 0
         each item in items
-            tr
+            tr.text-center
                 td
                     input(
                         type="checkbox"
                         name="id"
                         value=item._id
+                        class="form-check-input"
                     )
-                td #{item.index}
+                td.fw-bold #{item.index}
                 td
                     if item.thumbnail
                         img(
                             src=item.thumbnail
                             alt=item.title
-                            width="80px"
-                            height="auto"
+                            width="50"
+                            height="50"
+                            class="rounded object-fit-cover"
                         )
                     else
-                        span.text-muted Không có ảnh
-                td
-                    - const prefix = Array(level + 1).join("-- ")
-                    |#{prefix}#{item.title}
+                        span.text-muted.small Không có ảnh
+                td.text-start
+                    - const prefix = Array(level + 1).join("— ")
+                    span.fw-bold #{prefix}#{item.title}
                 td
                     input(
                         type="number"
                         value=item.position
-                        style="width:60px"
+                        class="form-control form-control-sm text-center"
+                        style="width: 70px"
                         min="1"
                         name="position"
                     )
                 td
-                    if(role.permissions.includes('post_category_edit') || role.permissions.includes('post_category_edit'))
-                        if item.status == 'active'
-                            a(
-                                href="javascript:;" 
-                                class="badge badge-success" 
-                                button-change-status 
-                                data-id=item._id 
-                                data-status=item.status 
-                                data-next-status="inactive"
-                                ) Hoạt động
-                        else
-                            a(
-                                href="javascript:;" 
-                                class="badge badge-danger" 
-                                button-change-status 
-                                data-id=item._id 
-                                data-status=item.status 
-                                data-next-status="active"
-                                ) Không hoạt động
-                td
-                    if item.createdBy
-                        p #{item.createdBy.account_id.fullname}
-                        p #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-                td
-                    if item.updatedBy && item.updatedBy.length > 0
-                        p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
-                        p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                    if item.status == 'active'
+                        a(
+                            href="javascript:;" 
+                            class="badge badge-success" 
+                            button-change-status 
+                            data-id=item._id 
+                            data-status=item.status 
+                            data-next-status="inactive"
+                        ) Hoạt động
                     else
-                        p Chưa có cập nhật
+                        a(
+                            href="javascript:;" 
+                            class="badge badge-danger" 
+                            button-change-status 
+                            data-id=item._id 
+                            data-status=item.status 
+                            data-next-status="active"
+                        ) Không hoạt động
+                td
+                    if item.createdBy && item.createdBy.account_id
+                        div.fw-bold.small #{item.createdBy.account_id.fullname}
+                        div.small.text-muted #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm')}
+                    else
+                        span.text-muted --
+                td
+                    if item.updatedBy && item.updatedBy.length > 0 && item.updatedBy[item.updatedBy.length - 1].account_id
+                        div.fw-bold.small #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
+                        div.small.text-muted #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm')}
+                    else
+                        span.text-muted Chưa có
                 td.text-center
                     if(type === "post_category")
-                        .row.justify-content-center.gap-2
-                            a(href=`${prefixAdmin}/post-categories/details/${item._id}` class="btn btn-info btn-sm ml-1")
-                                i.fas.fa-eye
+                        .d-flex.justify-content-center.gap-1
+                            a(href=`${prefixAdmin}/post-categories/details/${item._id}` class="btn btn-info btn-sm" title="Xem chi tiết")
+                                i.fa-solid.fa-eye
                             if(role.permissions.includes('post_category_edit'))
-                                a(href=`${prefixAdmin}/post-categories/edit/${item._id}` class="btn btn-primary btn-sm ml-1")
-                                    i.fas.fa-edit
-                            if(role.permissions.includes('post_category_delete') )
-                                button(class="btn btn-danger btn-sm ml-1" button-delete data-id=item._id)
-                                    i.fas.fa-trash
+                                a(href=`${prefixAdmin}/post-categories/edit/${item._id}` class="btn btn-warning btn-sm" title="Chỉnh sửa")
+                                    i.fa-solid.fa-pen-to-square
+                            if(role.permissions.includes('post_category_delete'))
+                                button(class="btn btn-danger btn-sm" button-delete data-id=item._id title="Xóa")
+                                    i.fa-solid.fa-trash-can
                     else if(type === "product_category")
-                        .row.justify-content-center.gap-2
-                            a(href=`${prefixAdmin}/product-categories/details/${item._id}` class="btn btn-info btn-sm ml-1")
-                                i.fas.fa-eye
+                        .d-flex.justify-content-center.gap-1
+                            a(href=`${prefixAdmin}/product-categories/details/${item._id}` class="btn btn-info btn-sm" title="Xem chi tiết")
+                                i.fa-solid.fa-eye
                             if(role.permissions.includes('product_category_edit'))
-                                a(href=`${prefixAdmin}/product-categories/edit/${item._id}` class="btn btn-primary btn-sm ml-1")
-                                    i.fas.fa-edit
-                            if(role.permissions.includes('product_category_delete') )
-                                button(class="btn btn-danger btn-sm ml-1" button-delete data-id=item._id)
-                                    i.fas.fa-trash
+                                a(href=`${prefixAdmin}/product-categories/edit/${item._id}` class="btn btn-warning btn-sm" title="Chỉnh sửa")
+                                    i.fa-solid.fa-pen-to-square
+                            if(role.permissions.includes('product_category_delete'))
+                                button(class="btn btn-danger btn-sm" button-delete data-id=item._id title="Xóa")
+                                    i.fa-solid.fa-trash-can
                     
             if item.children && item.children.length > 0
-                +table-tree(item.children, level + 1)
+                +table-tree(item.children, level + 1, type)

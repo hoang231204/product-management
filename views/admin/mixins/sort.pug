@@ -1,36 +1,35 @@
 mixin boxSort(type)
-    div(sort)
-        .row.justify-content-start.align-items-center
-            .col-10
-                select(
-                    class="form-control" 
-                    name="sort"
-                    sort-select
-                )
-                    option(disabled selected) Sắp xếp theo
-                    if type === 'product'
-                        option(value="position-desc") Vị trí giảm dần
-                        option(value="position-asc") Vị trí tăng dần
-                        option(value="price-desc") Giá giảm dần
-                        option(value="price-asc") Giá tăng dần
-                        option(value="title-asc") Tiêu đề A - Z
-                        option(value="title-desc") Tiêu đề Z - A
-                    else if type === 'order'
-                        option(value="createdAt-desc") Mới nhất
-                        option(value="createdAt-asc") Cũ nhất
-                    else if type === 'blog'
-                        option(value="createdAt-desc") Mới nhất
-                        option(value="createdAt-asc") Cũ nhất
-                        option(value="title-asc") Tiêu đề A - Z
-                        option(value="title-desc") Tiêu đề Z - A
-                    else if type === 'account'|| type === 'user' 
-                        option(value="createdAt-desc") Mới nhất
-                        option(value="createdAt-asc") Cũ nhất
-                        option(value="name-asc") Họ tên A - Z
-                        option(value="name-desc") Họ tên Z - A
-                    
-            .col-2
-                button(
-                    class="btn btn-danger"
-                    sort-clear
-                ) Clear
+    div(sort class="w-100")
+        .d-flex.align-items-center.gap-2
+            select(
+                class="form-select form-control" 
+                name="sort"
+                sort-select
+            )
+                option(disabled selected) -- Sắp xếp theo --
+                if type === 'product'
+                    option(value="position-desc") Vị trí giảm dần
+                    option(value="position-asc") Vị trí tăng dần
+                    option(value="price-desc") Giá giảm dần
+                    option(value="price-asc") Giá tăng dần
+                    option(value="title-asc") Tiêu đề A - Z
+                    option(value="title-desc") Tiêu đề Z - A
+                else if type === 'order'
+                    option(value="createdAt-desc") Mới nhất
+                    option(value="createdAt-asc") Cũ nhất
+                else if type === 'blog'
+                    option(value="createdAt-desc") Mới nhất
+                    option(value="createdAt-asc") Cũ nhất
+                    option(value="title-asc") Tiêu đề A - Z
+                    option(value="title-desc") Tiêu đề Z - A
+                else if type === 'account' || type === 'user' 
+                    option(value="createdAt-desc") Mới nhất
+                    option(value="createdAt-asc") Cũ nhất
+                    option(value="name-asc") Họ tên A - Z
+                    option(value="name-desc") Họ tên Z - A
+            button(
+                class="btn btn-outline-danger btn-sm"
+                sort-clear
+                title="Xóa sắp xếp"
+            )
+                i.fa-solid.fa-rotate-left

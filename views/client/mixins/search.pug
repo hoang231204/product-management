@@ -1,16 +1,13 @@
 mixin boxSearch(keyword)
-      form(
-          id="form-search"
-        method="get"
-        action="/search"
-     )
+    form(id="form-search" class="w-100" action="/search" method="GET")
         .input-group
             input(
                 type="text"
-                placeholder=`Tìm kiếm sản phẩm...`
+                placeholder="Tìm kiếm sản phẩm..."
                 name="keyword"
                 class="form-control"
-                value = keyword
+                value=keyword
             )
             .input-group-append
-                button(type="submit" class="btn btn-primary") Tìm
+                button(class="btn btn-primary" type="submit")
+                    i.fa-solid.fa-magnifying-glass

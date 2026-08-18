@@ -1,17 +1,22 @@
 include ./product-item.pug
 mixin product-grid(products)
-    if(products && products.length === 0)
+    if(!products || products.length === 0)
         .col-12
-            p.text-center.text-muted Không có sản phẩm nào
+            .text-center.py-5
+                i.fa-solid.fa-box-open.fa-3x.text-muted.mb-3
+                p.text-muted Không có sản phẩm nào được tìm thấy
     else
         each item in products
-            .col-4.mb-3
+            .col-12.col-sm-6.col-md-4.col-lg-3.mb-4
                 +product-item(item)
+
 mixin blog-grid(blogs)
-    if(blogs && blogs.length === 0)
+    if(!blogs || blogs.length === 0)
         .col-12
-            p.text-center.text-muted Không có bài viết nào
+            .text-center.py-5
+                i.fa-solid.fa-newspaper.fa-3x.text-muted.mb-3
+                p.text-muted Không có bài viết nào được tìm thấy
     else
         each item in blogs
-            .col-4.mb-3
+            .col-12.col-sm-6.col-md-4.mb-4
                 +blog-item(item)

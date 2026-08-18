@@ -1,4 +1,8 @@
 mixin boxFilter(filterStatus)
     if filterStatus && filterStatus.length > 0
-        each item in filterStatus
-            button(class=`btn btn-sm ml-1 btn-outline-success ${item.class}`,button-status=item.status) #{item.name}
+        .d-flex.flex-wrap.gap-2
+            each item in filterStatus
+                button(
+                    class=`btn btn-sm ${item.class === 'active' ? 'btn-primary' : 'btn-outline-secondary'}`
+                    button-status=item.status
+                ) #{item.name}
