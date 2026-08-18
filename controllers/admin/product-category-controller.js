@@ -85,8 +85,7 @@ module.exports.createPost = async (req,res)=>{
         const category = new ProductCategory(req.body);
         await category.save();
         req.flash('success', 'Tạo danh mục thành công!');
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
+        res.redirect(`${systemConfig.prefixAdmin}/product-categories`)
     }
     catch(error){
         req.flash("error","Đã có lỗi xảy ra, vui lòng thử lại!")
@@ -206,7 +205,7 @@ module.exports.edit = async (req,res)=>{
             deleted: false,
         }
         find._id = id;
-        const category = await ProductCategory.findOne(find).populate("parent_id","title");
+        const category = await ProductCategory.findOne(find).populate("parent_id","title").lean();
         const parentTitle = category.parent_id ? category.parent_id.title : "Danh mục gốc";
         const parentId = category.parent_id ? category.parent_id._id.toString() : "";
         const categories = await ProductCategory.find({ deleted: false, status: "active" });
@@ -216,7 +215,7 @@ module.exports.edit = async (req,res)=>{
         res.render("admin/pages/product-category/edit",{
             pageTitle:"Chỉnh sửa danh mục sản phẩm",
             category: category,
-            parentName: parentTitle,
+            parentTitle: parentTitle,
             parentId: parentId,
             categoryTree: categoryTree
         })
