@@ -8,113 +8,101 @@ include ../../mixins/sort.pug
 block main
     if(role.permissions.includes("account_view"))
         +alert-success(5000)
-        .container.my-3
-            .card.mb-3
-                h3.text-center Quản lý tài khoản
-                .card-header Bộ lọc và Tìm kiếm
-                    .card-body
-                        .row.align-items-center.mb-3
-                            .col-lg-6
-                                +boxFilter(filterStatus)
-                            .col-lg-4
-                                +boxSearch(keyword)
-                            .col-lg-2.text-lg-right
-                                if(role.permissions.includes("account_create"))
-                                    a(href=`${prefixAdmin}/accounts/create` class="btn btn-success")
-                                        i.fa.fa-plus.mr-2
-                                        | Thêm mới
-            .card.mb-3
-                .card-header Danh sách tài khoản
-                    .card-body
-                        .table-responsive
-                            table(class="table table-hover table-sm")
-                                thead
-                                    tr.text-center
-                                        th STT
-                                        th Avatar
-                                        th Họ tên
-                                        th Phân quyền
-                                        th Email
-                                        th Trạng thái
-                                        th Người tạo
-                                        th Người sửa
-                                        th Hành động
-                                tbody
-                                    if(accounts.length > 0)
-                                        each item, index in accounts
-                                            tr.text-center
-                                                td #{index + 1}
-                                                td
-                                                    img(
-                                                        src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png"), 
-                                                        alt=item.fullname, 
-                                                        width="50px", 
-                                                        height="50px",
-                                                        style="object-fit: cover; border-radius: 50%"
-                                                    )
-                                                td.font-weight-bold #{item.fullname}
-                                                td
-                                                    span.badge.badge-info #{item.role_id ? item.role_id.title : 'Chưa phân quyền'}
-                                                td #{item.email}
-                                                td
-                                                    if(role.permissions.includes("account_edit"))
-                                                        if item.status == 'active'
-                                                            a(
-                                                                href="javascript:;" 
-                                                                class="badge badge-success" 
-                                                                button-change-status 
-                                                                data-id=item._id  
-                                                                data-status=item.status
-                                                                data-next-status="inactive"
-                                                            ) Hoạt động
-                                                        else
-                                                            a(
-                                                                href="javascript:;" 
-                                                                class="badge badge-danger" 
-                                                                button-change-status 
-                                                                data-id=item._id  
-                                                                data-status=item.status
-                                                                data-next-status="active"
-                                                            ) Dừng hoạt động
-                                                    else
-                                                        span.badge #{item.status == 'active' ? 'Hoạt động' : 'Dừng hoạt động'}
-                                                
-                                                td
-                                                    if(item.createdBy && item.createdBy.account_id)
-                                                        p #{item.createdBy.account_id.fullname}
-                                                        p #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-                                                    else
-                                                        p Chưa cập nhật
-                                                td
-                                                    if(item.updatedBy && item.updatedBy.length > 0)
-                                                        p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
-                                                        p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
-                                                    else
-                                                        p Chưa cập nhật
-                                                        
-                                                td
-                                                    .row.justify-content-center.gap-2
-                                                        a(href=`${prefixAdmin}/accounts/details/${item._id}` class="btn btn-info btn-sm")
-                                                            i.fas.fa-eye
-                                                        if(role.permissions.includes("account_edit"))
-                                                            a(href=`${prefixAdmin}/accounts/edit/${item._id}` class="btn btn-warning btn-sm")
-                                                                i.fas.fa-edit
-                                                        if(role.permissions.includes("account_delete"))
-                                                            button(class="btn btn-danger btn-sm" button-delete data-id=item._id)
-                                                                i.fas.fa-trash
-                                    else
-                                        tr
-                                            td(colspan="9" class="text-center") Không tìm thấy tài khoản nào.
+        .container-fluid
+            .d-flex.align-items-center.justify-content-between.mb-4
+                div
+                    h3.fw-bold.mb-1.text-white Quản lý tài khoản quản trị
+                    p.text-muted.mb-0 Danh sách tài khoản quản trị viên và phân quyền truy cập
+                if(role.permissions.includes("account_create"))
+                    a(href=`${prefixAdmin}/accounts/create` class="btn btn-primary")
+                        i.fa-solid.fa-plus.me-2
+                        | Thêm mới tài khoản
 
-        form(
-            action=""
-            method="POST"
-            form-change-status
-            data-path=`${prefixAdmin}/accounts/change-status`
-        ) 
-        form(
-            action=""
-            method="POST"
-            form-delete
-            data-path=`${prefixAdmin}/accounts/delete`
-        )
+            // Single Consolidated Control Toolbar Card
+            .card.mb-4
+                .card-header.d-flex.align-items-center.justify-content-between
+                    span.fw-bold
+                        i.fa-solid.fa-sliders.me-2.text-primary
+                        | Bộ lọc & Tìm kiếm
+                .card-body
+                    .row.g-3.align-items-end
+                        .col-lg-6
+                            label.form-label.small.text-muted.fw-bold Trạng thái
+                            +boxFilter(filterStatus)
+                        .col-lg-6
+                            label.form-label.small.text-muted.fw-bold Tìm kiếm
+                            +boxSearch(keyword)
+
+            // Data Table Card
+            .card
+                .card-header.d-flex.align-items-center.justify-content-between
+                    span.fw-bold
+                        i.fa-solid.fa-user-tie.me-2.text-primary
+                        | Danh sách tài khoản (#{accounts ? accounts.length : 0})
+                .card-body.p-0
+                    .table-responsive
+                        table(class="table table-hover align-middle mb-0")
+                            thead
+                                tr.text-center
+                                    th(width="60px") STT
+                                    th(width="80px") Avatar
+                                    th.text-start Họ tên
+                                    th Phân quyền
+                                    th Email
+                                    th Trạng thái
+                                    th Người tạo
+                                    th Người sửa
+                                    th(width="140px") Hành động
+                            tbody
+                                if(accounts && accounts.length > 0)
+                                    each item, index in accounts
+                                        tr.text-center
+                                            td.fw-bold #{index + 1}
+                                            td
+                                                img(
+                                                    src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png"), 
+                                                    alt=item.fullname, 
+                                                    width="48", 
+                                                    height="48",
+                                                    class="rounded-circle object-fit-cover border border-secondary"
+                                                )
+                                            td.text-start.fw-bold #{item.fullname}
+                                            td
+                                                span.badge.badge-primary #{item.role_id ? item.role_id.title : 'Chưa phân quyền'}
+                                            td #{item.email}
+                                            td
+                                                if(role.permissions.includes("account_edit"))
+                                                    if item.status == 'active'
+                                                        a(href="javascript:;" class="badge badge-success" button-change-status data-id=item._id data-status=item.status data-next-status="inactive") Hoạt động
+                                                    else
+                                                        a(href="javascript:;" class="badge badge-danger" button-change-status data-id=item._id data-status=item.status data-next-status="active") Dừng hoạt động
+                                                else
+                                                    span.badge(class=(item.status == 'active' ? 'badge-success' : 'badge-danger')) #{item.status == 'active' ? 'Hoạt động' : 'Dừng hoạt động'}
+                                            td
+                                                if(item.createdBy && item.createdBy.account_id)
+                                                    div.fw-bold.small #{item.createdBy.account_id.fullname}
+                                                    div.small.text-muted #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm')}
+                                                else
+                                                    span.text-muted --
+                                            td
+                                                if(item.updatedBy && item.updatedBy.length > 0 && item.updatedBy[item.updatedBy.length - 1].account_id)
+                                                    div.fw-bold.small #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
+                                                    div.small.text-muted #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm')}
+                                                else
+                                                    span.text-muted Chưa có
+                                            td
+                                                .d-flex.justify-content-center.gap-1
+                                                    a(href=`${prefixAdmin}/accounts/details/${item._id}` class="btn btn-info btn-sm" title="Xem chi tiết")
+                                                        i.fa-solid.fa-eye
+                                                    if(role.permissions.includes("account_edit"))
+                                                        a(href=`${prefixAdmin}/accounts/edit/${item._id}` class="btn btn-warning btn-sm" title="Chỉnh sửa")
+                                                            i.fa-solid.fa-pen-to-square
+                                                    if(role.permissions.includes("account_delete"))
+                                                        button(class="btn btn-danger btn-sm" button-delete data-id=item._id title="Xóa")
+                                                            i.fa-solid.fa-trash-can
+                                else
+                                    tr
+                                        td(colspan="9" class="text-center text-muted py-4") Không tìm thấy tài khoản nào
+
+        form(action="" method="POST" form-change-status data-path=`${prefixAdmin}/accounts/change-status`) 
+        form(action="" method="POST" form-delete data-path=`${prefixAdmin}/accounts/delete`)

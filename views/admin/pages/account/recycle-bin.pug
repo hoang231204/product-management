@@ -1,69 +1,72 @@
 extends ../../layouts/default.pug
 block main
-    .container-fluid.mt-4
-            h1 Thùng rác tài khoản
-            
-            .card.mb-3
-                .card-header Danh sách tài khoản đã xóa
-                .card-body
-                    table(class="table table-hover table-sm")
+    .container-fluid
+        .d-flex.align-items-center.justify-content-between.mb-4
+            div
+                h3.fw-bold.mb-1.text-white Thùng rác tài khoản quản trị
+                p.text-muted.mb-0 Danh sách tài khoản quản trị viên đã xóa vào thùng rác
+            a(href=`${prefixAdmin}/accounts` class="btn btn-secondary")
+                i.fa-solid.fa-arrow-left.me-2
+                | Quay lại danh sách
+
+        .card
+            .card-header.d-flex.align-items-center.justify-content-between
+                span.fw-bold
+                    i.fa-solid.fa-trash-can.me-2.text-primary
+                    | Danh sách tài khoản đã xóa (#{accounts ? accounts.length : 0})
+            .card-body.p-0
+                .table-responsive
+                    table(class="table table-hover align-middle mb-0")
                         thead
                             tr.text-center
-                                th STT
-                                th Avatar
-                                th Họ tên
+                                th(width="60px") STT
+                                th(width="80px") Avatar
+                                th.text-start Họ tên
                                 th Email
                                 th Quyền
                                 th Trạng thái
                                 th Người xóa
                                 th Thời gian xóa
-                                th Hoạt động
+                                th(width="150px") Thao tác
                         tbody
-                            if accounts.length > 0
+                            if accounts && accounts.length > 0
                                 each item, index in accounts
                                     tr.text-center
-                                        td #{index + 1}
+                                        td.fw-bold #{index + 1}
                                         td
-                                            img(src=item.avatar, alt=item.fullName, width="40px", height="40px", class="rounded-circle")
-                                        td #{item.fullName}
+                                            img(
+                                                src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png"), 
+                                                alt=item.fullname || item.fullName, 
+                                                width="44", 
+                                                height="44", 
+                                                class="rounded-circle object-fit-cover border border-secondary"
+                                            )
+                                        td.text-start.fw-bold #{item.fullname || item.fullName}
                                         td #{item.email}
-                                        td #{item.roleTitle}
+                                        td
+                                            span.badge.badge-primary #{item.roleTitle ? item.roleTitle : 'Chưa rõ'}
                                         td
                                             if item.status === 'active'
-                                                span.badge.status-active Hoạt động
-                                            else if item.status === 'inactive'
-                                                span.badge.status-inactive Dừng hoạt động
-                                        td #{item.deletedBy.account_id.fullName}
-                                        td #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                                span.badge.badge-success Hoạt động
+                                            else
+                                                span.badge.badge-danger Dừng hoạt động
                                         td
-                                            .row.justify-content-center
-                                                button(
-                                                    class="btn btn-success btn-sm" 
-                                                    button-restore 
-                                                    data-id=item._id
-                                                    )
-                                                    i.fa.fa-undo
-                                                button(
-                                                    class="btn btn-danger btn-sm ml-1" 
-                                                    button-hard-delete 
-                                                    data-id=item._id
-                                                    )
-                                                    i.fa.fa-trash
+                                            if item.deletedBy && item.deletedBy.account_id
+                                                div.fw-bold.small #{item.deletedBy.account_id.fullname || item.deletedBy.account_id.fullName}
+                                            else
+                                                span.text-muted --
+                                        td.small.text-muted #{item.deletedBy ? moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm') : '--'}
+                                        td
+                                            .d-flex.justify-content-center.gap-1
+                                                button(class="btn btn-success btn-sm" button-restore data-id=item._id title="Khôi phục")
+                                                    i.fa-solid.fa-rotate-left.me-1
+                                                    | Khôi phục
+                                                button(class="btn btn-danger btn-sm" button-hard-delete data-id=item._id title="Xóa vĩnh viễn")
+                                                    i.fa-solid.fa-trash-can
                             else
                                 tr
-                                    td(colspan="9" class="text-center") Thùng rác trống.
+                                    td(colspan="9" class="text-center text-muted py-4") Thùng rác trống
 
-    form(
-      action=""
-      method="POST"
-      form-restore
-      data-path=`${prefixAdmin}/accounts/recycle-bin/restore`
-    )
-    form(
-      action=""
-      method="POST"
-      form-hard-delete
-      data-path=`${prefixAdmin}/accounts/recycle-bin/hard-delete`
-    )
-
+    form(action="" method="POST" form-restore data-path=`${prefixAdmin}/accounts/recycle-bin/restore`)
+    form(action="" method="POST" form-hard-delete data-path=`${prefixAdmin}/accounts/recycle-bin/hard-delete`)
     script(src="/admin/js/recycleBin.js")
