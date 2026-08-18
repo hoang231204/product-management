@@ -4,54 +4,46 @@ include ../../mixins/show-alert.pug
 block main
     +alert-success(5000)
     
-    .container.my-5
-        .detail-card
-            if role
-                h1.mb-4.text-primary Chi tiết: #{role.title}
-                
-                .row
-                    //- Cột trái: Thông tin cơ bản
-                    .col-md-6
-                        .info-box
-                            h5.mb-3 Thông tin chung
-                            p <b>Mô tả:</b>
-                            .description-box.bg-light.p-3.border.rounded
-                                | !{role.description || "<i>Không có mô tả</i>"}
-
-                    //- Cột phải: Log hệ thống
-                    .col-md-6
-                        .history-box
-                            h5.mb-3 Thông tin hệ thống
-                            
-                            .mt-3.pt-2.border-top
-                                if role.createdBy && role.createdBy.account_id
-                                    p <b>Người tạo:</b> #{role.createdBy.account_id.fullname}
-                                    p.small.text-muted #{moment(role.createdBy.createdAt).format('DD/MM/YYYY HH:mm')}
-                                else
-                                    p.text-muted Người tạo: Chưa có thông tin
-
-                            .mt-3
-                                b Lịch sử cập nhật:
-                                if role.updatedBy && role.updatedBy.length > 0
-                                    each item in role.updatedBy
-                                        if item.account_id
-                                            .history-item.small.border-bottom.py-2
-                                                div <b>#{item.account_id.fullname}</b>
-                                                div.text-muted #{moment(item.updatedAt).fromNow()}
-                                else
-                                    p.text-muted.small Chưa có cập nhật nào.
-
-                //- Cụm nút bấm
-                .mt-4.pt-3.border-top
-                    if(role.permissions.includes('role_edit'))
-                        a(href=`${prefixAdmin}/roles/edit/${role._id}` class="btn btn-warning mr-2") 
-                            i.fa.fa-edit.mr-1
-                            | Chỉnh sửa
-                    a(href=`${prefixAdmin}/roles` class="btn btn-secondary") 
-                        i.fa.fa-arrow-left.mr-1
-                        | Quay lại
-            else
-                .alert.alert-warning Vai trò không tồn tại!
+    .container-fluid
+        .d-flex.align-items-center.justify-content-between.mb-4
+            div
+                h3.fw-bold.mb-1.text-white Chi tiết nhóm quyền
+                p.text-muted.mb-0 Xem thông tin chi tiết và danh sách phân quyền của vai trò
+            .d-flex.gap-2
+                if(role.permissions.includes('role_edit') && role_data)
+                    a(href=`${prefixAdmin}/roles/edit/${role_data._id}` class="btn btn-warning") 
+                        i.fa-solid.fa-pen-to-square.me-1
+                        | Chỉnh sửa
                 a(href=`${prefixAdmin}/roles` class="btn btn-secondary") 
-                    i.fa.fa-arrow-left.mr-1
+                    i.fa-solid.fa-arrow-left.me-1
                     | Quay lại danh sách
+
+        .row.g-4
+            .col-lg-6
+                .card.h-100
+                    .card-header.fw-bold Thông tin nhóm quyền
+                    .card-body
+                        h4.fw-bold.text-white.mb-3 #{role_data ? role_data.title : (role ? role.title : '')}
+                        .mb-3
+                            label.fw-bold.text-muted.d-block Mô tả ngắn:
+                            .description-box !{role_data ? (role_data.description || 'Chưa có mô tả') : (role ? role.description : '')}
+
+            .col-lg-6
+                .card.h-100
+                    .card-header.fw-bold Thông tin hệ thống & Lịch sử
+                    .card-body
+                        - var currentRoleData = role_data || role
+                        if currentRoleData && currentRoleData.createdBy && currentRoleData.createdBy.account_id
+                            .mb-3.pb-2.border-bottom.border-secondary
+                                div <b>Người tạo:</b> #{currentRoleData.createdBy.account_id.fullname}
+                                div.small.text-muted #{moment(currentRoleData.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+
+                        div.fw-bold.mb-2 Lịch sử cập nhật:
+                        if currentRoleData && currentRoleData.updatedBy && currentRoleData.updatedBy.length > 0
+                            each item in currentRoleData.updatedBy
+                                if item.account_id
+                                    .history-item.mb-2.pb-2.border-bottom.border-secondary
+                                        .fw-bold.text-white #{item.account_id.fullname} <span class="fw-normal text-muted">đã cập nhật</span>
+                                        .small.text-muted #{moment(item.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                        else
+                            p.text-muted.small.mb-0 Chưa có cập nhật nào.

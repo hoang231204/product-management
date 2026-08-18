@@ -1,293 +1,282 @@
 extends ../../layouts/default.pug
+
 block main
-    if(role.permissions.includes("permission"))
-        .container.my-5
-            .card.mb-3
-                .card-header Phân Quyền
-                .card-body
-                    if(records)
-                        .form-group
-                            input(type="text" value=records class="form-control form-control-sm mt-1 text-center d-none" readonly input-records)
-                        .text-right.mt-3
-                            button(
-                                type="submit"
-                                class="btn btn-primary mb-3"
-                                button-submit
-                            ) Cập nhật
-                        .table-responsive
-                            table(
-                                class="table table-hover table-sm"
-                                table-permissions
-                            )
-                                thead  
-                                    tr(data-name="id")
-                                        th(class="text-center") Tính năng
-                                        each record in records
-                                            th(class="text-center")
-                                                div #{record.title}
-                                                input(type="text" value=record._id class="form-control form-control-sm mt-1 text-center d-none" readonly)
-                                tbody
-                                    tr 
-                                        td(class="text-center") 
-                                            b Chọn tất cả
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox" checkbox-select-all)
+  if(role.permissions.includes("permission"))
+    .permission-container.container-fluid.py-4.px-lg-4
+      
+      //- Page Header Section
+      .d-flex.flex-column.flex-md-row.justify-content-between.align-items-md-center.mb-4.gap-3
+        div
+          h1.h3.fw-bold.text-dark.mb-1
+            i.fas.fa-user-shield.text-primary.me-2
+            | Phân Quyền Hệ Thống
+          p.text-muted.mb-0 Thiết lập và quản lý quyền truy cập tính năng cho từng nhóm tài khoản
 
-                                    tr
-                                        td(class="text-center")
-                                            b Quản lý danh mục sản phẩm
-                                    
-                                    tr(data-name="product_category_view")
-                                        td(class="text-center") Xem
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="product_category_create")
-                                        td(class="text-center") Thêm mới
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="product_category_edit")
-                                        td(class="text-center") Chỉnh sửa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="product_category_delete")
-                                        td(class="text-center") Xóa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    tr
-                                        td(class="text-center")
-                                            b Quản lý sản phẩm
-                                    
-                                    tr(data-name="product_view")
-                                        td(class="text-center") Xem
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="product_create")
-                                        td(class="text-center") Thêm mới
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="product_edit")
-                                        td(class="text-center") Chỉnh sửa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="product_delete")
-                                        td(class="text-center") Xóa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    tr
-                                        td(class="text-center")
-                                            b Quản lý nhóm quyền
-                                    
-                                    tr(data-name="role_view")
-                                        td(class="text-center") Xem
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="role_create")
-                                        td(class="text-center") Thêm mới
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="role_edit")
-                                        td(class="text-center") Chỉnh sửa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="role_delete")
-                                        td(class="text-center") Xóa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    tr
-                                        td(class="text-center")
-                                            b Quản lý tài khoản
-                                    tr(data-name="account_view")
-                                        td(class="text-center") Xem
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="account_create")
-                                        td(class="text-center") Thêm mới
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="account_edit")
-                                        td(class="text-center") Chỉnh sửa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="account_delete")
-                                        td(class="text-center") Xóa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
+        div.d-flex.align-items-center.gap-2
+          button.btn.btn-primary.px-4.py-2.fw-semibold.shadow-sm.d-inline-flex.align-items-center.gap-2(
+            type="submit"
+            button-submit
+          )
+            i.fas.fa-save
+            span Cập nhật
 
-                                    tr
-                                        td(class="text-center")
-                                            b Quản lý người dùng
-                                    tr(data-name="user_view")
-                                        td(class="text-center") Xem
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="user_create")
-                                        td(class="text-center") Thêm mới
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="user_edit")
-                                        td(class="text-center") Chỉnh sửa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="user_delete")
-                                        td(class="text-center") Xóa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    tr
-                                        td(class="text-center")
-                                            b Quản lý bài viết
-                                    tr(data-name="blog_view")
-                                        td(class="text-center") Xem
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="blog_create")
-                                        td(class="text-center") Thêm mới
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="blog_edit")
-                                        td(class="text-center") Chỉnh sửa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="blog_delete")
-                                        td(class="text-center") Xóa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
+      if(records)
+        .form-group.d-none
+          input.input-records(type="text" value=records readonly input-records)
 
-                                    tr
-                                        td(class="text-center")
-                                            b Quản lý đơn hàng
-                                    tr(data-name="order_view")
-                                        td(class="text-center") Xem
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="order_create")
-                                        td(class="text-center") Thêm mới
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="order_edit")
-                                        td(class="text-center") Chỉnh sửa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="order_delete")
-                                        td(class="text-center") Xóa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
+        //- Table Container Card
+        .card.border-0.shadow-sm.rounded-3.overflow-hidden.mb-4
+          .card-body.p-0
+            //- Sticky Scroll Table Wrapper
+            .table-responsive(style="max-height: 70vh; overflow-y: auto;")
+              table.permission-table.table.table-hover.align-middle.mb-0(table-permissions)
+                thead.table-dark.sticky-top(style="z-index: 1020;")
+                  tr(data-name="id")
+                    th.py-3.px-4.fw-semibold.text-nowrap(style="min-width: 260px;")
+                      i.fas.fa-cubes.me-2
+                      | Tính năng hệ thống
+                    each record in records
+                      th.text-center.py-3.px-3.fw-semibold.text-nowrap(style="min-width: 140px;")
+                        span.d-block.fw-bold #{record.title}
+                        input.d-none(type="text" value=record._id readonly)
 
-                                    tr
-                                        td(class="text-center")
-                                            b Quản lý danh mục bài viết
-                                    tr(data-name="post_category_view")
-                                        td(class="text-center") Xem
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="post_category_create")
-                                        td(class="text-center") Thêm mới
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="post_category_edit")
-                                        td(class="text-center") Chỉnh sửa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="post_category_delete")
-                                        td(class="text-center") Xóa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    tr
-                                        td(class="text-center")
-                                            b Cài đặt chung
-                                    tr(data-name="setting_general_view")
-                                        td(class="text-center") Xem
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="setting_general_create")
-                                        td(class="text-center") Thêm mới
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="setting_general_edit")
-                                        td(class="text-center") Chỉnh sửa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    
-                                    tr(data-name="setting_general_delete")
-                                        td(class="text-center") Xóa
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
-                                    tr
-                                        td(class="text-center")
-                                            b Phân quyền
-                                    tr(data-name="permission")
-                                        td(class="text-center") Phân quyền
-                                        each record in records
-                                            td(class="text-center")
-                                                input(type="checkbox")
+                tbody
+                  //- Row: Chọn tất cả
+                  tr.table-warning.fw-bold(data-name="id")
+                    td.py-3.px-4.text-dark
+                      i.fas.fa-check-double.me-2.text-warning-emphasis
+                      | Chọn tất cả
+                    each record in records
+                      td.text-center.py-3.px-3
+                        .form-check.d-flex.justify-content-center.m-0
+                          input.form-check-input(type="checkbox" checkbox-select-all style="cursor: pointer; transform: scale(1.15);")
+
+                  //- 1. Quản lý danh mục sản phẩm
+                  tr.table-light
+                    td.group-title.fw-bold.text-uppercase.text-primary.py-3.px-4(colspan=records.length + 1)
+                      i.fas.fa-folder-tree.me-2
+                      | 1. Quản lý danh mục sản phẩm
+                  tr(data-name="product_category_view")
+                    td.py-2.px-4.ps-5.text-secondary Xem danh mục
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="product_category_create")
+                    td.py-2.px-4.ps-5.text-secondary Thêm mới danh mục
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="product_category_edit")
+                    td.py-2.px-4.ps-5.text-secondary Chỉnh sửa danh mục
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="product_category_delete")
+                    td.py-2.px-4.ps-5.text-secondary Xóa danh mục
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+
+                  //- 2. Quản lý sản phẩm
+                  tr.table-light
+                    td.group-title.fw-bold.text-uppercase.text-primary.py-3.px-4(colspan=records.length + 1)
+                      i.fas.fa-box-archive.me-2
+                      | 2. Quản lý sản phẩm
+                  tr(data-name="product_view")
+                    td.py-2.px-4.ps-5.text-secondary Xem sản phẩm
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="product_create")
+                    td.py-2.px-4.ps-5.text-secondary Thêm mới sản phẩm
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="product_edit")
+                    td.py-2.px-4.ps-5.text-secondary Chỉnh sửa sản phẩm
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="product_delete")
+                    td.py-2.px-4.ps-5.text-secondary Xóa sản phẩm
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+
+                  //- 3. Quản lý nhóm quyền
+                  tr.table-light
+                    td.group-title.fw-bold.text-uppercase.text-primary.py-3.px-4(colspan=records.length + 1)
+                      i.fas.fa-user-gear.me-2
+                      | 3. Quản lý nhóm quyền
+                  tr(data-name="role_view")
+                    td.py-2.px-4.ps-5.text-secondary Xem nhóm quyền
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="role_create")
+                    td.py-2.px-4.ps-5.text-secondary Thêm mới nhóm quyền
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="role_edit")
+                    td.py-2.px-4.ps-5.text-secondary Chỉnh sửa nhóm quyền
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="role_delete")
+                    td.py-2.px-4.ps-5.text-secondary Xóa nhóm quyền
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+
+                  //- 4. Quản lý tài khoản admin
+                  tr.table-light
+                    td.group-title.fw-bold.text-uppercase.text-primary.py-3.px-4(colspan=records.length + 1)
+                      i.fas.fa-users-gear.me-2
+                      | 4. Quản lý tài khoản admin
+                  tr(data-name="account_view")
+                    td.py-2.px-4.ps-5.text-secondary Xem tài khoản
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="account_create")
+                    td.py-2.px-4.ps-5.text-secondary Thêm mới tài khoản
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="account_edit")
+                    td.py-2.px-4.ps-5.text-secondary Chỉnh sửa tài khoản
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="account_delete")
+                    td.py-2.px-4.ps-5.text-secondary Xóa tài khoản
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+
+                  //- 5. Quản lý người dùng
+                  tr.table-light
+                    td.group-title.fw-bold.text-uppercase.text-primary.py-3.px-4(colspan=records.length + 1)
+                      i.fas.fa-users.me-2
+                      | 5. Quản lý người dùng
+                  tr(data-name="user_view")
+                    td.py-2.px-4.ps-5.text-secondary Xem người dùng
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="user_create")
+                    td.py-2.px-4.ps-5.text-secondary Thêm mới người dùng
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="user_edit")
+                    td.py-2.px-4.ps-5.text-secondary Chỉnh sửa người dùng
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="user_delete")
+                    td.py-2.px-4.ps-5.text-secondary Xóa người dùng
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+
+                  //- 6. Quản lý bài viết
+                  tr.table-light
+                    td.group-title.fw-bold.text-uppercase.text-primary.py-3.px-4(colspan=records.length + 1)
+                      i.fas.fa-newspaper.me-2
+                      | 6. Quản lý bài viết
+                  tr(data-name="blog_view")
+                    td.py-2.px-4.ps-5.text-secondary Xem bài viết
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="blog_create")
+                    td.py-2.px-4.ps-5.text-secondary Thêm mới bài viết
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="blog_edit")
+                    td.py-2.px-4.ps-5.text-secondary Chỉnh sửa bài viết
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="blog_delete")
+                    td.py-2.px-4.ps-5.text-secondary Xóa bài viết
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+
+                  //- 7. Quản lý đơn hàng
+                  tr.table-light
+                    td.group-title.fw-bold.text-uppercase.text-primary.py-3.px-4(colspan=records.length + 1)
+                      i.fas.fa-cart-shopping.me-2
+                      | 7. Quản lý đơn hàng
+                  tr(data-name="order_view")
+                    td.py-2.px-4.ps-5.text-secondary Xem đơn hàng
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="order_create")
+                    td.py-2.px-4.ps-5.text-secondary Thêm mới đơn hàng
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="order_edit")
+                    td.py-2.px-4.ps-5.text-secondary Chỉnh sửa đơn hàng
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="order_delete")
+                    td.py-2.px-4.ps-5.text-secondary Xóa đơn hàng
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+
+                  //- 8. Quản lý danh mục bài viết
+                  tr.table-light
+                    td.group-title.fw-bold.text-uppercase.text-primary.py-3.px-4(colspan=records.length + 1)
+                      i.fas.fa-list-check.me-2
+                      | 8. Quản lý danh mục bài viết
+                  tr(data-name="post_category_view")
+                    td.py-2.px-4.ps-5.text-secondary Xem danh mục bài viết
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="post_category_create")
+                    td.py-2.px-4.ps-5.text-secondary Thêm mới danh mục bài viết
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="post_category_edit")
+                    td.py-2.px-4.ps-5.text-secondary Chỉnh sửa danh mục bài viết
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="post_category_delete")
+                    td.py-2.px-4.ps-5.text-secondary Xóa danh mục bài viết
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+
+                  //- 9. Cài đặt chung hệ thống
+                  tr.table-light
+                    td.group-title.fw-bold.text-uppercase.text-primary.py-3.px-4(colspan=records.length + 1)
+                      i.fas.fa-sliders.me-2
+                      | 9. Cài đặt chung hệ thống
+                  tr(data-name="setting_general_view")
+                    td.py-2.px-4.ps-5.text-secondary Xem cài đặt
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="setting_general_create")
+                    td.py-2.px-4.ps-5.text-secondary Thêm mới cài đặt
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="setting_general_edit")
+                    td.py-2.px-4.ps-5.text-secondary Chỉnh sửa cài đặt
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+                  tr(data-name="setting_general_delete")
+                    td.py-2.px-4.ps-5.text-secondary Xóa cài đặt
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+
+                  //- 10. Phân quyền hệ thống
+                  tr.table-light
+                    td.group-title.fw-bold.text-uppercase.text-primary.py-3.px-4(colspan=records.length + 1)
+                      i.fas.fa-key.me-2
+                      | 10. Phân quyền hệ thống
+                  tr(data-name="permission")
+                    td.py-2.px-4.ps-5.text-secondary Quản lý phân quyền
+                    each record in records
+                      td.text-center.py-2.px-3: .form-check.d-flex.justify-content-center.m-0: input.form-check-input(type="checkbox" style="cursor: pointer;")
+
+        //- Sticky Floating Save Bar
+        .position-sticky.bottom-0.bg-white.border.shadow-lg.p-3.rounded-3.d-flex.justify-content-between.align-items-center.z-3
+          span.text-muted.small
+            i.fas.fa-info-circle.me-1.text-primary
+            | Nhấn **Cập nhật** để áp dụng thay đổi cho các nhóm quyền.
+          button.btn.btn-primary.px-4.py-2.fw-semibold.d-inline-flex.align-items-center.gap-2(
+            type="submit"
+            button-submit
+          )
+            i.fas.fa-save
+            span Cập nhật
+
     form(
-        action=`${prefixAdmin}/roles/permissions?_method=PATCH` 
-        method="POST" 
-        form-update-permissions
+      action=`${prefixAdmin}/roles/permissions?_method=PATCH` 
+      method="POST" 
+      form-update-permissions
     )
-        div 
-            input(type="text" name="permissions" class="form-control form-control-sm mt-1 text-center d-none" readonly input-submit)
-    script(src="/admin/js/permission.js") 
+      div 
+        input(type="text" name="permissions" class="d-none" readonly input-submit)
+
+    script(src="/admin/js/permission.js")
