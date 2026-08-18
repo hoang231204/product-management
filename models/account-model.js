@@ -4,10 +4,6 @@ const schema = new mongoose.Schema({
     fullname: String,
     email: String,
     password: String,
-    token: {
-        type: String,
-        default: generateToken
-    },
     avatar: String,
     phone: String,
     role_id:{
