@@ -1,42 +1,43 @@
 extends ../../layouts/default.pug
 include ../../mixins/show-alert.pug
+include ../../mixins/box-head.pug
+
 block main
+  .container.my-4
     +alert-success(3000)
     +alert-error(3000)
-    h1 Chỉnh sửa thông tin giao hàng
-    form(
-        action=`/orders/edit/${order._id}?_method=PATCH` 
-        method="POST" 
-    )
-        div(class="form-group")
-            label(for="fullname") Họ tên
-            input(
-                type="text"
-                class="form-control"
-                id="fullname"
-                name="fullname"
-                value=order.userInfor.fullname
-                required 
-            )
-        div(class="form-group")
-            label(for="phone") Số điện thoại
-            input(
-                type="text"
-                class="form-control"
-                id="phone"
-                name="phone"
-                value=order.userInfor.phone
-                required 
-            )
-        div(class="form-group")
-            label(for="address") Địa chỉ
-            input(
-                type="text"
-                class="form-control"
-                id="address"
-                name="address"
-                value=order.userInfor.address
-                required 
-            )
-        div(class="form-group")
-            button(type="submit" class="btn btn-primary") Cập nhật
+
+    .card.p-4.border-0.shadow-sm.rounded-lg
+      +boxhead("Chỉnh sửa thông tin đơn hàng")
+
+      form(action=`/orders/edit/${order._id}?_method=PATCH` method="POST")
+        .mb-3
+          label.form-label(for="fullname") Họ tên
+          input#fullname.form-control(
+            type="text"
+            name="fullname"
+            value=order.userInfor ? order.userInfor.fullname : ''
+            required
+          )
+
+        .mb-3
+          label.form-label(for="phone") Số điện thoại
+          input#phone.form-control(
+            type="text"
+            name="phone"
+            value=order.userInfor ? order.userInfor.phone : ''
+            required
+          )
+
+        .mb-3
+          label.form-label(for="address") Địa chỉ
+          input#address.form-control(
+            type="text"
+            name="address"
+            value=order.userInfor ? order.userInfor.address : ''
+            required
+          )
+
+        .d-flex.justify-content-between.align-items-center.mt-4
+          a.btn.btn-outline-secondary(href=`/orders/details/${order._id}`) Quay lại
+          button.btn.btn-primary(type="submit") Cập nhật
