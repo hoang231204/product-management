@@ -3,11 +3,7 @@ const generateToken = require("../helpers/generate-token")
 const schema = new mongoose.Schema({ 
     fullname: String,
     email: String,
-    password: String,
-    token: {
-        type: String,
-        default: generateToken
-    },
+    hashedPassword: String,
     avatar: String,
     phone: String,
     status: {
