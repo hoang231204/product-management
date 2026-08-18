@@ -1,13 +1,22 @@
 extends ../../layouts/default.pug 
 include ../../mixins/box-head.pug
 include ../../mixins/product-grid.pug
+include ../../mixins/pagination.pug
 block main
   +alert-success(3000)
   +alert-error(3000)
-  .container.my-3
-    .row
-      .col-12
-        .box-head
-          +boxhead(pageTitle)
-    .row
-      +product-grid(products)
+  
+  .container.my-4
+    .box-head
+      +boxhead(pageTitle)
+    
+    .row.g-4
+      if categoryTree && categoryTree.length > 0
+        .col-lg-12
+          .row
+            +product-grid(products)
+      else
+        .col-12
+          .row
+            +product-grid(products)
+    +pagination(objectPagination)

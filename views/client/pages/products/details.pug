@@ -3,59 +3,69 @@ include ../../mixins/box-head.pug
 
 block main
   .product-detail
-    .container.my-5
-      .row
-        .col-6
-          .inner-thumb
-            img(src=product.thumbnail, alt=product.title)
+    .container.my-4
+      .product-detail-card.p-4.bg-white.rounded-lg.shadow-sm
+        .row.g-4.align-items-center
+          // Left Product Image
+          .col-lg-6
+            .inner-thumb.text-center.p-3.border.rounded-lg.bg-light
+              img(src=product.thumbnail, alt=product.title class="img-fluid rounded object-fit-cover" style="max-height: 420px; width: 100%;")
 
-        .col-6
-          h1(class="inner-title") #{product.title}
+          // Right Product Info & Actions
+          .col-lg-6
+            .ps-lg-3
+              h1.inner-title.fw-bold.mb-3 #{product.title}
 
-          if (product.category)
-            div(class="inner-category")
-              span Danh mục: 
-              a(href=`/products/${product.category.slug}`) #{product.category.title}
-          else 
-            div(class="inner-category")
-              span Danh mục: 
-              span Không có
-          if (product.priceNew)
-            div(class="inner-price-new") #{product.priceNew}$
+              if (product.category)
+                div.inner-category.mb-3
+                  span.text-muted.me-2 Danh mục: 
+                  a(href=`/products/${product.category.slug}` class="badge badge-primary px-3 py-2") #{product.category.title}
+              
+              .d-flex.align-items-baseline.gap-3.mb-3
+                if (product.priceNew)
+                  div.inner-price-new.h2.fw-bold.text-primary.mb-0 #{product.priceNew.toLocaleString('vi-VN')} VND
+                if (product.price && product.discountPercentage)
+                  div.inner-price-old.h5.text-muted.text-decoration-line-through.mb-0 #{product.price.toLocaleString('vi-VN')} VND
+                  div.inner-percent
+                    span.badge.badge-danger.px-2.py-1 -#{product.discountPercentage}%
 
-          if (product.price)
-            div(class="inner-price-old") #{product.price}$
+              if (product.stock)
+                div.inner-stock.mb-4
+                  i.fa-solid.fa-box.me-2.text-muted
+                  | Tình trạng kho: <span class="fw-bold text-success">Còn #{product.stock} sản phẩm</span>
+              else
+                div.inner-stock.mb-4
+                  i.fa-solid.fa-box.me-2.text-muted
+                  | Tình trạng kho: <span class="fw-bold text-danger">Hết hàng</span>
 
-          if (product.discountPercentage)
-            div(class="inner-percent") Giảm tới <span>#{product.discountPercentage}%</span>
+              // Form Add to Cart
+              .inner-action.bg-light.p-4.rounded-lg.border.mb-4
+                form(action=`/carts/add/${product.id}` method="POST")
+                  label.fw-bold.mb-2 Số lượng mua:
+                  .d-flex.gap-3.align-items-center.mb-3
+                    input(
+                      class="form-control text-center font-weight-bold"
+                      type="number"
+                      name="quantity"
+                      value="1"
+                      min="1"
+                      max=product.stock
+                      style="max-width: 100px;"
+                    )
+                    button(type="submit" class="btn btn-primary btn-lg flex-grow-1 font-weight-bold shadow-sm")
+                      i.fa-solid.fa-cart-plus.me-2
+                      | Thêm vào giỏ hàng
 
-          if (product.stock)
-            div(class="inner-stock") Còn lại <span>#{product.stock}</span> sản phẩm
+              .inner-back
+                a(href="/products" class="btn btn-outline-secondary")
+                  i.fa-solid.fa-arrow-left.me-2
+                  | Quay lại danh sách sản phẩm
 
-          // Form thêm vào giỏ hàng viết theo style của bạn
-          div(class="inner-action")
-            form(
-              action=`/cart/add/${product.id}`
-              method="POST"
-            )
-              input(
-                class="form-control mb-2"
-                type="number"
-                name="quantity"
-                value="1"
-                min="1"
-                max=product.stock + 1
-              )
-              button(
-                type="submit"
-                class="btn btn-success btn-block"
-              ) Thêm vào giỏ hàng
-      .row.mt-5
-        .col-12
-          div(class="inner-desc")
-            h5(class="inner-desc-title") Mô tả sản phẩm
-            p(class="inner-desc-content") !{product.description}
-      .row.mt-3
-        .col-12
-          div(class="inner-back")
-            a(href="/products") Quay lại danh sách
+        // Description Section
+        .row.mt-5
+          .col-12
+            .inner-desc.p-4.border.rounded-lg.bg-white
+              h4.inner-desc-title.fw-bold.mb-3
+                i.fa-solid.fa-circle-info.me-2.text-primary
+                | Mô tả sản phẩm
+              .inner-desc-content !{product.description}
