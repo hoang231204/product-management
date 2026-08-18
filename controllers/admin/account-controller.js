@@ -4,7 +4,7 @@ const systemConfig = require("../../config/system")
 const filter = require("../../helpers/filter-status")
 const search = require("../../helpers/search")
 const pagination = require("../../helpers/pagination")
-const md5 = require("md5")
+const bcrypt = require("bcrypt")
 //GET /admin/accounts
 module.exports.index = async (req, res) =>{
     try{
@@ -50,7 +50,7 @@ module.exports.index = async (req, res) =>{
 //GET /admin/accounts/create
 module.exports.create = async (req, res) =>{
     try{
-        const roles = await Role.find().select("_id title");
+        const roles = await Role.find().select("_id title").lean();
         res.render("admin/pages/account/create", {
             roles: roles
         });
@@ -67,18 +67,17 @@ module.exports.createPost = async (req, res) =>{
         req.flash("error","Bạn không có quyền thực hiện chức năng này!")
         return res.redirect(`${systemConfig.prefixAdmin}/accounts`)
     }
-    req.body.password = md5(req.body.password);
-    
-    const emailExists = await Account.findOne({email: req.body.email});
-    if(emailExists){
-        req.flash('error', 'Email đã tồn tại!');
-        const backUrl = req.get("Referrer");
-        return res.redirect(backUrl);
-    }
-    req.body.createdBy = {
-        account_id: res.locals.user._id
-    }
+    req.body.password = await bcrypt.hash(req.body.password, 10);
     try{
+        const emailExists = await Account.findOne({email: req.body.email});
+        if(emailExists){
+            req.flash('error', 'Email đã tồn tại!');
+            const backUrl = req.get("Referrer");
+            return res.redirect(backUrl);
+        }
+        req.body.createdBy = {
+            account_id: res.locals.user._id
+        }
         const account = new Account(req.body);
         await account.save();
         req.flash('success', 'Tạo tài khoản thành công!');
@@ -147,7 +146,7 @@ module.exports.editPatch = async (req, res) =>{
         return res.redirect(backUrl);
     }
     if(req.body.password){
-        req.body.password = md5(req.body.password);
+        req.body.password = await bcrypt.hash(req.body.password, 10);
     }else{
         delete req.body.password;
     }
