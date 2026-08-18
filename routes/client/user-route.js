@@ -11,6 +11,7 @@ router.get('/register', userController.register);
 router.post('/register', userValidate.register, userController.registerPost);
 router.get('/login', userController.login);
 router.post('/login', userValidate.login, userController.loginPost);
+router.get('/refresh-token', userController.refreshToken);
 router.get('/logout', userController.logout);
 router.get('/password/forgot', userController.forgotPassword);
 router.post('/password/forgot', userValidate.forgotPassword, userController.forgotPasswordPost);
@@ -18,20 +19,20 @@ router.get('/password/otp', userController.otp);
 router.post('/password/otp', userValidate.otp, userController.otpPost);
 router.get('/password/reset-password', userController.resetPassword);
 router.post('/password/reset-password', userValidate.resetPassword, userController.resetPasswordPost);
-router.get('/profile', privateRoute.requireLogin, userController.profile);
-router.get('/profile/edit', privateRoute.requireLogin, userController.editProfile);
+router.get('/profile', privateRoute.requireAuth, userController.profile);
+router.get('/profile/edit', privateRoute.requireAuth, userController.editProfile);
 router.patch(
     '/profile/edit',
-    privateRoute.requireLogin,
+    privateRoute.requireAuth,
     upload.single('avatar'), 
     userValidate.profile,
     uploadCloud.upload,
     userController.editProfilePatch
 );
-router.get('/change-email', privateRoute.requireLogin, userController.changeEmail);
-router.post('/change-email', privateRoute.requireLogin, userValidate.changeEmail, userController.changeEmailPost);
-router.get('/change-email/otp', privateRoute.requireLogin, userController.changeEmailOtp);
-router.post('/change-email/otp', privateRoute.requireLogin, userValidate.changeEmailOtp, userController.changeEmailOtpPost);
-// router.patch('/change-email/update', privateRoute.requireLogin, userValidate.changeEmailUpdate, userController.changeEmailUpdate);
+router.get('/change-email', privateRoute.requireAuth, userController.changeEmail);
+router.post('/change-email', privateRoute.requireAuth, userValidate.changeEmail, userController.changeEmailPost);
+router.get('/change-email/otp', privateRoute.requireAuth, userController.changeEmailOtp);
+router.post('/change-email/otp', privateRoute.requireAuth, userValidate.changeEmailOtp, userController.changeEmailOtpPost);
+// router.patch('/change-email/update', privateRoute.requireAuth, userValidate.changeEmailUpdate, userController.changeEmailUpdate);
 
 module.exports = router;

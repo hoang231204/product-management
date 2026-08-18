@@ -6,6 +6,7 @@ const checkoutRouter = require('./checkout-route')
 const userRouter = require('./user-route')
 const orderRouter = require('./order-route')
 const blogRouter = require('./blog-route')
+const contactRouter = require('./contact-route')
 const ProductCategoryMiddleware = require('../../middleware/client/product-category-middleware')
 const cartMiddleware = require('../../middleware/client/cart-middleware')
 const userMiddleware = require('../../middleware/client/user-middleware')
@@ -15,12 +16,17 @@ module.exports = (app)=>{{
     app.use(ProductCategoryMiddleware.category)
     app.use(userMiddleware.checkLogin)
     app.use(cartMiddleware.cart)
+    app.use((req, res, next) => {
+        res.locals.currentPath = req.path;
+        next();
+    })
     app.use("/",homeRouter)
     app.use("/products",productRouter)
     app.use('/search',searchRouter)
-    app.use('/cart',cartRouter)
+    app.use('/carts',cartRouter)
     app.use('/checkout',checkoutRouter)
-    app.use('/user',userRouter)
+    app.use('/users',userRouter)
     app.use('/orders',orderRouter)
-    app.use('/blog',blogRouter)
+    app.use('/blogs',blogRouter)
+    app.use('/contact',contactRouter)
 }}
