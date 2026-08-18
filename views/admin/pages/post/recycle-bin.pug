@@ -1,51 +1,70 @@
 extends ../../layouts/default.pug
 block main 
-    h1 Thùng rác
-    .card.mb-3
-        .card-header Thùng rác bài viết
-            .card-body
-                table(class="table table-hover table-sm")
-                    thead
-                        tr
-                            th STT
-                            th Hình ảnh
-                            th Tiêu đề
-                            th Trạng thái
-                            th Người xóa
-                            th Hoạt động
-                    tbody
-                        each item, index in posts
+    .container-fluid
+        .d-flex.align-items-center.justify-content-between.mb-4
+            div
+                h3.fw-bold.mb-1.text-white Thùng rác bài viết
+                p.text-muted.mb-0 Danh sách bài viết đã bị xóa vào thùng rác
+            a(href=`${prefixAdmin}/posts` class="btn btn-secondary")
+                i.fa-solid.fa-arrow-left.me-2
+                | Quay lại danh sách
+
+        .card
+            .card-header.d-flex.align-items-center.justify-content-between
+                span.fw-bold
+                    i.fa-solid.fa-trash-can.me-2.text-primary
+                    | Danh sách bài viết đã xóa (#{posts ? posts.length : 0})
+            .card-body.p-0
+                .table-responsive
+                    table(class="table table-hover align-middle mb-0")
+                        thead
                             tr.text-center
-                                td #{index+1}
-                                td
-                                    img( src=item.thumbnail, alt="Bài viết 1",width="100px",height="auto")
-                                td #{item.title}
-                                td
-                                    if item.status == 'active'
-                                        a(href="javascript:;" class="badge badge-success" ) Hoạt động
-                                    else if item.status == 'inactive'
-                                        a(href="javascript:;" class="badge badge-danger" ) Không hoạt động
-                                    else if item.status == 'pending'
-                                        a(href="javascript:;" class="badge badge-warning" ) Đang chờ
-                                td  
-                                    #{item.deletedBy.account_id.fullname}
-                                    #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}
-                                td
-                                    .row.justify-content-center
-                                        button(class="btn btn-success btn-sm" button-restore data-id= item._id)
-                                            i.fas.fa-undo
-                                        button(class="btn btn-danger btn-sm ml-1" button-hard-delete data-id=item._id)
-                                            i.fas.fa-trash
+                                th(width="60px") STT
+                                th(width="90px") Hình ảnh
+                                th.text-start Tiêu đề
+                                th Trạng thái
+                                th Người xóa
+                                th(width="150px") Thao tác
+                        tbody
+                            if posts && posts.length > 0
+                                each item, index in posts
+                                    tr.text-center
+                                        td.fw-bold #{index+1}
+                                        td
+                                            img(src=item.thumbnail, alt=item.title, width="60", height="40", class="rounded object-fit-cover")
+                                        td.text-start.fw-bold #{item.title}
+                                        td
+                                            if item.status == 'active'
+                                                span.badge.badge-success Hoạt động
+                                            else
+                                                span.badge.badge-danger Dừng hoạt động
+                                        td
+                                            if item.deletedBy && item.deletedBy.account_id
+                                                div.fw-bold.small #{item.deletedBy.account_id.fullname}
+                                                div.small.text-muted #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm')}
+                                            else
+                                                span.text-muted --
+                                        td
+                                            .d-flex.justify-content-center.gap-1
+                                                button(class="btn btn-success btn-sm" button-restore data-id=item._id title="Khôi phục")
+                                                    i.fa-solid.fa-rotate-left.me-1
+                                                    | Khôi phục
+                                                button(class="btn btn-danger btn-sm" button-hard-delete data-id=item._id title="Xóa vĩnh viễn")
+                                                    i.fa-solid.fa-trash-can
+                            else
+                                tr
+                                    td(colspan="6" class="text-center text-muted py-4") Thùng rác trống
+
     form(
       action="",
       method="POST"
       form-hard-delete
-      data-path = `${prefixAdmin}/posts/recycle-bin/hard-delete`
+      data-path=`${prefixAdmin}/posts/recycle-bin/hard-delete`
     )
     form(
       action="",
       method="POST"
       form-restore 
-      data-path = `${prefixAdmin}/posts/recycle-bin/restore`
+      data-path=`${prefixAdmin}/posts/recycle-bin/restore`
     )
     script(src="/admin/js/recycleBin.js") 

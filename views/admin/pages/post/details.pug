@@ -5,62 +5,66 @@ block main
     +alert-error(5000)
     +alert-success(5000)
 
-    .container.my-5
-        .card.shadow-sm
-            .card-header.bg-white.py-3
-                h1.mb-0.h3.font-weight-bold #{post.title}
-            
+    .container-fluid
+        .d-flex.align-items-center.justify-content-between.mb-4
+            div
+                h3.fw-bold.mb-1.text-white Chi tiết bài viết
+                p.text-muted.mb-0 Xem thông tin chi tiết bài viết và lịch sử cập nhật
+            .d-flex.gap-2
+                if role.permissions.includes("blog_edit")
+                    a(href=`${prefixAdmin}/posts/edit/${post._id}` class="btn btn-warning")
+                        i.fa-solid.fa-pen-to-square.me-1
+                        | Chỉnh sửa
+                a(href=`${prefixAdmin}/posts` class="btn btn-secondary")
+                    i.fa-solid.fa-arrow-left.me-1
+                    | Quay lại danh sách
+
+        .card.mb-4
+            .card-header.fw-bold
+                i.fa-solid.fa-newspaper.me-2.text-primary
+                | #{post.title}
             .card-body
-                //- Hình ảnh
                 if post.thumbnail
                     .text-center.mb-4
-                        img(src=post.thumbnail class="img-fluid rounded border" style="max-height: 350px; object-fit: cover;")
+                        img(src=post.thumbnail alt=post.title class="img-fluid rounded border border-secondary" style="max-height: 320px; width: 100%; object-fit: cover;")
 
-                //- Thông tin cơ bản
-                .row.mb-4
+                .row.g-3.mb-4.p-3.bg-dark.rounded
                     .col-md-4
-                        p.mb-2 <b>Danh mục:</b> 
-                            span #{post.category_id ? post.category_id.title : 'Chưa có danh mục'}
+                        span.text-muted.me-2 Danh mục:
+                        span.fw-bold.text-white #{post.category_id ? post.category_id.title : 'Chưa chọn'}
                     .col-md-4
-                        p.mb-2 <b>Trạng thái:</b> 
-                            if post.status === 'active'
-                                span.badge.bg-success Hoạt động
-                            else
-                                span.badge.bg-danger Dừng hoạt động
+                        span.text-muted.me-2 Trạng thái:
+                        if post.status === 'active'
+                            span.badge.badge-success.ms-2 Hoạt động
+                        else
+                            span.badge.badge-danger.ms-2 Dừng hoạt động
                     .col-md-4
-                        p.mb-2 <b>Loại bài:</b> 
-                            if post.featured === '1'
-                                span.badge.bg-warning Nổi bật
-                            else
-                                span.badge.bg-secondary Thường
+                        span.text-muted.me-2 Nổi bật:
+                        if post.featured === '1'
+                            span.badge.badge-warning.ms-2 Có
+                        else
+                            span.badge.badge-secondary.ms-2 Không
 
-                //- Mô tả & Nội dung
                 .mb-4
-                    h5.font-weight-bold Mô tả:
-                    .p-3.bg-light.border.rounded !{post.description}
-                
-                .mb-4
-                    h5.font-weight-bold Nội dung:
-                    .p-3.bg-light.border.rounded !{post.content}
+                    h5.fw-bold.text-white.mb-2 Mô tả ngắn
+                    .description-box !{post.description ? post.description : '<span class="text-muted">Chưa có mô tả</span>'}
 
-                //- Thông tin người tạo và cập nhật
-                .row.mt-4.pt-3.border-top
+                .mb-4
+                    h5.fw-bold.text-white.mb-2 Nội dung bài viết
+                    .description-box !{post.content ? post.content : '<span class="text-muted">Chưa có nội dung</span>'}
+
+                hr.my-4.border-secondary.opacity-25
+
+                .row.g-3
                     .col-md-6
                         if post.createdBy && post.createdBy.account_id
-                            p.mb-1 <b>Người tạo:</b> #{post.createdBy.account_id.fullname}
-                            p.small.text-muted #{moment(post.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-                    
+                            div.fw-bold.text-white Người tạo: #{post.createdBy.account_id.fullname}
+                            div.small.text-muted Ngày tạo: #{moment(post.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                        else
+                            div.text-muted Chưa có thông tin người tạo.
                     .col-md-6
-                        if post.updatedBy && post.updatedBy.length > 0
-                            - var lastUpdate = post.updatedBy[post.updatedBy.length - 1]
-                            if lastUpdate.account_id
-                                p.mb-1 <b>Cập nhật gần nhất bởi:</b> #{lastUpdate.account_id.fullname}
-                                p.small.text-muted #{moment(lastUpdate.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
-                        else 
-                            p.mb-1 <b>Lịch sử cập nhật:</b> Chưa có dữ liệu
-
-                //- Nút bấm
-                .mt-4.d-flex.justify-content-end
-                    a(href=`${prefixAdmin}/posts` class="btn btn-secondary mr-2") Quay lại
-                    if role.permissions.includes("post_edit")
-                        a(href=`${prefixAdmin}/posts/edit/${post._id}` class="btn btn-warning") Sửa bài viết
+                        if post.updatedBy && post.updatedBy.length > 0 && post.updatedBy[post.updatedBy.length - 1].account_id
+                            div.fw-bold.text-white Cập nhật lần cuối bởi: #{post.updatedBy[post.updatedBy.length - 1].account_id.fullname}
+                            div.small.text-muted Thời gian: #{moment(post.updatedBy[post.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                        else
+                            div.text-muted Chưa có lịch sử cập nhật.

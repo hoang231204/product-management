@@ -9,133 +9,117 @@ include ../../mixins/sort.pug
 block main
     if(role.permissions.includes("blog_view"))
         +alert-success(5000)
-        .container.my-3
-            .card.mb-3
-                h3.text-center Quản lý bài viết
-                .card-header Bộ lọc và Tìm kiếm
-                    .card-body
-                        .row.align-items-center.mb-3
-                            .col-lg-8
-                                +boxFilter(filterStatus)
-                            .col-lg-4
-                                +boxSearch(keyword)
-                .card-header Bộ lọc và Tìm kiếm
-                    .card-body
-                        .row.align-items-center.mb-3.action-box
-                            .col-lg-4
-                                .d-flex.align-items-center
-                                    div(style="flex-grow: 1")
-                                        +boxSort('product')
-                .card-header Thay đổi
-                    .card-body
-                        .row.align-items-center.action-box.mb-3
-                            .col-lg-8
-                                if(role.permissions.includes("blog_edit"))
-                                    +boxChange(`${prefixAdmin}/posts/change-multi?_method=PATCH`, 'blog')
-                            .col-lg-3.text-lg-right
-                                if(role.permissions.includes("blog_create"))
-                                    a(href=`${prefixAdmin}/posts/create` class="btn btn-success")
-                                        i.fa.fa-plus.mr-2
-                                        | Thêm mới
+        .container-fluid
+            .d-flex.align-items-center.justify-content-between.mb-4
+                div
+                    h3.fw-bold.mb-1.text-white Quản lý bài viết
+                    p.text-muted.mb-0 Đăng tin tức, bài viết sản phẩm và quản lý bài đăng cửa hàng
+                if(role.permissions.includes("blog_create"))
+                    a(href=`${prefixAdmin}/posts/create` class="btn btn-primary")
+                        i.fa-solid.fa-plus.me-2
+                        | Thêm mới bài viết
 
-            //- Bảng danh sách
-            .card.mb-3
-                .card-header Danh sách bài viết
-                    .card-body
-                        .table-responsive
-                            table(class="table table-hover table-sm align-middle" check-box-multi)
-                                thead(class="thead-light")
-                                    tr.text-center
-                                        th 
-                                            input(type="checkbox" name="checkAll")
-                                        th STT
-                                        th Hình ảnh
-                                        th Tiêu đề
-                                        th Danh mục
-                                        th Mô tả
-                                        th Vị trí
-                                        th Trạng thái
-                                        th Người tạo
-                                        th Người sửa
-                                        th Hành động
-                                tbody
+            // Single Consolidated Control Toolbar Card
+            .card.mb-4
+                .card-header.d-flex.align-items-center.justify-content-between
+                    span.fw-bold
+                        i.fa-solid.fa-sliders.me-2.text-primary
+                        | Bộ lọc & Thao tác
+                .card-body
+                    .row.g-3.align-items-end.mb-3
+                        .col-lg-5
+                            label.form-label.small.text-muted.fw-bold Trạng thái
+                            +boxFilter(filterStatus)
+                        .col-lg-4
+                            label.form-label.small.text-muted.fw-bold Tìm kiếm bài viết
+                            +boxSearch(keyword)
+                        .col-lg-3
+                            label.form-label.small.text-muted.fw-bold Sắp xếp
+                            +boxSort('blog')
+                    
+                    if(role.permissions.includes("blog_edit"))
+                        hr.my-3.border-secondary.opacity-25
+                        .row.align-items-center
+                            .col-12
+                                +boxChange(`${prefixAdmin}/posts/change-multi?_method=PATCH`, 'blog')
+
+            // Data Table Card
+            .card
+                .card-header.d-flex.align-items-center.justify-content-between
+                    span.fw-bold
+                        i.fa-solid.fa-newspaper.me-2.text-primary
+                        | Danh sách bài viết (#{posts ? posts.length : 0})
+                .card-body.p-0
+                    .table-responsive
+                        table(class="table table-hover align-middle mb-0" check-box-multi)
+                            thead
+                                tr.text-center
+                                    th(width="40px")
+                                        input(type="checkbox" name="checkAll" class="form-check-input")
+                                    th(width="50px") STT
+                                    th(width="90px") Hình ảnh
+                                    th.text-start Tiêu đề
+                                    th Danh mục
+                                    th(width="80px") Vị trí
+                                    th Trạng thái
+                                    th Người tạo
+                                    th Người sửa
+                                    th(width="140px") Hành động
+                            tbody
+                                if posts && posts.length > 0
                                     each item, index in posts
                                         tr.text-center
                                             td
-                                                input(
-                                                    type="checkbox"
-                                                    name="id"
-                                                    value=item.id
-                                                )
-                                            td #{index + 1 + objectPagination.skipPage}
+                                                input(type="checkbox" name="id" value=item.id class="form-check-input")
+                                            td.fw-bold #{index + 1 + objectPagination.skipPage}
                                             td
-                                                img(src=item.thumbnail, alt=item.title, width="100px", height="auto", class="rounded")
-                                            td #{item.title}
+                                                img(src=item.thumbnail, alt=item.title, width="60", height="40", class="rounded object-fit-cover")
+                                            td.text-start.fw-bold #{item.title}
                                             td #{item.category_id ? item.category_id.title : 'Chưa có danh mục'}
-                                            td #{item.description}
                                             td
                                                 input(
                                                     type="number"
                                                     value=item.position 
-                                                    style="width:60px"
+                                                    class="form-control form-control-sm text-center"
                                                     min="1"
                                                     name="position"
-                                                    class="form-control form-control-sm"
                                                 )
                                             td
                                                 if(role.permissions.includes("blog_edit"))
                                                     if item.status == 'active'
-                                                        a(
-                                                            href="javascript:;" 
-                                                            class="badge badge-success" 
-                                                            button-change-status 
-                                                            data-id=item._id  
-                                                            data-status=item.status
-                                                            data-next-status="inactive"
-                                                        ) Hoạt động
-                                                    else if item.status == 'inactive'
-                                                        a(
-                                                            href="javascript:;" 
-                                                            class="badge badge-danger" 
-                                                            button-change-status 
-                                                            data-id=item._id  
-                                                            data-status=item.status
-                                                            data-next-status="active"
-                                                        ) Dừng hoạt động
+                                                        a(href="javascript:;" class="badge badge-success" button-change-status data-id=item._id data-status=item.status data-next-status="inactive") Hoạt động
+                                                    else
+                                                        a(href="javascript:;" class="badge badge-danger" button-change-status data-id=item._id data-status=item.status data-next-status="active") Dừng hoạt động
+                                                else
+                                                    span.badge(class=(item.status == 'active' ? 'badge-success' : 'badge-danger')) #{item.status == 'active' ? 'Hoạt động' : 'Dừng'}
                                             td
-                                                div.small <b>#{item.createdBy.account_id.fullname}</b>
-                                                div.text-muted #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm')}
+                                                if item.createdBy && item.createdBy.account_id
+                                                    div.fw-bold.small #{item.createdBy.account_id.fullname}
+                                                    div.small.text-muted #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm')}
+                                                else
+                                                    span.text-muted --
                                             td
-                                                if item.updatedBy && item.updatedBy.length > 0
-                                                    div.small <b>#{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}</b>
-                                                    div.text-muted #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm')}
+                                                if item.updatedBy && item.updatedBy.length > 0 && item.updatedBy[item.updatedBy.length - 1].account_id
+                                                    div.fw-bold.small #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
+                                                    div.small.text-muted #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm')}
                                                 else
                                                     span.text-muted Chưa có
                                             td
-                                                .row.justify-content-center
-                                                    a(href=`${prefixAdmin}/posts/details/${item._id}` class="btn btn-info btn-sm")
-                                                        i.fas.fa-eye
+                                                .d-flex.justify-content-center.gap-1
+                                                    a(href=`${prefixAdmin}/posts/details/${item._id}` class="btn btn-info btn-sm" title="Xem chi tiết")
+                                                        i.fa-solid.fa-eye
                                                     if(role.permissions.includes("blog_edit"))
-                                                        a(href=`${prefixAdmin}/posts/edit/${item._id}` class="btn btn-warning btn-sm ml-1")
-                                                            i.fas.fa-edit
+                                                        a(href=`${prefixAdmin}/posts/edit/${item._id}` class="btn btn-warning btn-sm" title="Chỉnh sửa")
+                                                            i.fa-solid.fa-pen-to-square
                                                     if(role.permissions.includes("blog_delete"))
-                                                        button(class="btn btn-danger btn-sm ml-1" button-delete data-id=item._id)
-                                                            i.fas.fa-trash
+                                                        button(class="btn btn-danger btn-sm" button-delete data-id=item._id title="Xóa")
+                                                            i.fa-solid.fa-trash-can
+                                else
+                                    tr
+                                        td(colspan="10" class="text-center text-muted py-4") Không có bài viết nào
+                    .p-3
+                        +pagination(objectPagination)
 
-            //- Forms ẩn
-            form(
-                action=""
-                method="POST"
-                form-change-status
-                data-path=`${prefixAdmin}/posts/change-status`
-            ) 
-            form(
-                action=""
-                method="POST"
-                form-delete
-                data-path=`${prefixAdmin}/posts/delete`
-            )
-
-            +pagination(objectPagination)
-
-    script(src="/admin/js/change-multi.js")
+        form(action="" method="POST" form-change-status data-path=`${prefixAdmin}/posts/change-status`) 
+        form(action="" method="POST" form-delete data-path=`${prefixAdmin}/posts/delete`)
+        script(src="/admin/js/change-multi.js")
