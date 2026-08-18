@@ -1,5 +1,6 @@
 const Account = require('../../models/account-model');
-const md5 = require('md5');
+const bcrypt = require('bcrypt');
+const systemConfig = require('../../config/system');
 //GET /admin/my-profile
 module.exports.index = async (req, res) => {
     res.render('admin/pages/profile/index', {
@@ -16,7 +17,7 @@ module.exports.edit = async (req, res) =>{
 module.exports.editPatch = async (req, res) =>{
     try{
         if(req.body.password){
-        req.body.password = md5(req.body.password);
+            req.body.password = await bcrypt.hash(req.body.password, 10);
         }
         else{
             delete req.body.password;
