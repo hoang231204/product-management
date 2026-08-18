@@ -3,71 +3,68 @@ include ../../mixins/show-alert.pug
 
 block main
     +alert-success(5000)
-    
-    .container.my-5
-        .card.form-card
-            h1(class="mb-4 text-center") CHI TIẾT DANH MỤC
-            
-            if category
-                .row
-                    //- Ảnh bên trái
-                    .col-md-4
-                        .mb-4.text-center
-                            img(
-                                src=(category.thumbnail ? category.thumbnail : "/admin/images/no-image.png")
-                                class="img-fluid rounded shadow-sm border"
-                                style="max-height: 300px; object-fit: cover;"
-                            )
-                    
-                    //- Thông tin bên phải
-                    .col-md-8
-                        .info-section
-                            .mb-3
-                                b Tiêu đề: 
-                                span.text-white #{category.title}
-                            
-                            .mb-3
-                                b Danh mục cha: 
-                                span.text-white #{parentName ? parentName : "Không có"}
-                            
-                            .mb-3
-                                b Vị trí: 
-                                span.badge.bg-info #{category.position}
-                            
-                            .mb-3
-                                b Trạng thái: 
-                                if category.status === "active"
-                                    span.badge.bg-success Hoạt động
+
+    .container-fluid
+        .d-flex.align-items-center.justify-content-between.mb-4
+            div
+                h3.fw-bold.mb-1.text-white Chi tiết danh mục bài viết
+                p.text-muted.mb-0 Xem thông tin chi tiết và lịch sử cập nhật của danh mục bài viết
+            .d-flex.gap-2
+                if(role.permissions.includes('post_category_edit') && category)
+                    a(href=`${prefixAdmin}/post-categories/edit/${category._id}` class="btn btn-warning") 
+                        i.fa-solid.fa-pen-to-square.me-1
+                        | Chỉnh sửa
+                a(href=`${prefixAdmin}/post-categories` class="btn btn-secondary") 
+                    i.fa-solid.fa-arrow-left.me-1
+                    | Quay lại danh sách
+
+        if category
+            .row.g-4
+                // Left Column: Thumbnail & Specs (4/12)
+                .col-lg-4
+                    .card.text-center.p-4
+                        if category.thumbnail
+                            img(src=category.thumbnail alt=category.title class="img-fluid rounded border border-secondary mb-3 object-fit-cover" style="max-height: 250px; width: 100%;")
+                        else
+                            .bg-dark.py-5.rounded.mb-3.text-muted Không có hình ảnh
+
+                        h4.fw-bold.text-white.mb-3 #{category.title}
+
+                        .text-start.border-top.border-secondary.pt-3
+                            div.mb-2 <b>Danh mục cha:</b> #{parentName ? parentName : "Không có (Danh mục gốc)"}
+                            div.mb-2 <b>Vị trí:</b> <span class="fw-bold">#{category.position}</span>
+                            div.mb-2 <b>Trạng thái:</b> 
+                                if category.status === 'active'
+                                    span.badge.badge-success.ms-2 Hoạt động
                                 else
-                                    span.badge.bg-danger Dừng hoạt động
+                                    span.badge.badge-danger.ms-2 Dừng hoạt động
 
-                            .mb-4
-                                b Mô tả:
-                                div(class="mt-2 p-3 bg-dark border rounded") !{category.description || "<i>Không có mô tả</i>"}
+                // Right Column: Description & System History (8/12)
+                .col-lg-8
+                    .card.mb-4
+                        .card-header.fw-bold Mô tả chi tiết
+                        .card-body
+                            if category.description
+                                .description-box !{category.description}
+                            else
+                                p.text-muted.mb-0 Chưa có mô tả cho danh mục bài viết này.
 
-                        //- Phần Log
-                        .log-section.mt-4.pt-3.border-top
+                    .card
+                        .card-header.fw-bold Thông tin hệ thống & Lịch sử
+                        .card-body
                             if category.createdBy && category.createdBy.account_id
-                                .mb-2
-                                    b Người tạo: 
-                                    span.text-muted #{category.createdBy.account_id.fullname} - #{moment(category.createdBy.createdAt).format('DD/MM/YYYY HH:mm')}
+                                .mb-3.pb-2.border-bottom.border-secondary
+                                    div <b>Người tạo:</b> #{category.createdBy.account_id.fullname}
+                                    div.small.text-muted #{moment(category.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
 
+                            div.fw-bold.mb-2 Lịch sử cập nhật:
                             if category.updatedBy && category.updatedBy.length > 0
-                                .mt-3
-                                    b Lịch sử cập nhật:
-                                    ul.list-unstyled.mt-2
-                                        each item in category.updatedBy
-                                            if item.account_id
-                                                li.small.border-bottom.py-2.d-flex.justify-content-between
-                                                    span #{item.account_id.fullname} 
-                                                    span.text-muted #{moment(item.updatedAt).fromNow()}
-
-                //- Cụm nút bấm
-                .text-right.mt-4
-                    if(role.permissions.includes('post_categories_edit'))
-                        a(href=`${prefixAdmin}/post-categories/${category._id}/edit` class="btn btn-warning px-4 mr-2") Chỉnh sửa
-                    a(href=`${prefixAdmin}/post-categories` class="btn btn-secondary px-4") Quay lại
-
-            else
-                .alert.alert-warning Không tìm thấy danh mục này!
-                a(href=`${prefixAdmin}/post-categories` class="btn btn-secondary") Quay lại danh sách
+                                each item in category.updatedBy
+                                    if item.account_id
+                                        .history-item.mb-2.pb-2.border-bottom.border-secondary
+                                            .fw-bold.text-white #{item.account_id.fullname} <span class="fw-normal text-muted">đã cập nhật</span>
+                                            .small.text-muted #{moment(item.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                            else
+                                p.text-muted.small.mb-0 Chưa có cập nhật nào.
+        else
+            .alert.alert-warning Không tìm thấy thông tin danh mục bài viết này.
