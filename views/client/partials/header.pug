@@ -1,47 +1,64 @@
 include ../mixins/sub-menu.pug
 include ../mixins/search.pug
+- const isHomeActive = currentPath === "/"
+- const isProductActive = currentPath.startsWith("/products") || currentPath.startsWith("/search")
+- const isBlogActive = currentPath.startsWith("/blogs")
+- const isContactActive = currentPath.startsWith("/contact")
 header.header
   .container
-    .row.align-items-center
-      .col-1
-        .inner-logo
-          a(href="/")
-            if websiteInfor && websiteInfor.logo
-              img(src=websiteInfor.logo, alt="Logo" width="40" height="40")
-            else
-              img(src="/client/images/logo.png", alt="Logo" width="40" height="40")
-      .col-3
-        .inner-search
-          +boxSearch(keyword)
-      .col-5
-        .inner-menu
-          ul
-            li
-              a(href="/") Trang chủ
-            li(class="sub-menu")
-              -const path = `/products`
-              a(href=path) Sản phẩm
-                +subMenu(categoryTree,path)
-            li 
-              a(href="/blog") Bài viết
-            li 
-              a(href="/contact") Liên hệ
-      .col-2
-        .inner-user
-          if user
-            a(href="/user/profile" class="text-dark text-decoration-none")
-              i(class="bi bi-person-circle me-2")
-              | #{user.fullname} /
-            a(href="/user/logout" class="text-dark text-decoration-none ms-2") Đăng xuất
+    .d-flex.align-items-center.justify-content-between.gap-3.flex-wrap
+      // Brand Logo
+      .inner-logo
+        a(href="/")
+          if websiteInfor && websiteInfor.logo
+            img(src=websiteInfor.logo, alt="Logo")
           else
-            a(href="/user/login" class="text-dark text-decoration-none") Đăng nhập
-            a(href="/user/register" class="text-dark text-decoration-none") Đăng ký
-      .col-1
-        .inner-cart
-          a(
-            href="/cart"
-            class="d-flex align-items-center text-dark text-decoration-none"
-          )
-            img(src="/client/images/giohang.png", alt="Cart" width="24" height="24" class="me-1")
-            span(class="badge bg-white text-dark") #{miniCartCount ? miniCartCount : 0}
+            img(src="/client/images/logo.png", alt="Logo")
       
+      // Search Bar
+      .inner-search.flex-grow-1(style="max-width: 380px;")
+        +boxSearch(keyword)
+
+      // Main Navigation Menu
+      .inner-menu
+        ul
+          li(class=isHomeActive ? "active" : "")
+            a(href="/") Trang chủ
+          li(class=`sub-menu ${isProductActive ? 'active' : ''}`)
+            -const path = `/products`
+            a(href=path) Sản phẩm
+              +subMenu(categoryTree,path)
+          li(class=isBlogActive ? "active" : "")
+            a(href="/blogs") Bài viết
+          li(class=isContactActive ? "active" : "")
+            a(href="/contact") Liên hệ
+
+      // User Profile & Actions
+      .inner-user
+        if user
+          .dropdown
+            button#userDropdown.btn.btn-sm.btn-outline-primary.dropdown-toggle(type="button" data-toggle="dropdown" aria-expanded="false")
+              i.fa-solid.fa-user.me-1
+              | #{user.fullname}
+            ul.dropdown-menu.dropdown-menu-end(aria-labelledby="userDropdown")
+              li
+                a.dropdown-item(href="/users/profile")
+                  i.fa-solid.fa-id-card.me-2
+                  | Xem hồ sơ
+              li
+                hr.dropdown-divider
+              li
+                a.dropdown-item.text-danger(href="/users/logout")
+                  i.fa-solid.fa-right-from-bracket.me-2
+                  | Đăng xuất
+        else
+          a(href="/users/login" class="btn btn-sm btn-primary")
+            i.fa-solid.fa-user.me-1
+            | Đăng nhập
+
+      // Cart Badge Counter
+      .inner-cart
+        a(href="/carts" class="btn btn-sm btn-secondary position-relative")
+          i.fa-solid.fa-bag-shopping.me-1
+          | Giỏ hàng
+          span(class="badge badge-pill badge-primary ms-1") #{miniCartCount ? miniCartCount : 0}
