@@ -5,122 +5,104 @@ include ../../mixins/pagination.pug
 include ../../mixins/change-multi.pug
 include ../../mixins/show-alert.pug
 include ../../mixins/sort.pug
+
 block main
     if(role.permissions.includes("user_view"))
         +alert-success(5000)
-        .container.my-3
-            .card.mb-3
-                h3.text-center Quản lý người dùng
-                .card-header Bộ lọc và Tìm kiếm
-                    .card-body
-                        .row.align-items-center.mb-3
-                            .col-lg-8
-                                +boxFilter(filterStatus)
-                            .col-lg-4
-                                +boxSearch(keyword)
-                .card-header Sắp xếp
-                    .card-body
-                        .row.align-items-center.mb-3.action-box
-                            .col-lg-4
-                                .d-flex.align-items-center
-                                    div(style="flex-grow: 1")
-                                        +boxSort('user')
-                .card-header Thay đổi
-                    .card-body
-                        .row.align-items-center.action-box.mb-3
-                            .col-lg-8
-                                if(role.permissions.includes("user_edit"))
-                                    +boxChange(`${prefixAdmin}/users/change-multi?_method=PATCH`, 'user')
-                            .col-lg-3.text-lg-right
-                                if(role.permissions.includes("user_create"))
-                                    a(href=`${prefixAdmin}/users/create` class="btn btn-success")
-                                        i.fa.fa-plus.mr-2
-                                        | Thêm mới
-            .card.mb-3
-                .card-header Danh sách người dùng
-                    .card-body
-                        .table-responsive
-                            table(class="table table-hover table-sm" check-box-multi)
-                                thead
-                                    tr.text-center
-                                        th
-                                            input(type="checkbox" name="checkAll")
-                                        th STT
-                                        th Avatar
-                                        th Họ tên
-                                        th Email
-                                        th Số điện thoại
-                                        th Trạng thái
-                                        th Hành động
-                                tbody
-                                    if(users.length > 0)
-                                        each item, index in users
-                                            tr.text-center
-                                                td
-                                                    input(
-                                                        type="checkbox"
-                                                        name="id"
-                                                        value=item.id
-                                                    )
-                                                td #{index + 1}
-                                                td
-                                                    img(
-                                                        src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png")
-                                                        alt=item.fullname
-                                                        width="50px"
-                                                        height="50px"
-                                                        style="object-fit: cover; border-radius: 50%;"
-                                                    )
-                                                td.font-weight-bold #{item.fullname}
-                                                td #{item.email}
-                                                td #{item.phone ? item.phone : "Chưa cập nhật"}
-                                                td
-                                                    if(role.permissions.includes("user_edit"))
-                                                        if(item.status == 'active')
-                                                            a(
-                                                                href="javascript:;" 
-                                                                class="badge badge-success" 
-                                                                button-change-status 
-                                                                data-id=item.id  
-                                                                data-status=item.status
-                                                                data-next-status="inactive"
-                                                            ) Hoạt động
-                                                        else
-                                                            a(
-                                                                href="javascript:;" 
-                                                                class="badge badge-danger" 
-                                                                button-change-status 
-                                                                data-id=item.id  
-                                                                data-status=item.status
-                                                                data-next-status="active"
-                                                            ) Dừng hoạt động
-                                                    else
-                                                        span(class=`badge ${item.status == 'active' ? 'badge-success' : 'badge-danger'}`) #{item.status == 'active' ? 'Hoạt động' : 'Dừng hoạt động'}
-                                                td
-                                                    .row.justify-content-center.gap-2
-                                                        a(href=`${prefixAdmin}/users/details/${item._id}` class="btn btn-info btn-sm")
-                                                            i.fas.fa-eye
-                                                        if(role.permissions.includes("user_edit"))
-                                                            a(href=`${prefixAdmin}/users/edit/${item._id}` class="btn btn-warning btn-sm mx-1")
-                                                                i.fas.fa-edit
-                                                        if(role.permissions.includes("user_delete"))
-                                                            button(class="btn btn-danger btn-sm" button-delete data-id=item._id)
-                                                                i.fas.fa-trash
-                                    else
-                                        tr
-                                            td(colspan="8" class="text-center py-4") 
-                                                em Không tìm thấy người dùng nào.
+        .container-fluid
+            .d-flex.align-items-center.justify-content-between.mb-4
+                div
+                    h3.fw-bold.mb-1.text-white Quản lý khách hàng người dùng
+                    p.text-muted.mb-0 Danh sách tài khoản khách hàng mua sắm trên hệ thống storefront
+                if(role.permissions.includes("user_create"))
+                    a(href=`${prefixAdmin}/users/create` class="btn btn-primary")
+                        i.fa-solid.fa-plus.me-2
+                        | Thêm mới người dùng
 
-        form(
-            action=""
-            method="POST"
-            form-change-status
-            data-path=`${prefixAdmin}/users/change-status`
-        )
-        form(
-            action=""
-            method="POST"
-            form-delete
-            data-path=`${prefixAdmin}/users/delete`
-        )
+            // Single Consolidated Control Toolbar Card
+            .card.mb-4
+                .card-header.d-flex.align-items-center.justify-content-between
+                    span.fw-bold
+                        i.fa-solid.fa-sliders.me-2.text-primary
+                        | Bộ lọc & Thao tác
+                .card-body
+                    .row.g-3.align-items-end.mb-3
+                        .col-lg-5
+                            label.form-label.small.text-muted.fw-bold Trạng thái
+                            +boxFilter(filterStatus)
+                        .col-lg-4
+                            label.form-label.small.text-muted.fw-bold Tìm kiếm người dùng
+                            +boxSearch(keyword)
+                        .col-lg-3
+                            label.form-label.small.text-muted.fw-bold Sắp xếp
+                            +boxSort('user')
+                    
+                    if(role.permissions.includes("user_edit"))
+                        hr.my-3.border-secondary.opacity-25
+                        .row.align-items-center
+                            .col-12
+                                +boxChange(`${prefixAdmin}/users/change-multi?_method=PATCH`, 'user')
+
+            // Data Table Card
+            .card
+                .card-header.d-flex.align-items-center.justify-content-between
+                    span.fw-bold
+                        i.fa-solid.fa-users.me-2.text-primary
+                        | Danh sách người dùng (#{users ? users.length : 0})
+                .card-body.p-0
+                    .table-responsive
+                        table(class="table table-hover align-middle mb-0" check-box-multi)
+                            thead
+                                tr.text-center
+                                    th(width="40px")
+                                        input(type="checkbox" name="checkAll" class="form-check-input")
+                                    th(width="50px") STT
+                                    th(width="80px") Avatar
+                                    th.text-start Họ tên
+                                    th Email
+                                    th Số điện thoại
+                                    th Trạng thái
+                                    th(width="140px") Hành động
+                            tbody
+                                if users && users.length > 0
+                                    each item, index in users
+                                        tr.text-center
+                                            td
+                                                input(type="checkbox" name="id" value=item.id class="form-check-input")
+                                            td.fw-bold #{index + 1}
+                                            td
+                                                img(
+                                                    src=(item.avatar ? item.avatar : "/admin/images/avatar-default.png")
+                                                    alt=item.fullname
+                                                    width="48"
+                                                    height="48"
+                                                    class="rounded-circle object-fit-cover border border-secondary"
+                                                )
+                                            td.text-start.fw-bold #{item.fullname}
+                                            td #{item.email}
+                                            td #{item.phone ? item.phone : "Chưa cập nhật"}
+                                            td
+                                                if(role.permissions.includes("user_edit"))
+                                                    if item.status == 'active'
+                                                        a(href="javascript:;" class="badge badge-success" button-change-status data-id=item.id data-status=item.status data-next-status="inactive") Hoạt động
+                                                    else
+                                                        a(href="javascript:;" class="badge badge-danger" button-change-status data-id=item.id data-status=item.status data-next-status="active") Dừng hoạt động
+                                                else
+                                                    span.badge(class=(item.status == 'active' ? 'badge-success' : 'badge-danger')) #{item.status == 'active' ? 'Hoạt động' : 'Dừng'}
+                                            td
+                                                .d-flex.justify-content-center.gap-1
+                                                    a(href=`${prefixAdmin}/users/details/${item._id}` class="btn btn-info btn-sm" title="Xem chi tiết")
+                                                        i.fa-solid.fa-eye
+                                                    if(role.permissions.includes("user_edit"))
+                                                        a(href=`${prefixAdmin}/users/edit/${item._id}` class="btn btn-warning btn-sm" title="Chỉnh sửa")
+                                                            i.fa-solid.fa-pen-to-square
+                                                    if(role.permissions.includes("user_delete"))
+                                                        button(class="btn btn-danger btn-sm" button-delete data-id=item._id title="Xóa")
+                                                            i.fa-solid.fa-trash-can
+                                else
+                                    tr
+                                        td(colspan="8" class="text-center text-muted py-4") Không tìm thấy người dùng nào
+
+        form(action="" method="POST" form-change-status data-path=`${prefixAdmin}/users/change-status`)
+        form(action="" method="POST" form-delete data-path=`${prefixAdmin}/users/delete`)
         script(src="/admin/js/change-multi.js")

@@ -5,42 +5,49 @@ block main
     +alert-error(5000)
     +alert-success(5000)
 
-    .container.my-5
-        .detail-card
-            h1.mb-4.text-primary #{user.fullname}
-            .row
-                .col-md-4
-                    div(class="border-0 text-center")
-                        img(
-                            src=(user.avatar ? user.avatar : "/admin/images/avatar-default.png")
-                            class="img-fluid img-detail mb-3" 
-                            style="max-height: 300px; object-fit: cover; border-radius: 50%;"
-                        )
-                    .info-box.mt-3
-                        p <b>Email:</b> #{user.email}
-                        p <b>Số điện thoại:</b> #{user.phone || "Chưa cập nhật"}
-                        p <b>Trạng thái:</b> 
-                            span(class=user.status === 'active' ? "text-success font-weight-bold" : "text-danger font-weight-bold") #{user.status === 'active' ? "Hoạt động" : "Dừng hoạt động"}
-                        p <b>Ngày tạo:</b> #{moment(user.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+    .container-fluid
+        .d-flex.align-items-center.justify-content-between.mb-4
+            div
+                h3.fw-bold.mb-1.text-white Chi tiết khách hàng
+                p.text-muted.mb-0 Thông tin chi tiết tài khoản người dùng mua sắm
+            .d-flex.gap-2
+                if role.permissions.includes("user_edit")
+                    a(href=`${prefixAdmin}/users/edit/${user._id}` class="btn btn-warning") 
+                        i.fa-solid.fa-pen-to-square.me-1
+                        | Chỉnh sửa
+                a(href=`${prefixAdmin}/users` class="btn btn-secondary") 
+                    i.fa-solid.fa-arrow-left.me-1
+                    | Quay lại danh sách
 
-                .col-md-8
-                    h5.mb-3 Thông tin bổ sung:
-                    .mt-4.pt-3.border-top
-                        h5.mb-3 Lịch sử cập nhật:
+        .row.g-4
+            // Left Column: Avatar & Basic Info (4/12)
+            .col-lg-4
+                .card.text-center.p-4
+                    img(
+                        src=(user.avatar ? user.avatar : "/admin/images/avatar-default.png")
+                        class="rounded-circle object-fit-cover border border-secondary mb-3 mx-auto"
+                        width="140"
+                        height="140"
+                        alt=user.fullname
+                    )
+                    h4.fw-bold.text-white.mb-1 #{user.fullname}
+                    span.badge(class=(user.status === 'active' ? 'badge-success' : 'badge-danger') + ' px-3 py-2 mb-3') #{user.status === 'active' ? "Hoạt động" : "Dừng hoạt động"}
+
+                    .text-start.border-top.border-secondary.pt-3
+                        div.mb-2 <b>Email:</b> #{user.email}
+                        div.mb-2 <b>Số điện thoại:</b> #{user.phone || "Chưa cập nhật"}
+                        div.mb-2 <b>Ngày đăng ký:</b> #{moment(user.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+
+            // Right Column: Update History (8/12)
+            .col-lg-8
+                .card
+                    .card-header.fw-bold Lịch sử cập nhật hệ thống
+                    .card-body
                         if user.updatedBy && user.updatedBy.length > 0
                             each item in user.updatedBy
                                 if item.account_id
-                                    .history-item
-                                        div <b>#{item.account_id.fullname}</b> đã cập nhật
-                                        div.small.text-muted #{moment(item.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                    .history-item.mb-3.pb-2.border-bottom.border-secondary
+                                        .fw-bold.text-white #{item.account_id.fullname} <span class="fw-normal text-muted">đã cập nhật</span>
+                                        .small.text-muted #{moment(item.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
                         else
-                            p.text-muted Chưa có cập nhật nào.
-
-            .mt-4
-                if role.permissions.includes("user_edit")
-                    a(href=`${prefixAdmin}/users/edit/${user._id}` class="btn btn-warning mr-2") 
-                        i.fa.fa-edit.mr-1 
-                        | Sửa thông tin
-                a(href=`${prefixAdmin}/users` class="btn btn-secondary") 
-                    i.fa.fa-arrow-left.mr-1 
-                    | Quay lại danh sách
+                            p.text-muted.mb-0 Chưa có thông tin cập nhật nào.
