@@ -66,21 +66,21 @@ module.exports.delete = async (req,res)=>{
         const cart = await Cart.findById(cartId);
         if(!cart){
             req.flash('error', 'Giỏ hàng không tồn tại');
-            return res.redirect('/cart');
+            return res.redirect('/carts');
         }
         const productIndex = cart.products.findIndex(item => item.product_id == productId);
         if(productIndex === -1){
             req.flash('error', 'Sản phẩm không tồn tại trong giỏ hàng');
-            return res.redirect('/cart');
+            return res.redirect('/carts');
         }
         cart.products.splice(productIndex, 1);
         await cart.save();
         req.flash('success', 'Sản phẩm đã được xóa khỏi giỏ hàng');
-        res.redirect('/cart');
+        res.redirect('/carts');
     }
     catch(error){
         req.flash('error', 'Đã có lỗi xảy ra, vui lòng thử lại');
-        res.redirect('/cart');
+        res.redirect('/carts');
     }
 }
 module.exports.update = async (req,res)=>{
@@ -88,27 +88,27 @@ module.exports.update = async (req,res)=>{
         const newQuantity = parseInt(req.query.quantity);
         if(isNaN(newQuantity) || newQuantity < 1){
             req.flash('error', 'Số lượng không hợp lệ');
-            return res.redirect('/cart');
+            return res.redirect('/carts');
         }
         const productId = req.params.productId;
         const cartId = req.cartId;
         const cart = await Cart.findById(cartId);
         if(!cart){
             req.flash('error', 'Giỏ hàng không tồn tại');
-            return res.redirect('/cart');
+            return res.redirect('/carts');
         }
         const productIndex = cart.products.findIndex(item => item.product_id == productId);
         if(productIndex === -1){
             req.flash('error', 'Sản phẩm không tồn tại trong giỏ hàng');
-            return res.redirect('/cart');
+            return res.redirect('/carts');
         }
         cart.products[productIndex].quantity = newQuantity;
         await cart.save();
         req.flash('success', 'Số lượng sản phẩm đã được cập nhật');
-        res.redirect('/cart');
+        res.redirect('/carts');
     }
     catch(error){
         req.flash('error', 'Đã có lỗi xảy ra, vui lòng thử lại');
-        res.redirect('/cart');
+        res.redirect('/carts');
     }
 }
