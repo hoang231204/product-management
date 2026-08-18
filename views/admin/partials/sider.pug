@@ -12,15 +12,15 @@
                     | Tổng quan
 
             if(role.permissions.includes("product_view"))
-                li 
-                    a(href=`${prefixAdmin}/products`) 
-                        i.fa-solid.fa-box.fa-fw
-                        | Quản lý sản phẩm
-                    ul 
-                        li 
-                            a(href=`${prefixAdmin}/products/recycle-bin`) 
-                                i.fa-solid.fa-trash.fa-fw
-                                | Thùng rác
+            li 
+                a(href=`${prefixAdmin}/products`) 
+                    i.fa-solid.fa-box.fa-fw
+                    | Quản lý sản phẩm
+                ul 
+                    li 
+                        a(href=`${prefixAdmin}/products/recycle-bin`) 
+                            i.fa-solid.fa-trash.fa-fw
+                            | Thùng rác
 
             if(role.permissions.includes("product_category_view"))
                 li
@@ -43,12 +43,11 @@
                             a(href=`${prefixAdmin}/roles/recycle-bin`) 
                                 i.fa-solid.fa-trash.fa-fw
                                 | Thùng rác
-
-            if(role.permissions.includes("permission"))
-                li
-                    a(href=`${prefixAdmin}/roles/permissions`) 
-                        i.fa-solid.fa-key.fa-fw
-                        | Phân quyền
+                        if(role.permissions.includes("permission"))
+                            li
+                                a(href=`${prefixAdmin}/roles/permissions`) 
+                                    i.fa-solid.fa-key.fa-fw
+                                    | Phân quyền
 
             if(role.permissions.includes("account_view"))
                 li
