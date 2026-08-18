@@ -1,0 +1,48 @@
+/* =========================================================
+    1. CLIENT DESIGN SYSTEM VARIABLES (Flower Theme Palette)
+    ========================================================= */
+:root {
+     /* Brand & Surface Color Palette (Flower Theme) */
+    --md-background: #fffbfe;
+    --md-on-background: #1c1b1f;
+     --md-primary: #d85b86;
+     --md-primary-strong: #b23d6d;
+    --md-on-primary: #ffffff;
+     --md-primary-container: #ffe3ef;
+     --md-on-primary-container: #4f1129;
+    
+     --md-secondary: #9a4e6d;
+     --md-secondary-container: #ffe8f1;
+     --md-on-secondary-container: #4f1d32;
+    
+     --md-tertiary: #c96f92;
+     --md-tertiary-container: #ffdce9;
+     --md-on-tertiary-container: #4a1328;
+    
+    --md-surface: #ffffff;
+     --md-surface-container: #fff0f6;
+     --md-surface-container-low: #fff6fa;
+     --md-surface-variant: #ffe9f2;
+    
+     --md-outline: #9b7c88;
+     --md-on-surface-variant: #654955;
+    --md-error: #b3261e;
+    --md-shadow: 28, 24, 36;
+    
+    /* Layout & UI Tokens */
+    --md-radius-sm: 10px;
+    --md-radius-md: 16px;
+    --md-radius-lg: 24px;
+    --md-radius-xl: 32px;
+    --md-radius-pill: 9999px;
+    
+    /* Shadows & Elevation */
+    --shadow-sm: 0 4px 12px rgba(28, 24, 36, 0.05);
+    --shadow-md: 0 10px 24px rgba(28, 24, 36, 0.08);
+    --shadow-lg: 0 18px 40px rgba(28, 24, 36, 0.12);
+    --shadow-glass: 0 8px 32px rgba(216, 91, 134, 0.16);
+
+    /* Animation Timing */
+    --md-ease: cubic-bezier(0.2, 0, 0, 1);
+    --md-transition: 280ms var(--md-ease);
+}

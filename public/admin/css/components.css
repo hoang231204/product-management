@@ -1,0 +1,329 @@
+/* =========================================================
+   5. ADMIN UI COMPONENTS (Cards, Forms, Tables, Badges, Toast Alerts)
+   ========================================================= */
+
+/* Cards & Containers */
+.card, .form-card, .detail-card, .profile-card, .control-card {
+    background-color: var(--admin-card-bg) !important;
+    border: 1px solid var(--admin-border) !important;
+    border-radius: var(--admin-radius-md) !important;
+    box-shadow: var(--admin-shadow) !important;
+    color: var(--admin-text-main);
+    margin-bottom: 1.5rem;
+    padding: 1.5rem !important;
+}
+
+.card-header {
+    background-color: var(--admin-card-header) !important;
+    border-bottom: 1px solid var(--admin-border) !important;
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+    border-top-left-radius: var(--admin-radius-md) !important;
+    border-top-right-radius: var(--admin-radius-md) !important;
+    color: #ffffff;
+}
+
+.stat-card {
+    transition: transform var(--admin-transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Buttons */
+.btn {
+    border-radius: var(--admin-radius-sm);
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: var(--admin-transition);
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover)) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background-color: var(--admin-success) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+.btn-danger {
+    background-color: var(--admin-danger) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+.btn-warning {
+    background-color: var(--admin-warning) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+/* Action Box & Filters */
+.action-box {
+    background-color: #162032 !important;
+    border: 1px solid var(--admin-border) !important;
+    border-radius: var(--admin-radius-md);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.action-box .form-control,
+.action-box .form-select,
+select.form-control,
+.form-select {
+    background-color: var(--admin-bg) !important;
+    color: #ffffff !important;
+    border: 1px solid var(--admin-border-solid) !important;
+    border-radius: var(--admin-radius-sm) !important;
+    height: auto !important;
+    min-height: 2.5rem !important;
+    padding: 0.45rem 0.85rem !important;
+    line-height: 1.5 !important;
+    font-size: 0.9rem !important;
+}
+
+.action-box .form-control::placeholder {
+    color: var(--admin-text-muted) !important;
+}
+
+.action-box select option,
+select option {
+    background-color: var(--admin-bg) !important;
+    color: #ffffff !important;
+    padding: 0.5rem;
+}
+
+/* Form Controls & Inputs */
+.form-control, .form-select {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+    border: 1px solid var(--admin-border-solid) !important;
+    border-radius: var(--admin-radius-sm) !important;
+    height: auto !important;
+    min-height: 2.5rem !important;
+    padding: 0.45rem 0.85rem !important;
+    line-height: 1.5 !important;
+    font-size: 0.9rem !important;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--admin-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important;
+}
+
+label {
+    color: var(--admin-text-muted);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+/* Tables */
+.table {
+    color: var(--admin-text-main) !important;
+    border-collapse: separate;
+    border-spacing: 0 6px;
+    width: 100%;
+}
+
+.table thead th {
+    background-color: #162032 !important;
+    border: none !important;
+    color: #ffffff;
+    padding: 1rem 1.25rem !important;
+    font-weight: 600;
+    vertical-align: middle !important;
+}
+
+.table tbody tr {
+    background-color: var(--admin-card-bg);
+    transition: var(--admin-transition);
+}
+
+.table tbody tr:hover {
+    background-color: #28364e !important;
+}
+
+.table td {
+    padding: 1rem 1.25rem !important;
+    border-top: none !important;
+    border-bottom: 1px solid var(--admin-border) !important;
+    vertical-align: middle !important;
+}
+
+/* Table Checkboxes Perfect Alignment Fix */
+.table th:first-child,
+.table td:first-child {
+    text-align: center !important;
+    vertical-align: middle !important;
+    width: 48px !important;
+    min-width: 48px !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+}
+
+.table input[type="checkbox"],
+.table .form-check-input {
+    position: static !important;
+    margin: 0 auto !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    width: 18px !important;
+    height: 18px !important;
+    cursor: pointer !important;
+    accent-color: var(--admin-primary);
+}
+
+
+/* Badges */
+.badge {
+    padding: 0.4rem 0.85rem !important;
+    border-radius: 9999px !important;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--admin-transition);
+}
+
+.badge:hover {
+    filter: brightness(1.2);
+}
+
+.badge-success {
+    background-color: rgba(16, 185, 129, 0.2) !important;
+    color: #34d399 !important;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-danger {
+    background-color: rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Toast Alerts [show-alert] */
+[show-alert] {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    padding: 1rem 1.35rem;
+    border-radius: var(--admin-radius-sm);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 300px;
+    max-width: 450px;
+    animation: slideInRight 0.35s ease-out;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+[show-alert].alert-success {
+    background-color: #059669;
+    border-left: 5px solid #047857;
+}
+
+[show-alert].alert-danger {
+    background-color: #dc2626;
+    border-left: 5px solid #b91c1c;
+}
+
+[show-alert] [close-alert] {
+    margin-left: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 13px;
+}
+
+[show-alert] [close-alert]:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.alert-hidden {
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.4s ease;
+    pointer-events: none;
+}
+
+/* Image Upload Preview & Remove */
+.box-image {
+    position: relative;
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+.image-preview {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border: 1px solid var(--admin-border-solid);
+    border-radius: var(--admin-radius-sm);
+    display: block;
+}
+
+.image-preview[src=""] {
+    display: none;
+}
+
+.btn-remove-image {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--admin-danger);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+}
+
+.btn-remove-image:hover {
+    transform: scale(1.15);
+}
+
+.image-preview[src=""] + .btn-remove-image {
+    display: none;
+}
+
+.description-box {
+    background: #0f172a !important;
+    padding: 1.25rem;
+    border-radius: var(--admin-radius-sm);
+    border-left: 4px solid var(--admin-primary);
+    color: var(--admin-text-muted);
+}

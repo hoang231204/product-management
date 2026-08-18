@@ -1,0 +1,33 @@
+/* =========================================================
+   1. ADMIN DESIGN SYSTEM VARIABLES (Modern Dark Slate Theme)
+   ========================================================= */
+:root {
+    /* Color Palette */
+    --admin-bg: #0f172a;
+    --admin-card-bg: #1e293b;
+    --admin-card-header: #162032;
+    --admin-border: rgba(255, 255, 255, 0.08);
+    --admin-border-solid: #334155;
+    
+    --admin-primary: #6366f1;
+    --admin-primary-hover: #4f46e5;
+    --admin-accent-cyan: #06b6d4;
+    --admin-success: #10b981;
+    --admin-danger: #ef4444;
+    --admin-warning: #f59e0b;
+    
+    --admin-text-main: #f8fafc;
+    --admin-text-muted: #94a3b8;
+    
+    /* Layout Dimensions */
+    --sider-width: 250px;
+    --header-height: 65px;
+    
+    /* UI Tokens */
+    --admin-radius-sm: 8px;
+    --admin-radius-md: 14px;
+    --admin-radius-lg: 20px;
+    
+    --admin-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    --admin-transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}

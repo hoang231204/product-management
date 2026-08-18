@@ -1,0 +1,266 @@
+/* =========================================================
+   4. PRODUCT & CATEGORY STYLES (Original Colors Kept)
+   ========================================================= */
+
+/* Product Grid Item */
+.product-item {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--md-radius-md);
+    background: var(--md-surface);
+    border: 1px solid rgba(121, 116, 126, 0.14);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--md-transition), box-shadow var(--md-transition), border-color var(--md-transition);
+}
+
+.product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(216, 91, 134, 0.3);
+}
+
+/* Product Image Box */
+.product-item .inner-image {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    background: var(--md-surface-container);
+}
+
+.product-item .inner-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 400ms var(--md-ease);
+}
+
+.product-item:hover .inner-image img {
+    transform: scale(1.06);
+}
+
+/* Featured Badge Overlay */
+.product-item .inner-featured {
+    position: absolute;
+    top: 0.85rem;
+    left: 0.85rem;
+    z-index: 2;
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--md-radius-pill);
+    background: rgba(216, 91, 134, 0.92);
+    color: var(--md-on-primary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(216, 91, 134, 0.3);
+    backdrop-filter: blur(4px);
+}
+
+/* Discount Badge Overlay */
+.product-item .inner-discount {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    z-index: 2;
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--md-radius-pill);
+    background: rgba(179, 38, 30, 0.92);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(179, 38, 30, 0.25);
+    backdrop-filter: blur(4px);
+}
+
+/* Product Info Content */
+.product-item h3.inner-title {
+    margin: 0;
+    padding: 1rem 1rem 0.35rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.product-item h3.inner-title a {
+    color: var(--md-on-background);
+    transition: color var(--md-transition);
+}
+
+.product-item h3.inner-title a:hover {
+    color: var(--md-primary);
+}
+
+/* Price Tags */
+.product-item .inner-price-new,
+.product-detail .inner-price-new {
+    padding: 0 1rem;
+    color: var(--md-primary);
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.product-item .inner-price-old,
+.product-detail .inner-price-old {
+    padding: 0 1rem 0.85rem;
+    color: var(--md-on-surface-variant);
+    font-size: 0.9rem;
+    text-decoration: line-through;
+}
+
+/* Product Detail Page */
+.product-detail {
+    padding: 1.5rem 0 3rem;
+}
+
+.product-detail .inner-thumb {
+    padding: 1.25rem;
+    border-radius: var(--md-radius-lg);
+    background: var(--md-surface);
+    border: 1px solid rgba(121, 116, 126, 0.15);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.product-detail .inner-thumb img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--md-radius-md);
+    transition: transform 400ms var(--md-ease);
+}
+
+.product-detail .inner-thumb:hover img {
+    transform: scale(1.03);
+}
+
+.product-detail .inner-title {
+    margin-bottom: 1rem;
+    font-size: clamp(1.75rem, 2.5vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--md-on-background);
+}
+
+.product-detail .inner-category,
+.product-detail .inner-percent,
+.product-detail .inner-stock {
+    margin-bottom: 0.85rem;
+    font-size: 0.98rem;
+    color: var(--md-on-surface-variant);
+}
+
+.product-detail .inner-category a {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--md-radius-pill);
+    background: var(--md-primary-container);
+    color: var(--md-on-primary-container);
+    font-weight: 500;
+}
+
+.product-detail .inner-percent span,
+.product-detail .inner-stock span {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--md-radius-pill);
+    background: var(--md-tertiary-container);
+    color: var(--md-on-tertiary-container);
+    font-weight: 700;
+}
+
+.product-detail .inner-price-new {
+    padding: 0;
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.product-detail .inner-price-old {
+    padding: 0;
+    font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+}
+
+.product-detail .inner-action {
+    padding: 1.5rem;
+    border-radius: var(--md-radius-md);
+    background: var(--md-surface);
+    border: 1px solid rgba(121, 116, 126, 0.14);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+}
+
+.product-detail .inner-action .form-control {
+    max-width: 7rem;
+    text-align: center;
+}
+
+.product-detail .inner-desc {
+    padding: 1.75rem;
+    border-radius: var(--md-radius-lg);
+    background: var(--md-surface);
+    border: 1px solid rgba(121, 116, 126, 0.14);
+    box-shadow: var(--shadow-sm);
+}
+
+.product-detail .inner-desc-title {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--md-on-background);
+}
+
+.product-detail .inner-back a {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.65rem 1.35rem;
+    border-radius: var(--md-radius-pill);
+    background: var(--md-secondary-container);
+    color: var(--md-on-secondary-container);
+    font-weight: 600;
+    transition: all var(--md-transition);
+}
+
+.product-detail .inner-back a:hover {
+    background: var(--md-primary-container);
+    color: var(--md-primary);
+}
+
+/* Sticky Category Filter Sidebar */
+.category-filter {
+    position: sticky;
+    top: 6rem;
+}
+
+.category-filter .list-group {
+    gap: 0.5rem;
+}
+
+.category-filter .list-group-item {
+    border: 0;
+    padding: 0;
+    background: transparent;
+}
+
+.category-filter .btn {
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
+    background: var(--md-surface);
+    border: 1px solid rgba(121, 116, 126, 0.18);
+    color: var(--md-on-background);
+    padding: 0.7rem 1.15rem;
+    border-radius: var(--md-radius-pill);
+}
+
+.category-filter .btn.active,
+.category-filter .btn.btn-outline-success.active {
+    background: var(--md-primary);
+    border-color: var(--md-primary);
+    color: var(--md-on-primary) !important;
+    box-shadow: 0 4px 14px rgba(216, 91, 134, 0.28);
+}

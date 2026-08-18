@@ -1,0 +1,71 @@
+/* =========================================================
+   3. ADMIN HEADER NAVBAR STYLES
+   ========================================================= */
+.header {
+    height: var(--header-height);
+    background-color: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--admin-border-solid);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+.header .container-fluid {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.inner-logo a {
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #ffffff, var(--admin-accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: var(--admin-transition);
+}
+
+.inner-logo a:hover {
+    opacity: 0.9;
+}
+
+.header .btn-outline-light {
+    border: 1px solid var(--admin-border-solid);
+    color: var(--admin-text-main);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--admin-radius-sm);
+    padding: 0.4rem 0.9rem;
+    font-size: 0.88rem;
+    transition: var(--admin-transition);
+}
+
+.header .btn-outline-light:hover {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+    color: #ffffff;
+}
+
+.header .btn-danger {
+    background: linear-gradient(90deg, #ef4444, #dc2626) !important;
+    border: none !important;
+    border-radius: var(--admin-radius-sm);
+    padding: 0.4rem 0.9rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: var(--admin-transition);
+}
+
+.header .btn-danger:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+}

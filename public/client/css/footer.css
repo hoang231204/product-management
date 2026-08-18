@@ -1,0 +1,60 @@
+/* =========================================================
+    7. FOOTER STYLES (Flower Theme)
+    ========================================================= */
+
+.footer {
+    margin-top: 4rem;
+    padding: 3.5rem 0 2rem;
+    color: #ffffff;
+    background: linear-gradient(135deg, #d85b86 0%, #f28db3 55%, #f9b7cb 100%);
+    border-top-left-radius: var(--md-radius-xl);
+    border-top-right-radius: var(--md-radius-xl);
+    box-shadow: 0 -10px 30px rgba(28, 24, 36, 0.08);
+}
+
+.footer h5 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.02em;
+}
+
+.footer p,
+.footer li,
+.footer strong {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.footer a {
+    color: rgba(255, 255, 255, 0.85);
+    transition: color var(--md-transition), padding-left var(--md-transition);
+}
+
+.footer a:hover {
+    color: #ffffff;
+    padding-left: 0.25rem;
+    text-decoration: underline;
+}
+
+.footer img {
+    max-width: 150px;
+    margin-bottom: 1rem;
+    border-radius: var(--md-radius-sm);
+}
+
+.footer .row + .row {
+    margin-top: 2rem;
+}
+
+@media (max-width: 767.98px) {
+    .footer {
+        border-top-left-radius: var(--md-radius-lg);
+        border-top-right-radius: var(--md-radius-lg);
+        padding: 2.5rem 0 1.5rem;
+    }
+    
+    .footer .row > div {
+        margin-bottom: 1.5rem;
+    }
+}

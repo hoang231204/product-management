@@ -1,0 +1,233 @@
+/* =========================================================
+   3. HEADER & NAVIGATION STYLES
+   ========================================================= */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background: rgba(255, 251, 254, 0.88);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(121, 116, 126, 0.15);
+    box-shadow: 0 4px 20px rgba(var(--md-shadow), 0.06);
+    transition: background-color var(--md-transition), box-shadow var(--md-transition);
+}
+
+.header .container {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.header .row {
+    align-items: center;
+}
+
+/* Logo */
+.header .inner-logo a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: var(--md-radius-md);
+    background: var(--md-primary-container);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--md-transition), box-shadow var(--md-transition);
+}
+
+.header .inner-logo a:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: var(--shadow-md);
+}
+
+.header .inner-logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Search Box */
+.inner-search .input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.inner-search .form-control {
+    background: var(--md-surface-container-low);
+    border: 1px solid rgba(121, 116, 126, 0.2);
+    border-radius: var(--md-radius-pill);
+    min-height: 2.75rem;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.95rem;
+    color: var(--md-on-background);
+    transition: all var(--md-transition);
+}
+
+.inner-search .form-control:focus {
+    background: var(--md-surface);
+    border-color: var(--md-primary);
+    box-shadow: 0 0 0 0.25rem rgba(216, 91, 134, 0.18);
+}
+
+.inner-search .btn {
+    border-radius: var(--md-radius-pill);
+    min-height: 2.75rem;
+    padding: 0.5rem 1.25rem;
+}
+
+/* Header Navigation Menu */
+.header .inner-menu > ul,
+.inner-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.header .inner-menu > ul > li,
+.inner-menu ul > li {
+    position: relative;
+}
+
+.header .inner-menu > ul > li > a,
+.header .inner-user a,
+.header .inner-cart a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.95rem;
+    border-radius: var(--md-radius-pill);
+    color: var(--md-on-background);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: transform var(--md-transition), background-color var(--md-transition), color var(--md-transition);
+}
+
+.header .inner-menu > ul > li > a:hover,
+.header .inner-user a:hover,
+.header .inner-cart a:hover {
+    background: rgba(216, 91, 134, 0.12);
+    color: var(--md-primary);
+    transform: translateY(-1px);
+}
+
+.header .inner-menu > ul > li.active > a {
+    background: rgba(216, 91, 134, 0.16);
+    color: var(--md-primary);
+}
+
+.header .inner-menu > ul > li.sub-menu > a::after {
+    content: '▾';
+    margin-left: 0.4rem;
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+/* Submenu Dropdown */
+.inner-menu ul li ul {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    min-width: 14rem;
+    padding: 0.5rem;
+    display: block;
+    background: rgba(255, 251, 254, 0.96);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(121, 116, 126, 0.18);
+    border-radius: var(--md-radius-md);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity var(--md-transition), transform var(--md-transition), visibility var(--md-transition);
+    z-index: 100;
+}
+
+.inner-menu ul li:hover > ul,
+.inner-menu ul li:focus-within > ul {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.inner-menu ul li ul li {
+    width: 100%;
+}
+
+.inner-menu ul li ul li a {
+    display: block;
+    padding: 0.65rem 1rem;
+    border-radius: var(--md-radius-sm);
+    color: var(--md-on-surface-variant);
+    font-size: 0.9rem;
+    transition: background-color var(--md-transition), color var(--md-transition);
+}
+
+.inner-menu ul li ul li a:hover {
+    background: rgba(216, 91, 134, 0.12);
+    color: var(--md-primary);
+}
+
+/* User Profile & Cart */
+.header .inner-user {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.header .inner-cart {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.header .inner-cart a {
+    position: relative;
+    gap: 0.4rem;
+}
+
+.header .inner-cart .badge {
+    min-width: 1.5rem;
+    height: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.45rem;
+    border-radius: var(--md-radius-pill);
+    background: var(--md-primary) !important;
+    color: var(--md-on-primary) !important;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(216, 91, 134, 0.34);
+}
+
+@media (max-width: 991.98px) {
+    .header .row > div {
+        margin-bottom: 0.5rem;
+    }
+    
+    .header .inner-user,
+    .header .inner-cart,
+    .header .inner-menu > ul {
+        justify-content: flex-start;
+    }
+    
+    .inner-menu ul li ul {
+        position: static;
+        min-width: 100%;
+        margin-top: 0.35rem;
+        box-shadow: none;
+        display: none;
+    }
+    
+    .inner-menu ul li:hover > ul {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+    }
+}

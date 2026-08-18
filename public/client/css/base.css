@@ -1,0 +1,153 @@
+/* =========================================================
+   2. GLOBAL BASE STYLES & RESET
+   ========================================================= */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background:
+        radial-gradient(circle at top right, rgba(216, 91, 134, 0.1) 0, transparent 40%),
+        radial-gradient(circle at bottom left, rgba(242, 141, 179, 0.12) 0, transparent 35%),
+        var(--md-background);
+    color: var(--md-on-background);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Ambient glow orb accents */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+}
+
+body::before {
+    width: 25rem;
+    height: 25rem;
+    top: -6rem;
+    right: -6rem;
+    background: rgba(216, 91, 134, 0.18);
+}
+
+body::after {
+    width: 22rem;
+    height: 22rem;
+    left: -7rem;
+    bottom: 2rem;
+    background: rgba(255, 227, 239, 0.92);
+}
+
+a {
+    color: var(--md-primary);
+    text-decoration: none;
+    transition: color var(--md-transition), opacity var(--md-transition);
+}
+
+a:hover {
+    color: var(--md-primary-strong);
+    text-decoration: none;
+}
+
+.container {
+    max-width: 1200px;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+
+/* Page Section Titles */
+.box-head {
+    text-align: center;
+    margin-bottom: 2.25rem;
+    position: relative;
+}
+
+.box-head .inner-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.75rem 1.75rem;
+    border-radius: var(--md-radius-pill);
+    background: var(--md-secondary-container);
+    color: var(--md-on-secondary-container);
+    font-size: clamp(1.4rem, 2vw, 1.85rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(216, 91, 134, 0.16);
+}
+
+.box-head .inner-title::before {
+    content: '';
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: var(--md-primary);
+    box-shadow: 0 0 0 4px rgba(216, 91, 134, 0.22);
+}
+
+/* Micro Utilities */
+.row-gap-4 {
+    row-gap: 1.5rem;
+}
+
+.gap-1 { gap: 0.25rem !important; }
+.gap-2 { gap: 0.5rem !important; }
+.gap-3 { gap: 1rem !important; }
+.gap-4 { gap: 1.5rem !important; }
+
+.object-fit-cover {
+    object-fit: cover !important;
+}
+
+.text-muted {
+    color: var(--md-on-surface-variant) !important;
+}
+
+.small, small {
+    color: var(--md-on-surface-variant);
+}
+
+/* Global FontAwesome Icon Spacing Fix */
+i.fa, i.fas, i.far, i.fal, i.fab, i.fa-solid, i.fa-regular, i.fa-brands, [class^="fa-"], [class*=" fa-"] {
+    margin-right: 0.5rem;
+    display: inline-block;
+}
+
+/* Icons positioned at the right side */
+i.fa-chevron-right, i.fa-arrow-right, i.fa-chevron-down, .icon-right {
+    margin-right: 0 !important;
+    margin-left: 0.5rem !important;
+}
+
+/* Bootstrap 5 Margin Utilities Compatibility Aliases */
+.me-1 { margin-right: 0.25rem !important; }
+.me-2 { margin-right: 0.5rem !important; }
+.me-3 { margin-right: 1rem !important; }
+.me-4 { margin-right: 1.5rem !important; }
+.ms-1 { margin-left: 0.25rem !important; }
+.ms-2 { margin-left: 0.5rem !important; }
+.ms-3 { margin-left: 1rem !important; }
+.ms-4 { margin-left: 1.5rem !important; }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

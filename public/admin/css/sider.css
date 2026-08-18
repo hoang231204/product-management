@@ -1,0 +1,107 @@
+/* =========================================================
+   4. ADMIN SIDEBAR (SIDER) STYLES
+   ========================================================= */
+.sider {
+    width: var(--sider-width);
+    background-color: #0d1322;
+    min-height: calc(100vh - var(--header-height));
+    position: fixed;
+    left: 0;
+    top: var(--header-height);
+    padding: 1.25rem 0;
+    border-right: 1px solid var(--admin-border-solid);
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.25);
+    overflow-y: auto;
+    z-index: 990;
+}
+
+.inner-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Primary Menu Items */
+.inner-menu > ul > li > a {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1.35rem;
+    color: var(--admin-text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.94rem;
+    transition: var(--admin-transition);
+    border-left: 4px solid transparent;
+}
+
+.inner-menu > ul > li > a:hover {
+    background-color: var(--admin-card-bg);
+    color: #ffffff;
+    border-left-color: var(--admin-primary);
+}
+
+.inner-menu li.active > a {
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.18), transparent);
+    color: var(--admin-accent-cyan);
+    border-left-color: var(--admin-accent-cyan);
+    font-weight: 600;
+}
+
+.inner-menu i {
+    width: 1.25rem;
+    text-align: center;
+    font-size: 1rem;
+    color: var(--admin-primary);
+}
+
+.inner-menu li.active i {
+    color: var(--admin-accent-cyan);
+}
+
+/* Submenu (Ẩn mặc định, chỉ hiển thị khi hover vào menu chính) */
+.inner-menu ul li {
+    position: relative;
+}
+
+.inner-menu ul li ul {
+    list-style: none;
+    padding: 0.35rem 0 0.35rem 1.25rem;
+    background-color: #090d17;
+    border-left: 2px solid var(--admin-primary);
+    margin-left: 1.35rem;
+    display: none; /* Ẩn mặc định */
+}
+
+.inner-menu ul li:hover > ul {
+    display: block; /* Hiển thị khi hover vào li */
+    animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.inner-menu ul ul li a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 1rem;
+    color: var(--admin-text-muted);
+    text-decoration: none;
+    font-size: 0.87rem;
+    transition: var(--admin-transition);
+    border-radius: var(--admin-radius-sm);
+}
+
+.inner-menu ul ul li a:hover {
+    color: #ffffff;
+    background-color: var(--admin-card-bg);
+}
+
+@media (max-width: 991.98px) {
+    .sider {
+        display: none;
+    }
+}
