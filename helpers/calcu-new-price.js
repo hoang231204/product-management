@@ -1,3 +1,4 @@
-module.exports.priceNew = (price, discount) => {
-    return (price * (100 - discount) / 100).toFixed(0);
-}
+module.exports.priceNew = (price, discountPercentage) => {
+  const newPrice = price * (1 - discountPercentage / 100);
+  return Math.round(newPrice);
+};
