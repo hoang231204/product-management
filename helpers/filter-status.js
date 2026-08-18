@@ -8,9 +8,10 @@ module.exports = (query, type) => {
         { name: "Đã xác nhận", status: "confirmed", class: "" },
         { name: "Đang giao hàng", status: "shipping", class: "" },
         { name: "Đã giao hàng", status: "delivered", class: "" },
-        { name: "Đã hủy", status: "canceled", class: "" }
+        { name: "Đã hủy", status: "canceled", class: "" },
+        { name: "Nổi bật", status: "featured", class: "" },
     ];
-    const productStatuses = ["", "active", "inactive", "low_stock", "pending"];
+    const productStatuses = ["", "active", "inactive", "low_stock", "pending", "featured"];
     const orderStatuses = ["", "pending", "confirmed", "shipping", "delivered", "canceled"];
     const blogStatuses = ["", "active", "inactive", "pending"];
     const categoryStatuses = ["", "active", "inactive"];
