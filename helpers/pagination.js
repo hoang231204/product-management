@@ -1,17 +1,13 @@
-module.exports = (query,countData)=>{
+module.exports = (query,countData,limit)=>{
     let objectPagination = {
-        currentPage:null,
-        limitPage:null,
-        skipPage:null,
-        totalPage:null,
+        currentPage: 1,
+        limitPage: limit || 8,
+        skipPage: null,
+        totalPage: null,
     }
     if(query.page){
         objectPagination.currentPage = parseInt(query.page);
     }
-    else{
-        objectPagination.currentPage = 1;
-    }
-    objectPagination.limitPage = 8;
     objectPagination.skipPage = (objectPagination.currentPage - 1)*objectPagination.limitPage;
     objectPagination.totalPage = Math.ceil(countData/objectPagination.limitPage);
     return objectPagination;
