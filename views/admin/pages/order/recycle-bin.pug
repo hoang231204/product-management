@@ -1,76 +1,72 @@
 extends ../../layouts/default.pug
 block main
     if(role.permissions.includes('order_view'))
-        h1 Thùng rác
-        .card.mb-3
-            .card-header Thùng rác đơn
-                .card-body
-                    table(class="table table-hover table-sm")
-                        thead
-                            tr.text-center
-                                th STT
-                                th Mã đơn hàng
-                                th Họ tên
-                                th Số điện thoại
-                                th Địa chỉ
-                                th Người xóa
-                                th Trạng thái
-                                th Hoạt động
-                        tbody
-                            each item, index in orders
-                                tr
-                                    td #{index + 1}
-                                    td #{item.order_code}
-                                    td #{item.userInfor.fullname}
-                                    td #{item.userInfor.phone}
-                                    td #{item.userInfor.address}
-                                    td
-                                        p #{item.deletedBy.account_id.fullname}
-                                        p #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm:ss')}
-                                    td
-                                        if item.status == 'pending'
-                                            a(
-                                                href="javascript:;" 
-                                                class="badge badge-success" 
-                                            ) Chờ xử lý
-                                        else if item.status == 'confirmed'
-                                            a(
-                                                href="javascript:;" 
-                                                class="badge badge-danger" 
-                                            ) Đã xác nhận
-                                        else if item.status == 'shipping'
-                                            a(
-                                                href="javascript:;" 
-                                                class="badge badge-warning"
-                                            ) Đang giao
-                                        else if item.status == 'delivered'
-                                            a(
-                                                href="javascript:;" 
-                                                class="badge badge-primary" 
-                                            ) Đã giao
-                                        else 
-                                            a(
-                                                href="javascript:;" 
-                                                class="badge badge-secondary" 
-                                            ) Đã hủy
-                                    td
-                                        .row.justify-content-center
-                                            if(role.permissions.includes('order_edit'))
-                                                button(class="btn btn-success btn-sm" button-restore data-id= item._id)
-                                                    i.fas.fa-undo
-                                            if(role.permissions.includes('order_delete'))
-                                                button(class="btn btn-danger btn-sm ml-1" button-hard-delete data-id=item._id)
-                                                    i.fas.fa-trash
-        form(
-            action="",
-            method="POST"
-            form-hard-delete
-            data-path = `${prefixAdmin}/orders/recycle-bin/hard-delete`
-        )
-        form(
-            action="",
-            method="POST"
-            form-restore 
-            data-path = `${prefixAdmin}/orders/recycle-bin/restore`
-        )
+        .container-fluid
+            .d-flex.align-items-center.justify-content-between.mb-4
+                div
+                    h3.fw-bold.mb-1.text-white Thùng rác đơn hàng
+                    p.text-muted.mb-0 Danh sách đơn hàng đã bị xóa vào thùng rác
+                a(href=`${prefixAdmin}/orders` class="btn btn-secondary")
+                    i.fa-solid.fa-arrow-left.me-2
+                    | Quay lại danh sách
+
+            .card
+                .card-header.d-flex.align-items-center.justify-content-between
+                    span.fw-bold
+                        i.fa-solid.fa-trash-can.me-2.text-primary
+                        | Danh sách đơn hàng đã xóa (#{orders ? orders.length : 0})
+                .card-body.p-0
+                    .table-responsive
+                        table(class="table table-hover align-middle mb-0")
+                            thead
+                                tr.text-center
+                                    th(width="50px") STT
+                                    th Mã đơn hàng
+                                    th Khách hàng
+                                    th SĐT
+                                    th Địa chỉ
+                                    th Người xóa
+                                    th Trạng thái
+                                    th(width="150px") Thao tác
+                            tbody
+                                if orders && orders.length > 0
+                                    each item, index in orders
+                                        tr.text-center
+                                            td.fw-bold #{index + 1}
+                                            td.fw-bold.text-info #{item.order_code}
+                                            td.fw-bold #{item.userInfor ? item.userInfor.fullname : '--'}
+                                            td #{item.userInfor ? item.userInfor.phone : '--'}
+                                            td.text-start.small #{item.userInfor ? item.userInfor.address : '--'}
+                                            td
+                                                if item.deletedBy && item.deletedBy.account_id
+                                                    div.fw-bold.small #{item.deletedBy.account_id.fullname}
+                                                    div.small.text-muted #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm')}
+                                                else
+                                                    span.text-muted --
+                                            td
+                                                if item.status == 'pending'
+                                                    span.badge.badge-warning Chờ xử lý
+                                                else if item.status == 'confirmed'
+                                                    span.badge.badge-info Đã xác nhận
+                                                else if item.status == 'shipping'
+                                                    span.badge.badge-secondary Đang giao
+                                                else if item.status == 'delivered'
+                                                    span.badge.badge-success Đã giao
+                                                else 
+                                                    span.badge.badge-danger Đã hủy
+                                            td
+                                                .d-flex.justify-content-center.gap-1
+                                                    if(role.permissions.includes('order_edit'))
+                                                        button(class="btn btn-success btn-sm" button-restore data-id=item._id title="Khôi phục")
+                                                            i.fa-solid.fa-rotate-left.me-1
+                                                            | Khôi phục
+                                                    if(role.permissions.includes('order_delete'))
+                                                        button(class="btn btn-danger btn-sm" button-hard-delete data-id=item._id title="Xóa vĩnh viễn")
+                                                            i.fa-solid.fa-trash-can
+                                else
+                                    tr
+                                        td(colspan="8" class="text-center text-muted py-4") Thùng rác trống
+
+        form(action="" method="POST" form-hard-delete data-path=`${prefixAdmin}/orders/recycle-bin/hard-delete`)
+        form(action="" method="POST" form-restore data-path=`${prefixAdmin}/orders/recycle-bin/restore`)
         script(src="/admin/js/recycleBin.js") 
