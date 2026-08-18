@@ -2,26 +2,38 @@ extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
 
 block main
-    .post-detail
-        .container.my-5
-            .row
-                .col-12
-                    h1(class="inner-title") #{post.title}
-                    div(class="inner-info my-3")
-                        if (post.category)
-                            span.mr-3 Danh mục: 
-                                a(href=`/blogs/${post.category.slug}`) #{post.category.title}
-                        
-                        span.text-muted Đăng ngày: #{moment(post.createdAt).format("DD/MM/YYYY")}
-                    .inner-thumb.my-4
-                        img(src=post.thumbnail, alt=post.title, class="img-fluid")
+    .blog-detail-page.my-4
+        .container
+            .blog-detail-shell
+                .blog-detail-breadcrumb
+                    a(href="/") Trang chủ
+                    i.fa-solid.fa-angle-right
+                    a(href="/blogs") Blog
+                    i.fa-solid.fa-angle-right
+                    span #{blog.title}
 
-            .row.mt-5
-                .col-12
-                    div(class="inner-content")
-                        .content-body !{post.content}
-            
-            .row.mt-5
-                .col-12
-                    div(class="inner-back")
-                        a(href="/blogs" class="btn btn-outline-secondary") Quay lại danh sách
+                h1.blog-detail-title #{blog.title}
+
+                .blog-detail-meta
+                    if (blog.category)
+                        span.blog-meta-chip
+                            i.fa-solid.fa-folder-open.me-1
+                            | #{blog.category.title}
+                    if (blog.createdAt)
+                        span.blog-meta-chip
+                            i.fa-regular.fa-calendar.me-1
+                            | #{moment ? moment(blog.createdAt).format("DD/MM/YYYY") : blog.createdAt}
+                    span.blog-meta-chip
+                        i.fa-regular.fa-user.me-1
+                        | #{blog.author ? blog.author : 'Admin'}
+
+                if blog.thumbnail
+                    .blog-detail-thumb
+                        img(src=blog.thumbnail, alt=blog.title)
+
+                .blog-detail-content !{blog.content}
+
+                .blog-detail-footer
+                    a(href="/blogs" class="btn btn-outline-primary")
+                        i.fa-solid.fa-arrow-left.me-2
+                        | Quay lại danh sách bài viết

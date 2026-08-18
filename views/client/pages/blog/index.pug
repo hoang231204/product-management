@@ -3,18 +3,40 @@ include ../../mixins/box-head.pug
 include ../../mixins/filter.pug
 include ../../mixins/product-grid.pug
 include ../../mixins/pagination.pug
+
 block main
   +alert-success(3000)
   +alert-error(3000)
-  .container
+
+  .container.my-4
+    section.blog-hero
+      .blog-hero__shape.blog-hero__shape--one
+      .blog-hero__shape.blog-hero__shape--two
+      .row.align-items-center
+        .col-lg-8
+          span.blog-hero__tag Cẩm nang cắm hoa
+          h1.blog-hero__title #{pageTitle}
+          p.blog-hero__desc Chia sẻ kinh nghiệm cắm hoa, ý nghĩa các loại hoa và bí quyết chọn hoa phù hợp cho từng dịp đặc biệt.
+        .col-lg-4.d-none.d-lg-flex.justify-content-end
+          .blog-hero__icon
+            i.fa-solid.fa-feather-pointed
+
+  .container.my-4
     .row
-      .col-3
-        +category-filter(categories)
-  .container.my-3
-    .row
-      .col-12
-        .box-head
-          +boxhead(pageTitle)
-    .row
-      +blog-grid(blogs)
-    +pagination(objectPagination)
+      .col-lg-3.mb-4
+        .blog-filter-card
+          .blog-filter-card__title
+            i.fa-solid.fa-layer-group.me-2
+            | Danh mục bài viết
+          +category-filter(categories)
+
+      .col-lg-9
+        .blog-content-card
+          .box-head
+            +boxhead("Bài viết mới nhất")
+
+          .row
+            +blog-grid(blogs)
+
+          .blog-pagination-wrap
+            +pagination(objectPagination)
