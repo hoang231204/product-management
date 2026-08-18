@@ -27,7 +27,7 @@ block main
                             label Danh mục cha
                             .action-box
                                 select(name="parent_id" class="form-control")
-                                    option(value="") -- Chọn danh mục cha --
+                                    option(value= parentId)= parentTitle
                                     if (categoryTree)
                                         +select-tree(categoryTree)
                     .col-md-6

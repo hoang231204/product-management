@@ -1,53 +1,59 @@
 extends ../../layouts/default.pug
 
 block main 
-  .container-fluid.mt-4
-    h1 Thùng rác danh mục
-    
-    .card.mb-3
-      .card-header Danh sách danh mục đã xóa
-      .card-body
-        table(class="table table-hover table-sm")
-          thead
-            tr.text-center
-              th STT
-              th Hình ảnh
-              th Tiêu đề
-              th Người xóa
-              th Thời gian xóa
-              th Hoạt động
-          tbody
-            if categories.length > 0
-                each item, index in categories
-                    tr.text-center
-                      td #{index + 1}
-                      td
-                          img(src=item.thumbnail, alt=item.title, width="100px", height="auto")
-                      td #{item.title}
-                      td #{item.deletedBy.account_id.fullName}
-                      td #{moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm')}
-                      td
-                        .row.justify-content-center
-                          button(class="btn btn-success btn-sm" button-restore data-id=item.id)
-                           i.fa.fa-undo
-                          button(class="btn btn-danger btn-sm ml-1" button-hard-delete data-id=item.id)
-                            i.fa.fa-trash
-            else 
-              tr 
-                td(colspan="6" class="text-center") Thùng rác trống
+  .container-fluid
+    .d-flex.align-items-center.justify-content-between.mb-4
+        div
+            h3.fw-bold.mb-1.text-white Thùng rác danh mục sản phẩm
+            p.text-muted.mb-0 Danh sách danh mục sản phẩm đã bị xóa vào thùng rác
+        a(href=`${prefixAdmin}/product-categories` class="btn btn-secondary")
+            i.fa-solid.fa-arrow-left.me-2
+            | Quay lại danh sách
 
-    //- Form xử lý logic JS
-    form(
-      action=""
-      method="POST"
-      form-hard-delete
-      data-path=`${prefixAdmin}/product-categories/recycle-bin/hard-delete`
-    )
-    form(
-      action=""
-      method="POST"
-      form-restore 
-      data-path=`${prefixAdmin}/product-categories/recycle-bin/restore`
-    )
-    
+    .card
+        .card-header.d-flex.align-items-center.justify-content-between
+            span.fw-bold
+                i.fa-solid.fa-trash-can.me-2.text-primary
+                | Danh sách danh mục đã xóa (#{categories ? categories.length : 0})
+        .card-body.p-0
+            .table-responsive
+                table(class="table table-hover align-middle mb-0")
+                    thead
+                        tr.text-center
+                            th(width="60px") STT
+                            th(width="90px") Hình ảnh
+                            th.text-start Tiêu đề
+                            th Người xóa
+                            th Thời gian xóa
+                            th(width="150px") Thao tác
+                    tbody
+                        if categories && categories.length > 0
+                            each item, index in categories
+                                tr.text-center
+                                    td.fw-bold #{index + 1}
+                                    td
+                                        if item.thumbnail
+                                            img(src=item.thumbnail, alt=item.title, width="50", height="50", class="rounded object-fit-cover")
+                                        else
+                                            span.text-muted.small Không có ảnh
+                                    td.text-start.fw-bold #{item.title}
+                                    td
+                                        if item.deletedBy && item.deletedBy.account_id
+                                            div.fw-bold.small #{item.deletedBy.account_id.fullname || item.deletedBy.account_id.fullName}
+                                        else
+                                            span.text-muted --
+                                    td.small.text-muted #{item.deletedBy ? moment(item.deletedBy.deletedAt).format('DD/MM/YYYY HH:mm') : '--'}
+                                    td
+                                        .d-flex.justify-content-center.gap-1
+                                            button(class="btn btn-success btn-sm" button-restore data-id=item.id title="Khôi phục")
+                                                i.fa-solid.fa-rotate-left.me-1
+                                                | Khôi phục
+                                            button(class="btn btn-danger btn-sm" button-hard-delete data-id=item.id title="Xóa vĩnh viễn")
+                                                i.fa-solid.fa-trash-can
+                        else 
+                            tr 
+                                td(colspan="6" class="text-center text-muted py-4") Thùng rác trống
+
+    form(action="" method="POST" form-hard-delete data-path=`${prefixAdmin}/product-categories/recycle-bin/hard-delete`)
+    form(action="" method="POST" form-restore data-path=`${prefixAdmin}/product-categories/recycle-bin/restore`)
     script(src="/admin/js/recycleBin.js")
