@@ -5,57 +5,72 @@ include ../../mixins/pagination.pug
 include ../../mixins/change-multi.pug
 include ../../mixins/show-alert.pug
 include ../../mixins/sort.pug
+
 block main
     if(role.permissions.includes("product_view"))
         +alert-success(5000)
-        .container.my-3
-            .card.mb-3
-                h3.text-center Quản lý sản phẩm
-                .card-header Bộ lọc và Tìm kiếm
-                    .card-body
-                        .row.align-items-center.mb-3
-                            .col-lg-8
-                                +boxFilter(filterStatus)
-                            .col-lg-4
-                                +boxSearch(keyword)
-                .card-header Sắp xếp
-                    .card-body
-                        .row.align-items-center.mb-3.action-box
-                            .col-lg-4
-                                .d-flex.align-items-center
-                                    div(style="flex-grow: 1")
-                                        +boxSort('product')
-                .card-header Thay đổi
-                    .card-body
-                        .row.align-items-center.action-box.mb-3
-                            .col-lg-8
-                                if(role.permissions.includes("product_edit"))
-                                    +boxChange(`${prefixAdmin}/products/change-multi?_method=PATCH`, 'product')
-                            .col-lg-3.text-lg-right
-                                if(role.permissions.includes("product_create"))
-                                    a(href=`${prefixAdmin}/products/create` class="btn btn-success")
-                                        i.fa.fa-plus.mr-2
-                                        | Thêm mới
-            .card.mb-3
-                .card-header Danh sách sản phẩm
-                    .card-body
-                        .table-responsive
-                            table(class="table table-hover table-sm" check-box-multi)
-                                thead
-                                    tr.text-center
-                                        th
-                                            input(type="checkbox" name="checkAll")
-                                        th STT
-                                        th Hình ảnh
-                                        th Tiêu đề
-                                        th Danh mục
-                                        th Giá
-                                        th Vị trí
-                                        th Trạng thái
-                                        th Người tạo
-                                        th Người sửa
-                                        th Hành động
-                                tbody
+        .container-fluid
+            // Page Header Title
+            .d-flex.align-items-center.justify-content-between.mb-4
+                div
+                    h3.fw-bold.mb-1.text-white Quản lý sản phẩm
+                    p.text-muted.mb-0 Danh sách và công cụ quản lý toàn bộ sản phẩm cửa hàng
+                if(role.permissions.includes("product_create"))
+                    a(href=`${prefixAdmin}/products/create` class="btn btn-primary")
+                        i.fa-solid.fa-plus.me-2
+                        | Thêm mới sản phẩm
+
+            // Single Consolidated Control Toolbar Card
+            .card.mb-4
+                .card-header.d-flex.align-items-center.justify-content-between
+                    span.fw-bold
+                        i.fa-solid.fa-sliders.me-2.text-primary
+                        | Bộ lọc & Thao tác
+                .card-body
+                    .row.g-3.align-items-end.mb-3
+                        .col-lg-8
+                            label.form-label.small.text-muted.fw-bold Trạng thái
+                            +boxFilter(filterStatus)
+                        .col-lg-4
+                            label.form-label.small.text-muted.fw-bold Tìm kiếm
+                            +boxSearch(keyword)
+                        
+                    
+                    if(role.permissions.includes("product_edit"))
+                        hr.my-3.border-secondary.opacity-25
+                        .row.align-items-center
+                            .col-lg-7
+                                label.form-label.small.text-muted.fw-bold Thay đổi
+                                +boxChange(`${prefixAdmin}/products/change-multi?_method=PATCH`, 'product')
+                            .col-lg-3
+                                label.form-label.small.text-muted.fw-bold Sắp xếp
+                                +boxSort('product')
+
+            // Data Table Card
+            .card
+                .card-header.d-flex.align-items-center.justify-content-between
+                    span.fw-bold
+                        i.fa-solid.fa-box-archive.me-2.text-primary
+                        | Danh sách sản phẩm (#{products ? products.length : 0})
+                .card-body.p-0
+                    .table-responsive
+                        table(class="table table-hover align-middle mb-0" check-box-multi)
+                            thead
+                                tr.text-center
+                                    th(width="40px")
+                                        input(type="checkbox" name="checkAll" class="form-check-input")
+                                    th(width="60px") STT
+                                    th(width="100px") Hình ảnh
+                                    th Tiêu đề
+                                    th Danh mục
+                                    th Giá
+                                    th(width="90px") Vị trí
+                                    th Trạng thái
+                                    th Người tạo
+                                    th Người sửa
+                                    th(width="140px") Hành động
+                            tbody
+                                if (products && products.length > 0)
                                     each item, index in products
                                         tr.text-center
                                             td
@@ -63,92 +78,64 @@ block main
                                                     type="checkbox"
                                                     name="id"
                                                     value=item.id
-                                                    )
-                                            td #{index+1+objectPagination.skipPage}
+                                                    class="form-check-input"
+                                                )
+                                            td.fw-bold #{index+1+objectPagination.skipPage}
                                             td
-                                                img( src=item.thumbnail, alt=item.title,width="100px",height="auto")
-                                            td.font-weight-bold #{item.title}
-                                            td #{item.category_id ? item.category_id.title : 'Chưa có danh mục'}
-                                            td #{item.price}$
+                                                img(src=item.thumbnail, alt=item.title, width="60" height="60" class="rounded object-fit-cover")
+                                                if(item.featured=='1')
+                                                    span.badge.bg-success.position-absolute.top-0.start-100.translate-middle.p-1.rounded-circle
+                                                        span.visually-hidden *
+                                            td.text-start.fw-bold #{item.title}
+                                            td #{item.category_id ? item.category_id.title : 'Chưa chọn'}
+                                            td.text-success.fw-bold #{item.priceNew ? item.priceNew.toLocaleString('vi-VN') : 0} VND
                                             td
                                                 input(
                                                     type="number"
                                                     value=item.position 
-                                                    style="width:50px"
+                                                    class="form-control form-control-sm text-center"
+                                                    style="width: 60px; margin: 0 auto;"
                                                     min="1"
                                                     name="position"
                                                 )
                                             td
                                                 if(role.permissions.includes("product_edit"))
                                                     if item.status == 'active'
-                                                        a(
-                                                            href="javascript:;" 
-                                                            class="badge badge-success" 
-                                                            button-change-status 
-                                                            data-id=item._id  
-                                                            data-status=item.status
-                                                            data-next-status="inactive"
-                                                            ) Hoạt động
+                                                        a(href="javascript:;" class="badge badge-success" button-change-status data-id=item._id data-status=item.status data-next-status="inactive") Hoạt động
                                                     else if item.status == 'inactive'
-                                                        a(
-                                                            href="javascript:;" 
-                                                            class="badge badge-danger" 
-                                                            button-change-status 
-                                                            data-id=item._id  
-                                                            data-status=item.status
-                                                            data-next-status="active"
-                                                            ) Không hoạt động
+                                                        a(href="javascript:;" class="badge badge-danger" button-change-status data-id=item._id data-status=item.status data-next-status="active") Không hoạt động
                                                     else if item.status == 'pending'
-                                                        a(
-                                                            href="javascript:;" 
-                                                            class="badge badge-warning" 
-                                                            button-change-status 
-                                                            data-id=item._id  
-                                                            data-status=item.status
-                                                            data-next-status="active"
-                                                            ) Đang chờ
+                                                        a(href="javascript:;" class="badge badge-warning" button-change-status data-id=item._id data-status=item.status data-next-status="active") Đang chờ
                                                     else
-                                                        a(
-                                                            href="javascript:;" 
-                                                            class="badge badge-secondary" 
-                                                            button-change-status 
-                                                            data-id=item._id  
-                                                            data-status=item.status
-                                                            data-next-status="active"
-                                                            ) Sắp hết hàng
+                                                        a(href="javascript:;" class="badge badge-secondary" button-change-status data-id=item._id data-status=item.status data-next-status="active") Sắp hết hàng
                                             td
-                                                p #{item.createdBy.account_id.fullname}
-                                                p #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                                                if item.createdBy && item.createdBy.account_id
+                                                    div.fw-bold.small #{item.createdBy.account_id.fullname}
+                                                    div.small.text-muted #{moment(item.createdBy.createdAt).format('DD/MM/YYYY HH:mm')}
+                                                else
+                                                    span.text-muted --
                                             td
                                                 if item.updatedBy && item.updatedBy.length > 0
-                                                    p #{item.updatedBy[item.updatedBy.length - 1].account_id.fullname}
-                                                    p #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                                                    div.fw-bold.small #{item.updatedBy[item.updatedBy.length - 1].account_id ? item.updatedBy[item.updatedBy.length - 1].account_id.fullname : '--'}
+                                                    div.small.text-muted #{moment(item.updatedBy[item.updatedBy.length - 1].updatedAt).format('DD/MM/YYYY HH:mm')}
                                                 else
-                                                    p Chưa có cập nhật
+                                                    span.text-muted Chưa có
                                             td
-                                                .row.justify-content-center.gap-2
-                                                    a(href=`${prefixAdmin}/products/details/${item._id}` class="btn btn-info btn-sm")
-                                                        i.fas.fa-eye
-                                                    <br>
+                                                .d-flex.justify-content-center.gap-1
+                                                    a(href=`${prefixAdmin}/products/details/${item._id}` class="btn btn-info btn-sm" title="Xem chi tiết")
+                                                        i.fa-solid.fa-eye
                                                     if(role.permissions.includes("product_edit"))
-                                                        a(href=`${prefixAdmin}/products/edit/${item._id}` class="btn btn-warning btn-sm")
-                                                            i.fas.fa-edit
-                                                    <br>    
+                                                        a(href=`${prefixAdmin}/products/edit/${item._id}` class="btn btn-warning btn-sm" title="Chỉnh sửa")
+                                                            i.fa-solid.fa-pen-to-square
                                                     if(role.permissions.includes("product_delete"))
-                                                        button(class="btn btn-danger btn-sm" button-delete data-id=item._id)
-                                                            i.fas.fa-trash
+                                                        button(class="btn btn-danger btn-sm" button-delete data-id=item._id title="Xóa")
+                                                            i.fa-solid.fa-trash-can
+                                else
+                                    tr
+                                        td(colspan="11" class="text-center text-muted py-4") Không có sản phẩm nào
+                    .p-3
                         +pagination(objectPagination)
-    form(
-        action=""
-        method="POST"
-        form-change-status
-        data-path=`${prefixAdmin}/products/change-status`
-        ) 
-    form(
-        action=""
-        method="POST"
-        form-delete
-        data-path=`${prefixAdmin}/products/delete`
-         )
-    
-    script(src="/admin/js/change-multi.js") 
+        
+        form(action="" method="POST" form-change-status data-path=`${prefixAdmin}/products/change-status`) 
+        form(action="" method="POST" form-delete data-path=`${prefixAdmin}/products/delete`)
+        script(src="/admin/js/change-multi.js") 

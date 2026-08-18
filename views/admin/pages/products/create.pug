@@ -4,75 +4,88 @@ include ../../mixins/select-tree.pug
 
 block main
     +alert-error(5000)
-    .container.my-3
-        .card.form-card
-            h3(class="mb-4 text-center") Thêm mới sản phẩm
-            form(action=`${prefixAdmin}/products/create` id="form-create-product" method="POST" enctype="multipart/form-data" form-upload)
-                .row
-                    .col-12
-                        .form-group
-                            label Tiêu đề
-                            input(type="text" class="form-control" name="title" required)
-                .row
-                    .col-md-6
-                        .form-group
-                            label Danh mục
-                            .action-box
-                                select(name="category_id" class="form-control")
+    .container-fluid
+        .d-flex.align-items-center.justify-content-between.mb-4
+            div
+                h3.fw-bold.mb-1.text-white Thêm mới sản phẩm
+                p.text-muted.mb-0 Nhập đầy đủ thông tin để tạo sản phẩm mới vào hệ thống
+            a(href=`${prefixAdmin}/products` class="btn btn-secondary")
+                i.fa-solid.fa-arrow-left.me-2
+                | Quay lại danh sách
+
+        .card
+            .card-body
+                form(action=`${prefixAdmin}/products/create` id="form-create-product" method="POST" enctype="multipart/form-data" form-upload)
+                    .row.g-4
+                        // Left Main Content (7/12)
+                        .col-lg-7
+                            .form-group.mb-3
+                                label.form-label.fw-bold Tiêu đề sản phẩm <span class="text-danger">*</span>
+                                input(type="text" class="form-control" name="title" placeholder="Nhập tên sản phẩm..." required)
+                            
+                            .form-group.mb-3
+                                label.form-label.fw-bold Danh mục sản phẩm
+                                select(name="category_id" class="form-select form-control")
                                     option(disabled selected) -- Chọn danh mục --
                                     if (categoryTree)
                                         +select-tree(categoryTree)
-                    .col-md-6
-                        .form-group
-                            label Vị trí
-                            .action-box
-                                input(type="number" class="form-control" name="position" placeholder="Tự động tăng" min="1")
-                .row
-                    .col-md-4
-                        .form-group
-                            label Giá
-                            input(type="number" class="form-control" name="price" value="0" min="0")
-                    .col-md-4
-                        .form-group
-                            label % Giảm giá
-                            input(type="number" class="form-control" name="discountPercentage" value="0" min="0")
-                    .col-md-4
-                        .form-group
-                            label Số lượng
-                            input(type="number" class="form-control" name="stock" value="0" min="0")
-                .row
-                    .col-12
-                        .form-group
-                            label Mô tả
-                            textarea(class="form-control textarea-mce" name="description" rows="5")
-                .row
-                    .col-md-6
-                        .form-group(upload-image)
-                            label Ảnh sản phẩm
-                            input(type="file" class="form-control-file" name="thumbnail" accept="image/*" upload-image-input)
-                            .box-image
-                                img(src="" upload-image-preview class="image-preview")
-                                button(type="button" class="btn-remove-image") ×
-                    
-                    .col-md-6
-                        .row
-                            .col-12
-                                label Trạng thái
-                                .d-flex.gap-3
-                                    .form-check.form-check-inline
-                                        input(type="radio" class="form-check-input" id="statusActive" name="status" value="active" checked)
-                                        label(for="statusActive" class="form-check-label") Hoạt động
-                                    .form-check.form-check-inline
-                                        input(type="radio" class="form-check-input" id="statusInActive" name="status" value="inactive")
-                                        label(for="statusInActive" class="form-check-label") Dừng hoạt động
-                            .col-12.mt-3
-                                label Nổi bật
-                                .d-flex.gap-3
-                                    .form-check.form-check-inline
-                                        input(type="radio" class="form-check-input" id="featured" name="featured" value="1")
-                                        label(for="featured" class="form-check-label") Có
-                                    .form-check.form-check-inline
-                                        input(type="radio" class="form-check-input" id="notFeatured" name="featured" value="0" checked)
-                                        label(for="notFeatured" class="form-check-label") Không
-                .text-right.mt-4
-                    button(type="submit" class="btn btn-primary px-5") Tạo mới
+
+                            .form-group.mb-3
+                                label.form-label.fw-bold Mô tả chi tiết
+                                textarea(class="form-control textarea-mce" name="description" rows="8" placeholder="Nhập mô tả chi tiết sản phẩm...")
+
+                        // Right Options & Media (5/12)
+                        .col-lg-5
+                            .card.bg-dark.border-secondary.p-3.mb-3
+                                h6.fw-bold.mb-3 Giá & Kho hàng
+                                .row.g-3
+                                    .col-md-6
+                                        .form-group
+                                            label.form-label Giá bán (VND)
+                                            input(type="number" class="form-control" name="price" value="0" min="0")
+                                    .col-md-6
+                                        .form-group
+                                            label.form-label % Giảm giá
+                                            input(type="number" class="form-control" name="discountPercentage" value="0" min="0" max="100")
+                                    .col-md-6
+                                        .form-group
+                                            label.form-label Số lượng tồn kho
+                                            input(type="number" class="form-control" name="stock" value="0" min="0")
+                                    .col-md-6
+                                        .form-group
+                                            label.form-label Vị trí hiển thị
+                                            input(type="number" class="form-control" name="position" placeholder="Tự động" min="1")
+
+                            .card.bg-dark.border-secondary.p-3.mb-3
+                                h6.fw-bold.mb-3 Hình ảnh & Trạng thái
+                                .form-group.mb-3(upload-image)
+                                    label.form-label Ảnh đại diện sản phẩm
+                                    input(type="file" class="form-control" name="thumbnail" accept="image/*" upload-image-input)
+                                    .box-image.mt-2
+                                        img(src="" upload-image-preview class="image-preview")
+                                        button(type="button" class="btn-remove-image") ×
+
+                                .row.g-3
+                                    .col-6
+                                        label.form-label.d-block Trạng thái
+                                        .form-check.form-check-inline
+                                            input(type="radio" class="form-check-input" id="statusActive" name="status" value="active" checked)
+                                            label(for="statusActive" class="form-check-label") Hoạt động
+                                        .form-check.form-check-inline
+                                            input(type="radio" class="form-check-input" id="statusInActive" name="status" value="inactive")
+                                            label(for="statusInActive" class="form-check-label") Dừng
+                                    .col-6
+                                        label.form-label.d-block Nổi bật
+                                        .form-check.form-check-inline
+                                            input(type="radio" class="form-check-input" id="featured1" name="featured" value="1")
+                                            label(for="featured1" class="form-check-label") Có
+                                        .form-check.form-check-inline
+                                            input(type="radio" class="form-check-input" id="featured0" name="featured" value="0" checked)
+                                            label(for="featured0" class="form-check-label") Không
+
+                    hr.my-4.border-secondary.opacity-25
+                    .d-flex.justify-content-end.gap-2
+                        a(href=`${prefixAdmin}/products` class="btn btn-secondary px-4") Hủy bỏ
+                        button(type="submit" class="btn btn-primary px-5")
+                            i.fa-solid.fa-check.me-2
+                            | Tạo mới sản phẩm
