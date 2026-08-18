@@ -11,7 +11,7 @@ block main
                 h2(class="text-success mb-3") Xác thực OTP
                 p(class="text-muted mb-4") Mã xác thực đã được gửi đến email của bạn. Vui lòng kiểm tra và nhập mã vào ô bên dưới.
                 
-                form(action="/user/password/otp" method="POST")
+                form(action="/users/password/otp" method="POST")
                     div(class="mb-3")
                         label(for="email" class="form-label fw-bold") Địa chỉ Email
                         input(
@@ -34,4 +34,4 @@ block main
                         )
                     button(type="submit" class="btn btn-success w-100 mb-3") Xác nhận
             div(class="text-center mt-3")
-                a(href="/user/password/forgot" class="text-secondary text-decoration-none small") Quay lại trang gửi mã
+                a(href="/users/password/forgot" class="text-secondary text-decoration-none small") Quay lại trang gửi mã

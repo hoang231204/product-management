@@ -11,7 +11,7 @@ block main
                 h2(class="text-success mb-3") Đổi email tài khoản
                 p(class="text-muted mb-4") Vui lòng nhập email mới của bạn để hệ thống gửi mã OTP xác nhận.
                 
-                form(action="/user/change-email" method="POST")
+                form(action="/users/change-email" method="POST")
                     div(class="mb-4")
                         label(for="newEmail" class="form-label fw-bold") Địa chỉ Email mới
                         input(
@@ -25,4 +25,4 @@ block main
 
                     button(type="submit" class="btn btn-success w-100 mb-3") Gửi
                 div(class="text-center mt-3")
-                    a(href="/user/profile" class="text-secondary text-decoration-none small") Quay lại trang Thông tin cá nhân
+                    a(href="/users/profile" class="text-secondary text-decoration-none small") Quay lại trang Thông tin cá nhân

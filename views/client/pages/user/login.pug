@@ -9,7 +9,7 @@ block main
             .col-8
                 h2(class="text-success mb-4") Đăng nhập tài khoản
                 
-                form(action="/user/login" method="POST")
+                form(action="/users/login" method="POST")
                     div(class="mb-3")
                         label Email
                         input(type="email" name="email" class="form-control" required)
@@ -18,7 +18,7 @@ block main
                         label Mật khẩu
                         input(type="password" name="password" class="form-control" required)
                     div(class="text-end mb-4")
-                        a(href="/user/password/forgot" class="text-blue text-decoration-none small") Quên mật khẩu?
+                        a(href="/users/password/forgot" class="text-blue text-decoration-none small") Quên mật khẩu?
 
                     button(type="submit" class="btn btn-success") Đăng nhập
-                a(href="/user/register" class="btn btn-link") Chưa có tài khoản? Đăng ký ngay
+                a(href="/users/register" class="btn btn-link") Chưa có tài khoản? Đăng ký ngay
