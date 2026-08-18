@@ -4,6 +4,7 @@ const filter = require("../../helpers/filter-status")
 const search = require("../../helpers/search")  
 const pagination = require("../../helpers/pagination") 
 const systemConfig = require("../../config/system")
+const calcuNewPrice = require("../../helpers/calcu-new-price")
 const tree = require("../../helpers/create-tree")
 
 //DANH SÁCH SẢN PHẨM
@@ -17,8 +18,11 @@ module.exports.index = async (req, res) => {
     const regex = search(req.query);
     let find = {};
     find.deleted = false;
-    if (req.query.status) {
+    if (req.query.status && req.query.status !== "featured") {
         find.status = req.query.status;
+    }
+    else if (req.query.status === "featured") {
+        find.featured = "1";
     }
     if (req.query.keyword) {
         find.title = regex;
@@ -42,6 +46,9 @@ module.exports.index = async (req, res) => {
             .populate("createdBy.account_id","fullname")
             .populate("updatedBy.account_id","fullname")
             .lean()
+        products.forEach(item => {
+            item.priceNew = calcuNewPrice.priceNew(item.price, item.discountPercentage);
+        })
         res.render('admin/pages/products/index', {
             pageTitle: "Danh sách sản phẩm",
             products: products,
@@ -273,7 +280,7 @@ module.exports.createPost = async (req, res)=>{
 //GET EDIT
 module.exports.edit= async (req,res)=>{
     try {
-        const categories = await ProductCategory.find({deleted: false},{status: "active"});
+        const categories = await ProductCategory.find({status: "active", deleted: false});
         const categoryTree = tree(categories);
         const product = await Product.findById(req.params.id).populate("category_id");
         const categoryId = product.category_id ? product.category_id._id : null;
