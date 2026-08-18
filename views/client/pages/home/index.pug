@@ -1,18 +1,48 @@
 extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
 include ../../mixins/product-grid.pug
+
 block main 
-    .container.my-3
-        .row
-        .col-12
-            .box-head
-            +boxhead("Danh sách sản phẩm nổi bật")
+    // Hero Banner Section
+    .container.my-4
+        section.hero-flower
+            .row.align-items-center
+                .col-lg-7
+                    span.hero-flower__tag Bộ sưu tập hoa 2026
+                    h1.hero-flower__title Hoa tươi mỗi ngày, gửi trọn yêu thương
+                    p.hero-flower__desc Từ hoa sinh nhật, hoa khai trương đến hoa cưới, mỗi bó hoa đều được tuyển chọn kỹ và giao nhanh trong ngày.
+                    .hero-flower__actions
+                        a.btn.btn-light.btn-lg(href="/products")
+                            i.fa-solid.fa-seedling.me-2
+                            | Xem bộ sưu tập hoa
+                        a.btn.btn-outline-light.btn-lg(href="/contact")
+                            i.fa-solid.fa-phone.me-2
+                            | Đặt hoa theo yêu cầu
+                    .hero-flower__benefits
+                        span
+                            i.fa-solid.fa-truck-fast.me-1
+                            | Giao nhanh 2 giờ
+                        span
+                            i.fa-solid.fa-certificate.me-1
+                            | Cam kết hoa tươi mới
+                        span
+                            i.fa-solid.fa-gift.me-1
+                            | Thiệp và gói quà miễn phí
+                .col-lg-5.d-none.d-lg-flex.justify-content-center
+                    .hero-flower__visual
+                        img.hero-flower__image(src="https://cellphones.com.vn/sforum/wp-content/uploads/2024/01/hinh-nen-hoa-hong-6.jpg")
+                        span.hero-flower__badge Fresh Bloom
+
+    // Featured Products
+    .container.my-5
+        .box-head
+            +boxhead("Mẫu hoa nổi bật")
         .row
             +product-grid(productsFeatured)
-    .container.my-3
-        .row
-        .col-12
-            .box-head
-            +boxhead("Danh sách sản phẩm mới nhất")
+
+    // Latest Products
+    .container.my-5
+        .box-head
+            +boxhead("Mẫu hoa mới về")
         .row
             +product-grid(latestProducts)
