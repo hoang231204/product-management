@@ -1,8 +1,9 @@
 extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
 
 block main
   .container.my-5
-    h2(class="text-success mb-4") Giỏ hàng
+    +boxhead("Đặt hàng")
 
     if cartDetail && cartDetail.products.length > 0
       table(class="table table-bordered text-center align-middle")
@@ -21,12 +22,12 @@ block main
                 td
                     img(src=item.product_id.thumbnail, alt=item.product_id.title, width="80px")
                 td(class="text-start") #{item.product_id.title}
-                td #{item.product_id.priceNew}$
+                td #{item.product_id.priceNew.toLocaleString('vi-VN')} VND
                 td #{item.quantity}
-                td #{item.product_id.priceNew * item.quantity}$
+                td #{item.product_id.priceNew * item.quantity.toLocaleString('vi-VN')} VND
       .row 
           .col-md-8.offset-md-8.text-end
-            h3 Tổng đơn hàng: #{cartDetail.totalPrice}$
+            h3 Tổng tiền: #{cartDetail.totalPrice.toLocaleString('vi-VN')} VND
       .row
         .col-6
           div(class="card p-4 shadow-sm")
@@ -38,6 +39,7 @@ block main
                   id="fullname"
                   name="fullname"
                   class="form-control"
+                  placeholder="Nhập họ tên của bạn"
                   required
                 )
               div(class="mb-3")
@@ -47,6 +49,7 @@ block main
                   id="phone"
                   name="phone"
                   class="form-control"
+                  placeholder="Nhập số điện thoại của bạn"
                   required
                 )
               div(class="mb-4")
@@ -56,6 +59,7 @@ block main
                   id="address"
                   name="address"
                   class="form-control"
+                  placeholder="Nhập địa chỉ của bạn"
                   required
                 )
               button(type="submit" class="btn btn-success w-100 btn-lg text-uppercase") ĐẶT HÀNG
