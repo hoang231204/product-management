@@ -1,44 +1,102 @@
-const Account = require('../../models/account-model');
-const systemConfig = require('../../config/system')
-const md5 = require('md5');
-// GET /admin/login
-module.exports.login = (req,res)=>{
-    if(req.cookies.token){
-        return res.redirect(`${systemConfig.prefixAdmin}/dashboard`);
-    }
-    res.render("admin/pages/auth/login",{
-        pageTitle: "Đăng nhập",
+const Account = require('../../models/account-model')
+const Session = require('../../models/session-model')
+const system = require('../../config/system')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const crypto = require('crypto')
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET
+const ACCESS_TOKEN_TTL = '15m'
+const REFRESH_TOKEN_TTL = '7d'
+//GET /auth/login
+module.exports.login = (req, res) => {
+    res.render('admin/pages/auth/login', {
+        pageTitle: 'Đăng nhập'
     })
 }
-//POST /admin/login
-module.exports.loginPost = async (req,res)=>{
+//POST /auth/login
+module.exports.loginPost = async (req, res) => {
     try{
-        const email = req.body.email;
-        const password = md5(req.body.password);
-        const account = await Account.findOne({email: email, deleted: false});
+        const { email, password } = req.body
+        //KIỂM TRA TỒN TẠI
+        const account = await Account.findOne({ email: email })
         if(!account){
-            req.flash("error", "Tài khoản không tồn tại");
-            return res.redirect(`${systemConfig.prefixAdmin}/auth/login`);
+            req.flash('error', 'Email hoặc mật khẩu không đúng')
+            return res.redirect(`${system.prefixAdmin}/auth/login`)
         }
-        if(account.password !== password){
-            req.flash("error", "Mật khẩu không đúng");
-            return res.redirect(`${systemConfig.prefixAdmin}/auth/login`);
+        //KIỂM TRA MẬT KHẨU
+        const isMatch = await bcrypt.compare(password, account.password)
+        if(!isMatch){
+            req.flash('error', 'Email hoặc mật khẩu không đúng')
+            return res.redirect(`${system.prefixAdmin}/auth/login`)
         }
-        if(account.status === "inactive"){
-            req.flash("error", "Tài khoản đã bị khóa");
-            return res.redirect(`${systemConfig.prefixAdmin}/auth/login`);
-        }
-        res.cookie("token",account.token);
-        req.flash("success", "Đăng nhập thành công");
-        res.redirect(`${systemConfig.prefixAdmin}/dashboard`);
-    } catch (error) {
-        req.flash("error", "Đã xảy ra lỗi khi đăng nhập");
-        res.redirect(`${systemConfig.prefixAdmin}/auth/login`);
+        //TẠO TOKEN
+        const accessToken = jwt.sign({ accountId: account._id }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_TTL })
+        const refreshToken = crypto.randomBytes(64).toString('hex')
+        //LƯU TOKEN VÀO DB
+        const session = new Session({
+            userId: account._id,
+            token: refreshToken,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        })
+        await session.save()
+        //RETURN KẾT QUẢ
+        res.cookie('token', accessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 })
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 })
+        req.flash('success', 'Đăng nhập thành công')
+        return res.redirect(`${system.prefixAdmin}/dashboard`)
+    }
+    catch(error){
+        console.error(error)
+        return res.redirect(`${system.prefixAdmin}/auth/login`)
     }
 }
-//GET /admin/logout
-module.exports.logout = (req,res)=>{
-    res.clearCookie("token");
-    req.flash("success", "Đăng xuất thành công");
-    res.redirect(`${systemConfig.prefixAdmin}/auth/login`);
+//GET /auth/refresh-token
+module.exports.refreshToken = async (req, res) => {
+    const oldRefreshToken = req.cookies.refreshToken;
+    if (!oldRefreshToken) return res.redirect(`${system.prefixAdmin}/auth/login`);
+    try {
+        //Tìm token trong DB
+        const tokenRecord = await Session.findOne({ token: oldRefreshToken });
+        if (!tokenRecord) {
+            req.flash('error', 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            return res.redirect(`${system.prefixAdmin}/auth/login`);
+        }
+        //Xoay vòng (Rotation): Xóa cái cũ, tạo cái mới
+        await Session.deleteOne({ token: oldRefreshToken });
+        const newAccessToken = jwt.sign({ accountId: tokenRecord.userId }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_TTL });
+        const newRefreshToken = crypto.randomBytes(64).toString('hex');
+        // Lưu mới vào DB
+        await Session.create({
+            userId: tokenRecord.userId,
+            token: newRefreshToken,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        });
+        //Cập nhật Cookie
+        res.cookie('token', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
+        res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+        req.flash('success', 'Đăng nhập thành công');
+        return res.redirect(`${system.prefixAdmin}/dashboard`); 
+    } catch (err) {
+        console.error(err);
+        req.flash('error', 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+        return res.redirect(`${system.prefixAdmin}/auth/login`);
+    }
+}
+//POST /auth/logout
+module.exports.logout = async (req, res) => {
+   try{
+        const refreshToken = req.cookies.refreshToken;
+        if (refreshToken) {
+            await Session.deleteOne({ token: refreshToken });
+        }
+        res.clearCookie('token');
+        res.clearCookie('refreshToken');
+        req.flash('success', 'Đăng xuất thành công');
+        return res.redirect(`${system.prefixAdmin}/auth/login`);
+    }
+    catch(error){
+        console.error(error);
+        req.flash('error', 'Đăng xuất thất bại. Vui lòng thử lại.');
+        return res.redirect(`${system.prefixAdmin}/dashboard`);
+    }
 }
