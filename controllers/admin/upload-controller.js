@@ -1,5 +1,5 @@
 module.exports.index = async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     res.json({
         location: req.body.file
     })

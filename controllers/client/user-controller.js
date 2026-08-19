@@ -189,7 +189,11 @@ module.exports.otpPost = async (req, res) =>{
             res.redirect(`/users/password/otp?email=${email}`);
             return;
         }
-        res.cookie("tokenReset", user.token);
+        const tokenReset = crypto.randomBytes(64).toString('hex');
+        user.tokenReset = tokenReset;
+        user.tokenResetExpires = Date.now() + 180000;
+        await user.save();
+        res.cookie("tokenReset", tokenReset, { httpOnly: true, maxAge: 180000 });
         res.redirect('/users/password/reset-password');
     }
     catch(error){
@@ -212,7 +216,7 @@ module.exports.resetPasswordPost = async (req, res) =>{
         const token = req.cookies.tokenReset;
         const password = req.body.password;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.findOne({token: token, deleted: false, status: "active"});
+        const user = await User.findOne({tokenReset: token, tokenResetExpires: {$gt: Date.now()}, deleted: false, status: "active"});
         if(!user){
             req.flash('error', 'Liên kết đặt lại mật khẩu không hợp lệ');
             res.redirect('/users/login');
