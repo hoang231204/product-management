@@ -1,17 +1,23 @@
-const mongoose = require("mongoose")
-const generateToken = require("../helpers/generate-token")
+const mongoose = require("mongoose");
+
 const schema = new mongoose.Schema({ 
     fullname: String,
     email: String,
     hashedPassword: String,
     avatar: String,
     phone: String,
+    tokenReset: {
+        type: String
+    },
+    tokenResetExpires: {
+        type: Date
+    },
     status: {
         type: String,
         enum: ["active", "inactive"],
         default: "active"
     },
-    deleted:{
+    deleted: {
         type: Boolean,
         default: false
     },
@@ -19,20 +25,20 @@ const schema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    updatedBy:[
+    updatedBy: [
         {
-            account_id:{
-            type: String,
-            ref: "Account"
+            account_id: {
+                type: String,
+                ref: "Account"
             },
-        updatedAt: {
-            type: Date,
-            default: Date.now
+            updatedAt: {
+                type: Date,
+                default: Date.now
             }
-     }
+        }
     ],
-    deletedBy:{
-        account_id:{
+    deletedBy: {
+        account_id: {
             type: String,
             ref: "Account"
         },
@@ -41,6 +47,7 @@ const schema = new mongoose.Schema({
             default: Date.now
         }
     }
-})
+});
+
 const User = mongoose.model('User', schema, "users");
 module.exports = User;
