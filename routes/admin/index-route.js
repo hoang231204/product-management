@@ -7,6 +7,7 @@ const authRoute = require('./auth-route');
 const userRoute = require('./user-route');
 const orderRoute = require('./order-route');
 const postRoute = require('./post-route');
+const uploadRoute = require('./upload-route');
 const postCategoryRoute = require('./post-category-route');
 const settingGeneralRoute = require('./setting-general-route');
 const privateRoute = require('../../middleware/admin/private-route');
@@ -25,4 +26,5 @@ module.exports = (app)=>{
     app.use(PATH_ADMIN.prefixAdmin+"/posts",privateRoute.requireAuth,postRoute)
     app.use(PATH_ADMIN.prefixAdmin+"/post-categories",privateRoute.requireAuth,postCategoryRoute) 
     app.use(PATH_ADMIN.prefixAdmin+"/settings",privateRoute.requireAuth,settingGeneralRoute)
+    app.use(PATH_ADMIN.prefixAdmin+"/upload-image",privateRoute.requireAuth,uploadRoute)
 }
