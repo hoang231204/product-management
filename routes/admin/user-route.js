@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const upload = multer();
+const middleware = require("../../middleware/admin/uploadCloud-middleware")
 router.get('/', userController.index);
 router.get('/details/:id', userController.details);
 router.patch('/change-status/:status/:id', userController.changeStatus);
@@ -11,6 +12,7 @@ router.get('/edit/:id', userController.edit);
 router.patch(
     '/edit/:id',
     upload.single('avatar'),
+    middleware.upload,
     userController.editPatch
 );
 router.get('/create', userController.create);
