@@ -1,8 +1,10 @@
 extends ../../layouts/default.pug
 include ../../mixins/show-alert.pug
+
 block main
     +alert-success(3000)
     +alert-error(3000)
+
     .card.mb-4
         .card-header Cài đặt thông tin website
         .card-body
@@ -15,27 +17,19 @@ block main
                 //- Tên Website
                 .form-group.mb-3
                     label(for="websiteName") Tên website
-                    if(setting && setting.websiteName)
-                        input(
-                            type="text" 
-                            class="form-control" 
-                            id="websiteName" 
-                            name="websiteName" 
-                            value=setting.websiteName
-                        )
-                    else
-                        input(
-                            type="text" 
-                            class="form-control" 
-                            id="websiteName" 
-                            name="websiteName" 
-                            value=""
-                            placeholder="Nhập tên website"
-                        )
-                    //- Logo Website
+                    input(
+                        type="text" 
+                        class="form-control" 
+                        id="websiteName" 
+                        name="websiteName" 
+                        value=(setting && setting.websiteName ? setting.websiteName : "")
+                        placeholder="Nhập tên website"
+                    )
+
+                //- Logo Website (Ảnh chính)
                 .form-group.mb-3
                     div(class="form-group" upload-image)
-                        label(for="logo") Ảnh
+                        label(for="logo") Logo
                         input(
                             type="file"
                             class="form-control-file"
@@ -44,114 +38,104 @@ block main
                             accept="image/*"
                             upload-image-input
                         )
-                        if(setting && setting.logo)
-                            div(class="box-image")
-                                img(
-                                    src=setting.logo
-                                    upload-image-preview
-                                    class="image-preview"
-                                )
-                                button(
-                                    type="button"
-                                    class="btn-remove-image"
-                                    aria-label="Remove image"
-                                ) ×
-                        else 
-                            div(class="box-image")
-                                img(
-                                    src=""
-                                    upload-image-preview
-                                    class="image-preview"
-                                )
-                                button(
-                                        type="button"
-                                        class="btn-remove-image"
-                                        aria-label="Remove image"
-                                    ) ×
+                        div(class="box-image")
+                            img(
+                                src=(setting && setting.logo ? setting.logo : "")
+                                upload-image-preview
+                                class="image-preview"
+                            )
+                            button(
+                                type="button"
+                                class="btn-remove-image"
+                                aria-label="Remove image"
+                            ) ×
 
-                    //- Email
+                //- THÊM MỚI: Ô input upload ảnh phụ / Favicon hoặc Banner tùy chọn
+                .form-group.mb-3
+                    div(class="form-group" upload-image)
+                        label(for="banner") Banner
+                        input(
+                            type="file"
+                            class="form-control-file"
+                            id="banner"
+                            name="banner"
+                            accept="image/*"
+                            upload-image-input
+                        )
+                        div(class="box-image")
+                            img(
+                                src=(setting && setting.banner ? setting.banner : "")
+                                upload-image-preview
+                                class="image-preview"
+                            )
+                            button(
+                                type="button"
+                                class="btn-remove-image"
+                                aria-label="Remove image"
+                            ) ×
+
+                //- Email
                 .form-group.mb-3
                     label(for="email") Email
-                    if(setting && setting.email)
-                        input(
-                            type="email" 
-                            class="form-control" 
-                            id="email" 
-                            name="email" 
-                            value=setting.email
-                        )
-                    else
-                        input(
-                            type="email" 
-                            class="form-control" 
-                            id="email" 
-                            name="email" 
-                            value=""
-                            placeholder="Nhập email"
-                        )
+                    input(
+                        type="email" 
+                        class="form-control" 
+                        id="email" 
+                        name="email" 
+                        value=(setting && setting.email ? setting.email : "")
+                        placeholder="Nhập email"
+                    )
 
-                    //- Số điện thoại
+                //- Số điện thoại
                 .form-group.mb-3
                     label(for="phone") Số điện thoại
-                    if(setting && setting.phone)
-                        input(
-                            type="text" 
-                            class="form-control" 
-                            id="phone" 
-                            name="phone" 
-                            value=setting.phone
-                        )
-                    else
-                        input(
-                            type="text" 
-                            class="form-control" 
-                            id="phone" 
-                            name="phone" 
-                            value=""
-                            placeholder="Nhập số điện thoại"
-                        )   
+                    input(
+                        type="text" 
+                        class="form-control" 
+                        id="phone" 
+                        name="phone" 
+                        value=(setting && setting.phone ? setting.phone : "")
+                        placeholder="Nhập số điện thoại"
+                    ) 
 
-                    //- Địa chỉ
+                //- Địa chỉ
                 .form-group.mb-3
                     label(for="address") Địa chỉ
-                    if(setting && setting.address)
-                        input(
-                            type="text" 
-                            class="form-control" 
-                            id="address" 
-                            name="address" 
-                            value=setting.address
-                        )
-                    else
-                        input(
-                            type="text" 
-                            class="form-control" 
-                            id="address" 
-                            name="address" 
-                            value=""
-                            placeholder="Nhập địa chỉ"
-                        )
+                    input(
+                        type="text" 
+                        class="form-control" 
+                        id="address" 
+                        name="address" 
+                        value=(setting && setting.address ? setting.address : "")
+                        placeholder="Nhập địa chỉ"
+                    )
 
-                    //- Copyright
+                //- THÊM MỚI: Vị trí trên bản đồ (Google Maps Iframe link hoặc Tọa độ Lat/Lng)
+                .form-group.mb-3
+                    label(for="mapLocation") Vị trí trên bản đồ (Link Google Maps nhúng hoặc Tọa độ)
+                    input(
+                        type="text" 
+                        class="form-control" 
+                        id="mapLocation" 
+                        name="mapLocation" 
+                        value=(setting && setting.mapLocation ? setting.mapLocation : "")
+                        placeholder="Dán mã iframe Google Maps hoặc link nhúng bản đồ vào đây"
+                    )
+                    small.form-text.text-muted Bạn có thể nhập link chia sẻ nhúng bản đồ từ Google Maps để hiển thị ngoài trang chủ.
+
+                //- Copyright
                 .form-group.mb-3
                     label(for="copyright") Copyright
-                    if(setting && setting.copyright)
-                        input(
-                            type="text" 
-                            class="form-control" 
-                            id="copyright" 
-                            name="copyright" 
-                            value=setting.copyright
-                        )
-                    else
-                        input(
-                            type="text" 
-                            class="form-control" 
-                            id="copyright" 
-                            name="copyright" 
-                            value=""
-                            placeholder="Nhập thông tin bản quyền"
-                        )
+                    input(
+                        type="text" 
+                        class="form-control" 
+                        id="copyright" 
+                        name="copyright" 
+                        value=(setting && setting.copyright ? setting.copyright : "")
+                        placeholder="Nhập thông tin bản quyền"
+                    )
+
+                //- Mạng xã hội Card
                 .card.mb-4
                     .card-header Mạng xã hội
                     .card-body
@@ -163,7 +147,8 @@ block main
                                         type="text" 
                                         id="facebook" 
                                         name="social.facebook" 
-                                        value=(setting ? setting.social.facebook : "")
+                                        value=(setting && setting.social && setting.social.facebook ? setting.social.facebook : "")
+                                        placeholder="Link Facebook"
                                     )
                             .col-md-6
                                 .form-group
@@ -172,7 +157,8 @@ block main
                                         type="text" 
                                         id="tiktok" 
                                         name="social.tiktok" 
-                                        value=(setting ? setting.social.tiktok : "")
+                                        value=(setting && setting.social && setting.social.tiktok ? setting.social.tiktok : "")
+                                        placeholder="Link TikTok"
                                     )
                             .col-md-6
                                 .form-group
@@ -181,7 +167,8 @@ block main
                                         type="text" 
                                         id="youtube" 
                                         name="social.youtube" 
-                                        value=(setting ? setting.social.youtube : "")
+                                        value=(setting && setting.social && setting.social.youtube ? setting.social.youtube : "")
+                                        placeholder="Link YouTube"
                                     )
 
                 button(type="submit" class="btn btn-primary") Cập nhật
