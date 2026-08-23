@@ -1,0 +1,10 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.mt-5.text-center
+    .alert.alert-danger
+      h3 #{pageTitle}
+      p Chi tiết lỗi: 
+        strong #{message}
+      p Vui lòng thử lại hoặc liên hệ hỗ trợ nếu bạn gặp sự cố.
+    a.btn.btn-outline-primary(href="/") Quay về trang chủ
