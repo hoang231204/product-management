@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const generateCode = require('../helpers/generate-code');
+
 const orderSchema = new mongoose.Schema({
     cart_id: String,
     user_id: String,
@@ -10,13 +11,13 @@ const orderSchema = new mongoose.Schema({
     },
     userInfor:{
         fullname: String,
-        phone:String,
+        phone: String,
         address: String
     },
     products:[
         {
             product_id:{
-                type:String,
+                type: String,
                 ref: 'Product'
             },
             price: Number,
@@ -25,6 +26,22 @@ const orderSchema = new mongoose.Schema({
         }
     ],
     totalPrice: Number,
+    
+    paymentMethod: {
+        type: String,
+        enum: ['COD', 'VNPAY'], 
+        default: 'COD'
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['unpaid', 'paid'],
+        default: 'unpaid'
+    },
+    vnpayTransactionNo: {
+        type: String, 
+        default: ''
+    },
+
     status: {
         type: String,
         enum: ['pending', 'confirmed', 'shipping', 'delivered', 'canceled'],
@@ -61,5 +78,6 @@ const orderSchema = new mongoose.Schema({
         }
     ]   
 });
+
 const Order = mongoose.model('Order', orderSchema);
 module.exports = Order;
