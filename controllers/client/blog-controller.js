@@ -2,6 +2,7 @@ const Post = require('../../models/post-model');
 const PostCategory = require('../../models/post-category-model');
 const filter = require('../../helpers/filter-category');
 const pagination = require('../../helpers/pagination');
+const cacheService = require('../../helpers/cache-service');
 
 // GET /blogs
 module.exports.index = async (req, res) => {
@@ -11,6 +12,8 @@ module.exports.index = async (req, res) => {
       status: 'active',
       deleted: false
     };
+
+    let cacheKeySuffix = '';
 
     if (req.query.slugCategory) {
       const category = await PostCategory.findOne({
@@ -25,8 +28,23 @@ module.exports.index = async (req, res) => {
       }
 
       find.category_id = category._id;
+      cacheKeySuffix = `:cat:${req.query.slugCategory}`;
     } else {
       find.featured = '1';
+      cacheKeySuffix = ':featured';
+    }
+
+    const page = req.query.page || 1;
+    const cacheKey = `blogs:list${cacheKeySuffix}:page:${page}`;
+
+    const cachedData = await cacheService.get(cacheKey);
+    if (cachedData) {
+      return res.render('client/pages/blog/index', {
+        pageTitle: 'Danh sách bài viết',
+        categories: categories,
+        blogs: cachedData.blogs,
+        objectPagination: cachedData.objectPagination
+      });
     }
 
     const count = await Post.countDocuments(find);
@@ -36,6 +54,9 @@ module.exports.index = async (req, res) => {
       .skip(objectPagination.skipPage)
       .limit(objectPagination.limitPage)
       .lean();
+
+    // Cache 5 phút
+    await cacheService.set(cacheKey, { blogs, objectPagination }, 300);
 
     res.render('client/pages/blog/index', {
       pageTitle: 'Danh sách bài viết',
@@ -54,6 +75,16 @@ module.exports.index = async (req, res) => {
 module.exports.details = async (req, res) => {
   try {
     const slugBlog = req.params.slugBlog;
+    const cacheKey = `blogs:detail:${slugBlog}`;
+
+    const cachedBlog = await cacheService.get(cacheKey);
+    if (cachedBlog) {
+      return res.render('client/pages/blog/details', {
+        pageTitle: cachedBlog.title,
+        blog: cachedBlog
+      });
+    }
+
     const blog = await Post.findOne({
       slug: slugBlog,
       deleted: false,
@@ -68,6 +99,9 @@ module.exports.details = async (req, res) => {
     }
 
     blog.category = blog.category_id || null;
+
+    // Cache 10 phút
+    await cacheService.set(cacheKey, blog, 600);
 
     res.render('client/pages/blog/details', {
       pageTitle: blog.title,
