@@ -5,6 +5,7 @@ const pagination = require('../../helpers/pagination');
 const systemConfig = require('../../config/system');
 const tree = require('../../helpers/create-tree');
 const PostCategory = require('../../models/post-category-model');
+const { invalidateBlogs } = require('../../helpers/cache-invalidation');
 //GET /posts
 module.exports.index = async (req, res) => {
     const permissions = res.locals.role.permissions;
@@ -124,6 +125,7 @@ module.exports.postCreate = async (req, res) =>{
         }
         const post = new Post(req.body)
         await post.save();
+        await invalidateBlogs();
         req.flash('success', 'Tạo bài viết thành công!');
         res.redirect(`${systemConfig.prefixAdmin}/posts`)
     }
@@ -170,6 +172,7 @@ module.exports.editPatch = async (req, res) =>{
     };
     try {
         await Post.updateOne({_id:id},{...req.body, $push: { updatedBy: updatedBy }});
+        await invalidateBlogs();
         req.flash("success","Cập nhật bài viết thành công!");
         res.redirect(`${systemConfig.prefixAdmin}/posts`);
     } catch (error) {
@@ -193,6 +196,7 @@ module.exports.changeStatus = async (req, res) =>{
     };
     try {
         await Post.updateOne({_id:id},{status: status, $push: { updatedBy: updatedBy }});
+        await invalidateBlogs();
         req.flash("success","Cập nhật trạng thái bài viết thành công!");
         res.redirect(`${systemConfig.prefixAdmin}/posts`);
     } catch (error) {
@@ -253,6 +257,7 @@ module.exports.changeMulti = async (req, res) =>{
                 }
                 await Post.updateMany({ _id: { $in: ids } }, { status: typeChecked, $push: { updatedBy: updatedBy } }); 
         }
+        await invalidateBlogs();
         req.flash('success', 'Cập nhật trạng thái thành công!');
         res.redirect(`${systemConfig.prefixAdmin}/posts`);
     }
@@ -287,6 +292,7 @@ module.exports.delete = async (req, res) =>{
                 }
             }
         );
+        await invalidateBlogs();
         req.flash('success', 'Xóa bài viết thành công!');
     } catch (error) {
         console.error("Lỗi xóa bài viết:", error);
@@ -325,6 +331,7 @@ module.exports.restore = async (req, res) =>{
             updatedAt: new Date()
         };
         await Post.updateOne({_id:dataId},{deleted:false, $push: { updatedBy: updatedBy } });
+        await invalidateBlogs();
         req.flash('success', 'Khôi phục sản phẩm thành công!');
         const backUrl = req.get("Referrer");
         res.redirect(backUrl);
@@ -340,6 +347,7 @@ module.exports.hardDelete = async (req, res) =>{
     try{
         const dataId = req.params.id;
         await Post.deleteOne({_id:dataId});
+        await invalidateBlogs();
         req.flash('success', 'Xóa vĩnh viễn sản phẩm thành công!');
         const backUrl = req.get("Referrer");
         res.redirect(backUrl);

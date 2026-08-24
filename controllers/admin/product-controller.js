@@ -6,6 +6,7 @@ const pagination = require("../../helpers/pagination")
 const systemConfig = require("../../config/system")
 const calcuNewPrice = require("../../helpers/calcu-new-price")
 const tree = require("../../helpers/create-tree")
+const { invalidateProducts, invalidateDashboard } = require("../../helpers/cache-invalidation")
 
 //DANH SÁCH SẢN PHẨM
 module.exports.index = async (req, res) => {
@@ -77,6 +78,7 @@ module.exports.changeStatus =async (req,res)=>{
     };
     try {
         await Product.updateOne({_id:id},{status:statusChange, $push: { updatedBy: updatedBy }})
+        await invalidateProducts();
         const backUrl = req.get("Referrer");
         req.flash('success', 'Cập nhật trạng thái thành công!')
         res.redirect(backUrl);
@@ -138,6 +140,7 @@ module.exports.changeMulti = async (req, res) => {
                 }
                 await Product.updateMany({ _id: { $in: ids } }, { status: typeChecked, $push: { updatedBy: updatedBy } }); 
         }
+        await invalidateProducts();
         req.flash('success', 'Cập nhật trạng thái thành công!');
         const backUrl = req.get("Referrer");
         res.redirect(backUrl);
@@ -173,6 +176,7 @@ module.exports.delete = async (req, res) => {
                 }
             }
         );
+        await invalidateProducts();
         req.flash('success', 'Xóa sản phẩm thành công!');
     } catch (error) {
         console.error("Lỗi khi xóa sản phẩm:", error);
@@ -202,6 +206,8 @@ module.exports.hardDelete = async (req,res)=>{
     try {
         const dataId = req.params.id;
         await Product.deleteOne({_id:dataId})
+        await invalidateProducts();
+        await invalidateDashboard();
         req.flash('success', 'Xóa sản phẩm vĩnh viễn thành công!');
         const backUrl = req.get("Referrer");
         res.redirect(backUrl);
@@ -221,6 +227,7 @@ module.exports.restore = async (req,res)=>{
             updatedAt: new Date()
         };
         await Product.updateOne({_id:dataId},{deleted:false, $push: {updatedBy: updatedBy}})
+        await invalidateProducts();
         req.flash('success', 'Khôi phục sản phẩm thành công!');
         res.redirect(`${systemConfig.prefixAdmin}/products/recycle-bin`);
     }
@@ -268,6 +275,8 @@ module.exports.createPost = async (req, res)=>{
         }
         const product = new Product(req.body)
         await product.save();
+        await invalidateProducts();
+        await invalidateDashboard();
         req.flash('success', 'Tạo sản phẩm thành công!');
         res.redirect(`${systemConfig.prefixAdmin}/products`)
     }
@@ -316,6 +325,7 @@ module.exports.editPatch = async (req,res)=>{
     };
     try {
         await Product.updateOne({_id:id},{...req.body, $push: { updatedBy: updatedBy }});
+        await invalidateProducts();
         req.flash("success","Cập nhật sản phẩm thành công!");
         res.redirect(`${systemConfig.prefixAdmin}/products`);
     } catch (error) {

@@ -1,5 +1,6 @@
 const Setting = require('../../models/setting-model');
 const systemConfig = require('../../config/system');
+const { invalidateSettings } = require('../../helpers/cache-invalidation');
 //GET /admin/setting/general
 module.exports.index = (req, res) => {
     const permission = res.locals.role.permissions;
@@ -39,6 +40,7 @@ module.exports.websiteInforPatch = async (req, res) => {
     }
     try{
         await Setting.updateOne(req.body);
+        await invalidateSettings();
         req.flash('success', 'Cập nhật thông tin website thành công!');
         res.redirect(`${systemConfig.prefixAdmin}/setting/website-infor`);
     }

@@ -7,6 +7,7 @@ const getChildren = require("../../helpers/get-children")
 const checkStatusParents = require("../../helpers/check-status-parent");
 const checkStatusParentsMulti = require("../../helpers/check-status-parents-multi");
 const changeStatusCategory = require("../../helpers/change-status-category");
+const { invalidateCategories } = require("../../helpers/cache-invalidation");
 //GET /categories
 module.exports.index =async (req,res)=>{
     const permissions = res.locals.role.permissions;
@@ -84,6 +85,7 @@ module.exports.createPost = async (req,res)=>{
         };
         const category = new ProductCategory(req.body);
         await category.save();
+        await invalidateCategories();
         req.flash('success', 'Tạo danh mục thành công!');
         res.redirect(`${systemConfig.prefixAdmin}/product-categories`)
     }
@@ -117,6 +119,7 @@ module.exports.changeStatus = async (req,res)=>{
             updatedAt: new Date()
         };
         await ProductCategory.updateMany({_id: {$in: ids}}, {status: status, $push: { updatedBy: updatedBy }});
+        await invalidateCategories();
         req.flash("success", `Cập nhật trạng thái danh mục thành công!`);
         const backUrl = req.get("Referrer");
         res.redirect(backUrl);
@@ -155,6 +158,7 @@ module.exports.delete = async (req,res)=>{
                 }
             }
         );
+        await invalidateCategories();
         req.flash("success", "Xóa danh mục thành công!");
         const backUrl = req.get("Referrer");
         res.redirect(backUrl);
@@ -255,6 +259,7 @@ module.exports.editPatch = async (req,res)=>{
             ids.shift();
             await ProductCategory.updateMany({_id: {$in: ids}}, {status: status});
         }
+        await invalidateCategories();
         req.flash("success", "Cập nhật danh mục thành công!");
         const backUrl = req.get("Referrer");
         res.redirect(backUrl);
@@ -363,6 +368,7 @@ module.exports.changeMulti = async (req, res) => {
         }
         if (bulkOps.length > 0) {
             await ProductCategory.bulkWrite(bulkOps);
+            await invalidateCategories();
             req.flash("success", `Đã thực hiện thành công hành động cho ${bulkOps.length} nhóm bản ghi!`);
         } else {
             req.flash("error", "Không có thay đổi nào hợp lệ được thực hiện!");
@@ -402,6 +408,7 @@ module.exports.restore = async (req, res)=>{
         return res.redirect(backUrl);
     }
     await ProductCategory.updateOne({_id:id},{deleted:false, deletedBy: null});
+    await invalidateCategories();
     req.flash("success", "Khôi phục danh mục thành công!");
     const backUrl = req.get("Referrer");
     res.redirect(backUrl);
@@ -418,6 +425,7 @@ module.exports.hardDelete = async (req, res)=>{
     try{
         const id = req.params.id;
         await ProductCategory.deleteOne({_id:id});
+        await invalidateCategories();
         req.flash("success", "Xóa danh mục vĩnh viễn thành công!");
         const backUrl = req.get("Referrer");
         res.redirect(backUrl);

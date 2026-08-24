@@ -1,7 +1,8 @@
-const moonoose = require('mongoose');
-const schema = new moonoose.Schema({
+const mongoose = require('mongoose');
+
+const schema = new mongoose.Schema({
     user_id: String,
-    products:[{
+    products: [{
         product_id: {
             type: String,
             default: null,
@@ -9,10 +10,12 @@ const schema = new moonoose.Schema({
         },
         quantity: Number
     }]
-    },
+},
     {
         timestamps: true
-    }
-)
-const Cart = moonoose.model('Cart', schema, "carts");
+    });
+
+schema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 7 });
+
+const Cart = mongoose.model('Cart', schema, "carts");
 module.exports = Cart;
