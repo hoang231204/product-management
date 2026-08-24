@@ -5,6 +5,7 @@ const port = process.env.PORT;
 const routeClient  = require('./routes/client/index-route')
 const routeAdmin = require("./routes/admin/index-route")
 const database = require("./config/database")
+const redis = require("./config/redis")
 const pathAdmin = require('./config/system')
 const methodOverride = require('method-override')
 const bodyParser = require('body-parser')
@@ -15,6 +16,8 @@ const path = require('path');
 const moment = require('moment');
 //Mongoose
 database.connect();
+//Redis
+redis.connect();
 //setting pug
 app.set('views', `${__dirname}/views`)
 app.set('view engine', 'pug')
@@ -65,3 +68,13 @@ app.use(/.*/, (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
+//Graceful shutdown
+const gracefulShutdown = async () => {
+  console.log("\n[App] Đang tắt server...");
+  await redis.disconnect();
+  process.exit(0);
+};
+process.on("SIGINT", gracefulShutdown);
+process.on("SIGTERM", gracefulShutdown);
+
