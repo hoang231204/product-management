@@ -23,6 +23,7 @@ module.exports.registerPost = async (req, res) => {
         //KIỂM TRA TỒN TẠI
         const existingUser = await User.findOne({ email })
         if(existingUser){
+            req.flash('error', 'Email đã được sử dụng')
             return res.redirect('/users/register')
         }
         //MÃ HÓA MẬT KHẨU
@@ -39,9 +40,13 @@ module.exports.registerPost = async (req, res) => {
         return res.redirect('/users/login')
     }
     catch(error){
-        console.error(error)
-        req.flash('error', 'Đã có lỗi xảy ra, vui lòng thử lại')
-        return res.redirect('/users/register')
+        if (error.code === 11000) {
+            req.flash('error', 'Email này vừa được đăng ký bởi một người khác, vui lòng chọn email khác.');
+        }
+        else {
+            req.flash('error', 'Đã có lỗi xảy ra, vui lòng thử lại');
+        }
+        res.redirect('/users/register')
     }
 }
 //GET /auth/login

@@ -1,9 +1,19 @@
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({ 
-    fullname: String,
-    email: String,
-    hashedPassword: String,
+    fullname:{
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    hashedPassword: {
+        type: String,
+        required: true
+    },
     avatar: String,
     phone: String,
     tokenReset: {
