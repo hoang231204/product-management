@@ -11,6 +11,7 @@ const methodOverride = require('method-override')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const flash = require('connect-flash');
+const { startOrderExpirationWorker, stopOrderExpirationWorker } = require('./workers/orderExpirationWorker');
 const cookieParser = require('cookie-parser')
 const path = require('path');
 const moment = require('moment');
@@ -67,14 +68,16 @@ app.use(/.*/, (req, res) => {
 //message
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
+  startOrderExpirationWorker();
 })
 
 //Graceful shutdown
 const gracefulShutdown = async () => {
-  console.log("\n[App] Đang tắt server...");
-  await redis.disconnect();
-  process.exit(0);
+    console.log("\n[App] Đang tắt server...");
+    stopOrderExpirationWorker();
+    await redis.disconnect();
+    process.exit(0);
 };
+
 process.on("SIGINT", gracefulShutdown);
 process.on("SIGTERM", gracefulShutdown);
-
