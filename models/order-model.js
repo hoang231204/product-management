@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const generateCode = require('../helpers/generate-code');
-
+const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 const orderSchema = new mongoose.Schema({
     cart_id: String,
     user_id: String,
@@ -34,7 +34,7 @@ const orderSchema = new mongoose.Schema({
     },
     paymentStatus: {
         type: String,
-        enum: ['unpaid', 'paid'],
+        enum: ['unpaid', 'paid', 'expired','cancelled'],
         default: 'unpaid'
     },
     vnpayTransactionNo: {
@@ -61,6 +61,7 @@ const orderSchema = new mongoose.Schema({
             default: Date.now
         }
     },
+    expiresAt: expiresAt,
     createdAt:{
         type: Date,
         default: Date.now

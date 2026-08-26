@@ -58,7 +58,7 @@ module.exports.checkoutPost = async (req, res) =>{
             address: address
         }
         const cartId = req.cartId;
-        const cart = await Cart.findOne({ _id: cartId }).populate('products.product_id', 'title price thumbnail discountPercentage').lean();
+        const cart = await Cart.findOne({ _id: cartId }).populate('products.product_id', 'title price thumbnail discountPercentage stock').lean();
         if(!cart){
             req.flash('error', 'Giỏ hàng không tồn tại');
             return res.redirect('/products');
@@ -67,6 +67,24 @@ module.exports.checkoutPost = async (req, res) =>{
         if(cart.products.length === 0){
             req.flash('error', 'Giỏ hàng của bạn đang trống, không thể đặt hàng!');
             return res.redirect('/products');
+        }
+        for (const item of cart.products) {
+            const product = item.product_id;
+            if (product.stock < item.quantity) {
+                req.flash('error', `Sản phẩm "${product.title}" không đủ số lượng trong kho (chỉ còn ${product.stock})!`);
+                return res.redirect('/cart'); 
+            }
+        }
+        const bulkOps = cart.products.map(item => ({
+            updateOne: {
+                filter: { _id: item.product_id._id, stock: { $gte: item.quantity } }, 
+                update: { $inc: { stock: -item.quantity } }
+            }
+        }));
+        const bulkResult = await Product.bulkWrite(bulkOps);
+        if (bulkResult.modifiedCount < cart.products.length) {
+            req.flash('error', 'Một số sản phẩm vừa có người mua hoặc không đủ số lượng, vui lòng thử lại!');
+            return res.redirect('/cart');
         }
         cart.products.forEach(item => {
             item.product_id.priceNew = calcuNewPrice.priceNew(item.product_id.price, item.product_id.discountPercentage);
@@ -101,6 +119,25 @@ module.exports.checkoutPost = async (req, res) =>{
         let secretKey = process.env.VNP_HASH_SECRET;
         let vnpUrl = process.env.VNP_URL;
         let returnUrl = process.env.VNP_RETURN_URL;
+        let createDate = new Date();
+        let expireDate = new Date(createDate.getTime() + 10 * 60 * 1000);
+        function formatDate(date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear(),
+                hour = '' + d.getHours(),
+                minute = '' + d.getMinutes(),
+                second = '' + d.getSeconds();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+            if (hour.length < 2) hour = '0' + hour;
+            if (minute.length < 2) minute = '0' + minute;
+            if (second.length < 2) second = '0' + second;
+
+            return [year, month, day].join('') + [hour, minute, second].join('');
+        }
 
         let vnp_Params = {
             vnp_Version: '2.1.0',
@@ -114,7 +151,8 @@ module.exports.checkoutPost = async (req, res) =>{
             vnp_Amount: order.totalPrice * 100,
             vnp_ReturnUrl: returnUrl,
             vnp_IpAddr: ipAddr,
-            vnp_CreateDate: new Date().toISOString().slice(0, 10).replace(/-/g, '') + new Date().toTimeString().slice(0, 8).replace(/:/g, '')
+            vnp_CreateDate: formatDate(createDate),
+            vnp_ExpireDate: formatDate(expireDate)
         };
 
         vnp_Params = sortObject(vnp_Params);
@@ -132,52 +170,92 @@ module.exports.checkoutPost = async (req, res) =>{
     }
 }
 module.exports.vnpayReturn = async (req, res) =>{
-    let vnp_Params = req.query;
-    let secureHash = vnp_Params['vnp_SecureHash'];
-    delete vnp_Params['vnp_SecureHash'];
-    delete vnp_Params['vnp_SecureHashType'];
+    try{
+        let vnp_Params = req.query;
+        let secureHash = vnp_Params['vnp_SecureHash'];
+        delete vnp_Params['vnp_SecureHash'];
+        delete vnp_Params['vnp_SecureHashType'];
 
-    vnp_Params = sortObject(vnp_Params);
-    let secretKey = process.env.VNP_HASH_SECRET;
-    let signData = querystring.stringify(vnp_Params, { encode: false });
-    let hmac = crypto.createHmac("sha512", secretKey);
-    let signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");
-    if (secureHash === signed) {
-        let orderCode = vnp_Params['vnp_TxnRef'];
-        let responseCode = vnp_Params['vnp_ResponseCode'];
-        if (responseCode === '00') {
-            const updatedOrder = await Order.findOneAndUpdate(
-                { order_code: orderCode, paymentStatus: 'unpaid' }, 
-                { 
-                    paymentStatus: 'paid', 
-                    vnpayTransactionNo: vnp_Params['vnp_TransactionNo'] 
-                },
-                { new: true }
-            );
+        vnp_Params = sortObject(vnp_Params);
+        let secretKey = process.env.VNP_HASH_SECRET;
+        let signData = querystring.stringify(vnp_Params, { encode: false });
+        let hmac = crypto.createHmac("sha512", secretKey);
+        let signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");
+        
+        if (secureHash === signed) {
+            let orderCode = vnp_Params['vnp_TxnRef'];
+            let responseCode = vnp_Params['vnp_ResponseCode'];
 
-            if (updatedOrder) {
-                const cartId = req.cartId;
-                const newCart = await Cart.findById(cartId);
-                newCart.products = [];
-                newCart.totalPrice = 0;
-                await newCart.save();
-                const bulkOps = updatedOrder.products.map(item => ({
-                    updateOne: {
-                        filter: { _id: item.product_id }, 
-                        update: { $inc: { stock: -item.quantity } }
+            if (responseCode === '00') {
+                const updatedOrder = await Order.findOneAndUpdate(
+                    { order_code: orderCode, paymentStatus: 'unpaid' }, 
+                    { 
+                        paymentStatus: 'paid', 
+                        vnpayTransactionNo: vnp_Params['vnp_TransactionNo'] 
+                    },
+                    { new: true }
+                );
+
+                if (updatedOrder) {
+                    const cartId = req.cartId;
+                    const newCart = await Cart.findById(cartId);
+                    if (newCart) {
+                        newCart.products = [];
+                        newCart.totalPrice = 0;
+                        await newCart.save();
                     }
-                }));
-                await Product.bulkWrite(bulkOps);
-            } else {
-                return res.render('client/pages/checkout/fail', { message: 'Đơn hàng đã được thanh toán hoặc không tồn tại!, vui lòng không thực hiện thao tác trùng lặp' });
-            }
+                } else {
+                    return res.render('client/pages/checkout/fail', { message: 'Đơn hàng đã được thanh toán hoặc không tồn tại!, vui lòng không thực hiện thao tác trùng lặp' });
+                }
+                return res.redirect(`/checkout/success/${updatedOrder._id}`);
+            } 
+            else if (responseCode === '11' || responseCode === '24') {
+                const updatedOrder = await Order.findOneAndUpdate(
+                    { order_code: orderCode, paymentStatus: 'unpaid' },
+                    { paymentStatus: responseCode === '11' ? 'expired' : 'cancelled' },
+                    { new: true }
+                );
+                if (updatedOrder) {
+                    const bulkOps = updatedOrder.products.map(item => ({
+                        updateOne: {
+                            filter: { _id: item.product_id }, 
+                            update: { $inc: { stock: item.quantity } }
+                        }
+                    }));
+                    await Product.bulkWrite(bulkOps);
+                }
 
-            return res.redirect(`/checkout/success/${updatedOrder._id}`);
+                let message = responseCode === '11' 
+                    ? 'Giao dịch đã hết thời gian chờ thanh toán (Timeout)! Đơn hàng của bạn đã bị hủy và hoàn lại kho.' 
+                    : 'Bạn đã hủy giao dịch thanh toán qua VNPay.';
+
+                return res.render('client/pages/checkout/fail', { message: message });
+            } 
+            else {
+                const updatedOrder = await Order.findOneAndUpdate(
+                    { order_code: orderCode, paymentStatus: 'unpaid' },
+                    { paymentStatus: 'cancelled' },
+                    { new: true }
+                );
+
+                if (updatedOrder) {
+                    const bulkOps = updatedOrder.products.map(item => ({
+                        updateOne: {
+                            filter: { _id: item.product_id }, 
+                            update: { $inc: { stock: item.quantity } }
+                        }
+                    }));
+                    await Product.bulkWrite(bulkOps);
+                }
+                return res.render('client/pages/checkout/fail', { message: 'Thanh toán thất bại từ phía ngân hàng!' });
+            }
         } else {
-            return res.render('client/pages/checkout/fail', { message: 'Thanh toán thất bại từ phía ngân hàng!' });
+            return res.render('client/pages/checkout/fail', { message: 'Chữ ký bảo mật không hợp lệ (Checksum failed)!' });
         }
-    } else {
-        return res.render('client/pages/checkout/fail', { message: 'Chữ ký bảo mật không hợp lệ (Checksum failed)!' });
+    }
+    catch(error){
+        req.flash('error', 'Đã có lỗi xảy ra, vui lòng thử lại');
+        res.redirect('/products');
     }
 }
 module.exports.success = async (req, res) => {
