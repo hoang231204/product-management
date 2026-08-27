@@ -1,213 +1,137 @@
-module.exports.register = (req,res,next)=>{
-    if(!req.body.fullname){
-        req.flash("error","Vui lòng nhập họ và tên!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
+const { body, validationResult } = require('express-validator');
+const sanitizeHtml = require('sanitize-html');
+
+// Middleware xử lý kết quả validation chung và chống XSS
+const runValidation = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        req.flash("error", errors.array()[0].msg);
+        const backUrl = req.get("Referrer") || '/';
+        return res.redirect(backUrl);
     }
-    if(!req.body.email){
-        req.flash("error","Vui lòng nhập email!");
-        const backUrl = req.get("Referrer");  
-        res.redirect(backUrl);
-        return
-    }
-    if(req.body.email){
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(req.body.email)) {
-            req.flash("error", "Email không hợp lệ!");
-            const backUrl = req.get("Referrer");
-            res.redirect(backUrl);
-            return;
+
+    // Làm sạch các trường dữ liệu chuỗi đề phòng chống XSS
+    ['fullname', 'email', 'newEmail'].forEach(field => {
+        if (req.body[field]) {
+            req.body[field] = sanitizeHtml(req.body[field], { allowedTags: [], allowedAttributes: {} });
         }
-    }
-    if(!req.body.password){
-        req.flash("error","Vui lòng nhập mật khẩu!");
-        const backUrl = req.get("Referrer"); 
-        res.redirect(backUrl);
-        return
-    }
-    if(req.body.password.length < 6){
-        req.flash("error","Mật khẩu phải có ít nhất 6 ký tự!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    }
-    if(typeof req.body.email !== 'string'|| typeof req.body.password !== 'string'){
-        req.flash("error", "Email hoặc mật khẩu không hợp lệ!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return;
-    }
+    });
+
     next();
-}
-module.exports.login = (req,res,next)=>{
-    if(!req.body.email){
-        req.flash("error","Vui lòng nhập email!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    }
-    if(req.body.email){
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(req.body.email)) {
-            req.flash("error", "Email không hợp lệ!");
-            const backUrl = req.get("Referrer");
-            res.redirect(backUrl);
-            return;
+};
+
+// 1. Đăng ký tài khoản
+module.exports.register = [
+    body('fullname')
+        .trim()
+        .notEmpty().withMessage('Vui lòng nhập họ và tên!'),
+    body('email')
+        .trim()
+        .notEmpty().withMessage('Vui lòng nhập email!')
+        .isEmail().withMessage('Email không hợp lệ!'),
+    body('password')
+        .notEmpty().withMessage('Vui lòng nhập mật khẩu!')
+        .isLength({ min: 6 }).withMessage('Mật khẩu phải có ít nhất 6 ký tự!')
+        .isString().withMessage('Mật khẩu không hợp lệ!'),
+    runValidation
+];
+
+// 2. Đăng nhập
+module.exports.login = [
+    body('email')
+        .trim()
+        .notEmpty().withMessage('Vui lòng nhập email!')
+        .isEmail().withMessage('Email không hợp lệ!'),
+    body('password')
+        .notEmpty().withMessage('Vui lòng nhập mật khẩu!'),
+    runValidation
+];
+
+// 3. Quên mật khẩu
+module.exports.forgotPassword = [
+    body('email')
+        .trim()
+        .notEmpty().withMessage('Vui lòng nhập email!')
+        .isEmail().withMessage('Email không hợp lệ!'),
+    runValidation
+];
+
+// 4. Xác thực OTP (Quên mật khẩu)
+module.exports.otp = [
+    body('email')
+        .trim()
+        .notEmpty().withMessage('Vui lòng nhập email!')
+        .isEmail().withMessage('Email không hợp lệ!'),
+    body('otp')
+        .trim()
+        .notEmpty().withMessage('Vui lòng nhập mã OTP!'),
+    runValidation
+];
+
+// 5. Đặt lại mật khẩu mới
+module.exports.resetPassword = [
+    body('password')
+        .notEmpty().withMessage('Vui lòng nhập mật khẩu mới!')
+        .isLength({ min: 6 }).withMessage('Mật khẩu mới phải có ít nhất 6 ký tự!'),
+    body('confirmPassword')
+        .notEmpty().withMessage('Vui lòng nhập lại mật khẩu mới!')
+        .custom((value, { req }) => {
+            if (value !== req.body.password) {
+                throw new Error('Mật khẩu mới và xác nhận mật khẩu mới không khớp!');
+            }
+            return true;
+        }),
+    runValidation
+];
+
+// 6. Cập nhật thông tin / Đổi mật khẩu trong Profile
+module.exports.profile = [
+    body('password')
+        .optional({ checkFalsy: true })
+        .isLength({ min: 6 }).withMessage('Mật khẩu cũ phải có ít nhất 6 ký tự!'),
+    body('newPassword')
+        .optional({ checkFalsy: true })
+        .isLength({ min: 6 }).withMessage('Mật khẩu mới phải có ít nhất 6 ký tự!'),
+    body().custom((value, { req }) => {
+        const { password, newPassword, confirmNewPassword } = req.body;
+
+        // Nếu có nhập mật khẩu mới hoặc xác nhận mà thiếu mật khẩu cũ
+        if ((newPassword || confirmNewPassword) && !password) {
+            throw new Error('Vui lòng nhập mật khẩu cũ để thay đổi mật khẩu mới!');
         }
-    }
-    if(!req.body.password){
-        req.flash("error","Vui lòng nhập mật khẩu!");
-        const backUrl = req.get("Referrer");  
-        res.redirect(backUrl);
-        return
-    }
-    next();
-}
-module.exports.forgotPassword = (req,res,next)=>{
-    if(!req.body.email){
-        req.flash("error","Vui lòng nhập email!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    }
-    next();
-}
-module.exports.otp = (req,res,next)=>{
-    if(!req.body.email){
-        req.flash("error","Vui lòng nhập email!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    }
-    if(req.body.email){
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(req.body.email)) {
-            req.flash("error", "Email không hợp lệ!");
-            const backUrl = req.get("Referrer");
-            res.redirect(backUrl);
-            return;
+
+        // Nếu có nhập mật khẩu cũ mà thiếu 1 trong 2 ô mật khẩu mới
+        if (password && (!newPassword || !confirmNewPassword)) {
+            throw new Error('Vui lòng nhập đầy đủ thông tin để thay đổi mật khẩu!');
         }
-    }
-    if(!req.body.otp){
-        req.flash("error","Vui lòng nhập mã OTP!");
-        const backUrl = req.get("Referrer");  
-        res.redirect(backUrl);
-        return
-    }
-    next();
-}
-module.exports.resetPassword = (req,res,next)=>{
-    if(req.body.fullname){
-        req.flash("error","Không được phép nhập họ và tên!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    }
-    if(!req.body.password){
-        req.flash("error","Vui lòng nhập mật khẩu mới!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    }
-    if(req.body.password.length < 6){
-        req.flash("error","Mật khẩu mới phải có ít nhất 6 ký tự!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    }
-    if(!req.body.confirmPassword){
-        req.flash("error","Vui lòng nhập lại mật khẩu mới!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    }
-    if(req.body.password !== req.body.confirmPassword){
-        req.flash("error","Mật khẩu mới và xác nhận mật khẩu mới không khớp!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    }   
-    next();
-}
-module.exports.profile = (req,res,next)=>{
-    if(!req.body.password){
-        if(req.body.newPassword || req.body.confirmNewPassword){
-            req.flash("error","Vui lòng nhập mật khẩu cũ để thay đổi mật khẩu mới!");
-            const backUrl = req.get("Referrer");
-            res.redirect(backUrl);
-            return
+
+        // Kiểm tra khớp mật khẩu mới
+        if (newPassword && newPassword !== confirmNewPassword) {
+            throw new Error('Mật khẩu mới và xác nhận mật khẩu mới không khớp!');
         }
-    }
-    if(req.body.password){
-        if(req.body.password.length < 6){
-            req.flash("error","Mật khẩu cũ phải có ít nhất 6 ký tự!");
-            const backUrl = req.get("Referrer");
-            res.redirect(backUrl);
-            return
-        }
-        if(!req.body.newPassword || !req.body.confirmPassword){
-            req.flash("error","Vui lòng nhập đầy đủ thông tin để thay đổi mật khẩu!");
-            const backUrl = req.get("Referrer");
-            res.redirect(backUrl);
-            return
-        }
-    }
-    if(req.body.newPassword){
-        if(req.body.newPassword.length < 6){
-            req.flash("error","Mật khẩu mới phải có ít nhất 6 ký tự!");
-            const backUrl = req.get("Referrer");
-            res.redirect(backUrl);
-            return
-        }
-        if(req.body.newPassword !== req.body.confirmNewPassword){
-            req.flash("error","Mật khẩu mới và xác nhận mật khẩu mới không khớp!");
-            const backUrl = req.get("Referrer");
-            res.redirect(backUrl);
-            return
-        }
-    }
-    next();
-}
-module.exports.changeEmail = (req,res,next)=>{
-    if(!req.body.newEmail){
-        req.flash("error","Vui lòng nhập email mới!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    }
-    if(req.body.newEmail){
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(req.body.newEmail)) {
-            req.flash("error", "Email mới không hợp lệ!");
-            const backUrl = req.get("Referrer");
-            res.redirect(backUrl);
-            return;
-        }   
-    }
-    next();
-}
-module.exports.changeEmailOtp = (req,res,next)=>{
-    if(!req.body.newEmail){
-        req.flash("error","Vui lòng nhập email mới!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    }
-    if(req.body.newEmail){
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(req.body.newEmail)) {
-            req.flash("error", "Email mới không hợp lệ!");
-            const backUrl = req.get("Referrer");
-            res.redirect(backUrl);
-            return;
-        }
-    }
-    if(!req.body.otp){
-        req.flash("error","Vui lòng nhập mã OTP!");
-        const backUrl = req.get("Referrer");  
-        res.redirect(backUrl);
-        return
-    }
-    next();
-}
+
+        return true;
+    }),
+    runValidation
+];
+
+// 7. Yêu cầu đổi email
+module.exports.changeEmail = [
+    body('newEmail')
+        .trim()
+        .notEmpty().withMessage('Vui lòng nhập email mới!')
+        .isEmail().withMessage('Email mới không hợp lệ!'),
+    runValidation
+];
+
+// 8. Xác thực OTP đổi email
+module.exports.changeEmailOtp = [
+    body('newEmail')
+        .trim()
+        .notEmpty().withMessage('Vui lòng nhập email mới!')
+        .isEmail().withMessage('Email mới không hợp lệ!'),
+    body('otp')
+        .trim()
+        .notEmpty().withMessage('Vui lòng nhập mã OTP!'),
+    runValidation
+];

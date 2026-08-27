@@ -1,18 +1,27 @@
-module.exports.login = (req,res,next)=>{
-    if(req.body.email){
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(req.body.email)) {
-            req.flash("error", "Email không hợp lệ!");
-            const backUrl = req.get("Referrer");
-            res.redirect(backUrl);
-            return;
-        }
+const { body, validationResult } = require('express-validator');
+const sanitizeHtml = require('sanitize-html');
+
+const runValidation = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        req.flash("error", errors.array()[0].msg);
+        const backUrl = req.get("Referrer") || '/';
+        return res.redirect(backUrl);
     }
-    if(!req.body.password){
-        req.flash("error","Vui lòng nhập mật khẩu!");
-        const backUrl = req.get("Referrer");
-        res.redirect(backUrl);
-        return
-    } 
+    if (req.body.email) {
+        req.body.email = sanitizeHtml(req.body.email, { allowedTags: [], allowedAttributes: {} });
+    }
+
     next();
-}
+};
+
+module.exports.login = [
+    body('email')
+        .trim()
+        .notEmpty().withMessage('Vui lòng nhập email!')
+        .isEmail().withMessage('Email không hợp lệ!'),
+    body('password')
+        .notEmpty().withMessage('Vui lòng nhập mật khẩu!'),
+
+    runValidation
+];
