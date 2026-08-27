@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 const generateCode = require('../helpers/generate-code');
-const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 const orderSchema = new mongoose.Schema({
     cart_id: String,
     user_id: String,
     order_code: {
         type: String,
         unique: true,
-        default: generateCode()
+        default: () => generateCode()
     },
     userInfor:{
         fullname: String,
@@ -61,7 +60,13 @@ const orderSchema = new mongoose.Schema({
             default: Date.now
         }
     },
-    expiresAt: expiresAt,
+    expiresAt: {
+        type: Date,
+        default: function() {
+            const now = new Date();
+            return new Date(now.getTime() + 5 * 60 * 1000);
+        }
+    },
     createdAt:{
         type: Date,
         default: Date.now
