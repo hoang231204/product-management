@@ -58,7 +58,8 @@ module.exports.login = (req, res) => {
 //POST /auth/login
 module.exports.loginPost = async (req, res) => {
     try{
-        const { email, password } = req.body
+        const email = String(req.body.email).toLowerCase();
+        const password = String(req.body.password);
         //KIỂM TRA TỒN TẠI
         const user = await User.findOne({ email: email })
         if(!user){

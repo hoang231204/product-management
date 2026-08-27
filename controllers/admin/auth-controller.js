@@ -16,7 +16,8 @@ module.exports.login = (req, res) => {
 //POST /auth/login
 module.exports.loginPost = async (req, res) => {
     try{
-        const { email, password } = req.body
+        const email = String(req.body.email).trim().toLowerCase()
+        const password = String(req.body.password).trim()
         //KIỂM TRA TỒN TẠI
         const account = await Account.findOne({ email: email })
         if(!account){

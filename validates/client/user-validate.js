@@ -32,6 +32,12 @@ module.exports.register = (req,res,next)=>{
         res.redirect(backUrl);
         return
     }
+    if(typeof req.body.email !== 'string'|| typeof req.body.password !== 'string'){
+        req.flash("error", "Email hoặc mật khẩu không hợp lệ!");
+        const backUrl = req.get("Referrer");
+        res.redirect(backUrl);
+        return;
+    }
     next();
 }
 module.exports.login = (req,res,next)=>{
