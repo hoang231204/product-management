@@ -13,6 +13,7 @@ const session = require('express-session')
 const flash = require('connect-flash');
 const { startOrderExpirationWorker, stopOrderExpirationWorker } = require('./workers/orderExpirationWorker');
 const cookieParser = require('cookie-parser')
+const helmet = require('helmet');
 const path = require('path');
 const moment = require('moment');
 //Mongoose
@@ -22,6 +23,57 @@ redis.connect();
 //setting pug
 app.set('views', `${__dirname}/views`)
 app.set('view engine', 'pug')
+//helmet
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+          "https://cdn.tiny.cloud"
+        ],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+          "https://fonts.googleapis.com",
+          "https://cdn.tiny.cloud"
+        ],
+        fontSrc: [
+          "'self'",
+          "https:",
+          "data:",
+          "https://fonts.gstatic.com",
+          "https://cdnjs.cloudflare.com"
+        ],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "blob:",
+          "https:",
+          "http:"
+        ],
+        frameSrc: [
+          "'self'",
+          "https://www.google.com"
+        ],
+        connectSrc: [
+          "'self'",
+          "https:",
+          "wss:"
+        ]
+      },
+    },
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginEmbedderPolicy: false
+  })
+);
 //APP LOCAL
 app.locals.prefixAdmin = pathAdmin.prefixAdmin
 app.locals.moment = moment;
