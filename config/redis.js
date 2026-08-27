@@ -37,7 +37,7 @@ const connect = () => {
 
   client.on("error", (err) => {
     isConnected = false;
-    console.error("[Redis] Lỗi:", err.message);
+    console.error("[Redis] Lỗi:", err.message || err.code || err);
   });
 
   client.on("close", () => {
