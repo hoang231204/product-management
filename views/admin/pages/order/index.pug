@@ -62,6 +62,7 @@ block main
                                     th Thời gian đặt
                                     th Người cập nhật
                                     th Trạng thái
+                                    th Thanh toán
                                     th(width="120px") Hành động
                             tbody
                                 if orders && orders.length > 0
@@ -96,6 +97,18 @@ block main
                                                         a(href="javascript:;" class="badge badge-danger" button-change-status data-id=item._id data-status=item.status) Đã hủy
                                                 else
                                                     span.badge.badge-primary #{item.status}
+                                            td
+                                                if item.payment_status == 'paid'
+                                                    span.badge.badge-success Đã thanh toán
+                                                else if item.payment_status == 'unpaid'
+                                                    span.badge.badge-danger Chưa thanh toán
+                                                else if item.payment_status == 'expired'
+                                                    span.badge.badge-warning Hết hạn
+                                                else if item.payment_status == 'cancelled'
+                                                    span.badge.badge-secondary Đã hủy
+                                                else
+                                                    span.badge.badge-info Chưa xác định
+
                                             td
                                                 .d-flex.justify-content-center.gap-1
                                                     a(href=`${prefixAdmin}/orders/details/${item._id}` class="btn btn-info btn-sm" title="Xem chi tiết")
