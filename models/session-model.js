@@ -5,5 +5,6 @@ const sessionSchema = new mongoose.Schema({
     expiresAt: { type: Date, required: true }
 })
 sessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })
+sessionSchema.index({ token: 1 })
 const Session = mongoose.model('Session', sessionSchema,'sessions')
 module.exports = Session

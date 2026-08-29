@@ -33,7 +33,7 @@ const orderSchema = new mongoose.Schema({
     },
     paymentStatus: {
         type: String,
-        enum: ['unpaid', 'paid', 'expired','cancelled'],
+        enum: ['unpaid', 'paid', 'expired','cancelledPayment', 'cancelledOrder'],
         default: 'unpaid'
     },
     vnpayTransactionNo: {
@@ -43,7 +43,7 @@ const orderSchema = new mongoose.Schema({
 
     status: {
         type: String,
-        enum: ['pending', 'confirmed', 'shipping', 'delivered', 'canceled'],
+        enum: ['pending', 'confirmed', 'shipping', 'delivered', 'cancelled'],
         default: 'pending'
     },
     deleted:{
@@ -84,6 +84,10 @@ const orderSchema = new mongoose.Schema({
         }
     ]   
 });
+
+orderSchema.index({ user_id: 1, deleted: 1, createdAt: -1 });
+orderSchema.index({ status: 1, deleted: 1 });
+orderSchema.index({ paymentStatus: 1, paymentMethod: 1, expiresAt: 1 });
 
 const Order = mongoose.model('Order', orderSchema);
 module.exports = Order;

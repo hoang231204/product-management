@@ -55,5 +55,9 @@ const schema = new mongoose.Schema({
     ]
 }
 )
+
+schema.index({ email: 1 }, { unique: true });
+schema.index({ role_id: 1, deleted: 1 });
+
 const Account = mongoose.model('Account', schema, "accounts");
 module.exports = Account;

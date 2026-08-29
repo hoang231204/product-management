@@ -54,5 +54,9 @@ const schema = new mongoose.Schema({
         }
     ]
 });
+
+schema.index({ parent_id: 1, deleted: 1 });
+schema.index({ deleted: 1, status: 1, position: -1 });
+
 const PostCategory = mongoose.model('PostCategory', schema, 'post_categories');
 module.exports = PostCategory;

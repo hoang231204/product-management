@@ -64,5 +64,8 @@ const categorySchema = new mongoose.Schema({
     ]
 });
 
+categorySchema.index({ parent_id: 1, deleted: 1 });
+categorySchema.index({ deleted: 1, status: 1, position: -1 });
+
 const ProductCategory = mongoose.model('ProductCategory', categorySchema, "product_categories");
 module.exports = ProductCategory;

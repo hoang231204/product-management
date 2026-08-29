@@ -59,5 +59,7 @@ const schema = new mongoose.Schema({
     }
 });
 
+schema.index({ tokenReset: 1, tokenResetExpires: 1 });
+
 const User = mongoose.model('User', schema, "users");
 module.exports = User;

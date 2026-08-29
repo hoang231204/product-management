@@ -64,5 +64,10 @@ const schema = new mongoose.Schema({
         }
     ]
 })
+
+schema.index({ deleted: 1, status: 1, position: -1 });
+schema.index({ category_id: 1, deleted: 1, status: 1 });
+schema.index({ featured: 1, deleted: 1, status: 1 });
+
 const Post = mongoose.model("Post",schema,'posts')
 module.exports = Post

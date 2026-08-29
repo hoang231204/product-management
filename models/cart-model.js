@@ -16,6 +16,7 @@ const schema = new mongoose.Schema({
     });
 
 schema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 7 });
+schema.index({ user_id: 1 });
 
 const Cart = mongoose.model('Cart', schema, "carts");
 module.exports = Cart;

@@ -16,5 +16,8 @@ const schema = new mongoose.Schema({
         timestamps: true
     }
 )
+
+schema.index({ email: 1, otp: 1 });
+
 const ForgotPassword = mongoose.model('ForgotPassword', schema, "forgot_passwords");
 module.exports = ForgotPassword;

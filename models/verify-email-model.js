@@ -16,5 +16,7 @@ const verifyEmailSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+verifyEmailSchema.index({ newEmail: 1, otp: 1 });
+
 const VerifyEmail = mongoose.model("VerifyEmail", verifyEmailSchema, "verify-email");
 module.exports = VerifyEmail;
