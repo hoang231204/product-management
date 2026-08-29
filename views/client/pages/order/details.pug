@@ -57,7 +57,7 @@ block main
                 th Đơn giá
                 th Số lượng
                 th Thành tiền
-                th Action
+                th Hành động
             tbody
               each item, index in order.products
                 if item.product_id
@@ -68,7 +68,7 @@ block main
                     td.text-start.fw-bold= item.product_id.title
                     td #{item.priceNew ? item.priceNew.toLocaleString('vi-VN') : 0} VND
                     td.fw-bold= item.quantity
-                    td.text-success.fw-bold #{((item.priceNew || 0) * item.quantity).toLocaleString('vi-VN')} VND
+                    td.fw-bold #{((item.priceNew || 0) * item.quantity).toLocaleString('vi-VN')} VND
                     td
                       a.btn.btn-sm.btn-outline-primary(href=`/products/details/${item.product_id.slug}`) Mua lại
                 else
@@ -79,7 +79,7 @@ block main
           a.btn.btn-outline-secondary(href="/products")
             i.fa-solid.fa-arrow-left.me-2
             | Tiếp tục mua sắm
-          .h3.fw-bold.mb-0.text-primary
+          .h3.fw-bold.mb-0.text-success
             span.text-muted.fs-6.me-2 Tổng cộng:
             | #{order.totalPrice ? order.totalPrice.toLocaleString('vi-VN') : 0} VND
       else

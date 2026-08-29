@@ -1,6 +1,8 @@
 extends ../../layouts/default.pug
-
+include ../../mixins/show-alert.pug
 block main
+  +alert-success(5000)
+  +alert-error(5000)
   .container.my-4
     section.cart-hero
       .row.align-items-center
@@ -29,6 +31,7 @@ block main
                     th Sản phẩm
                     th Đơn giá
                     th Số lượng
+                    th Tồn kho
                     th Tổng cộng
                     th Hành động
                 tbody
@@ -40,7 +43,7 @@ block main
                           img(src=item.product_id.thumbnail, alt=item.product_id.title)
                           .cart-product__info
                             a(href=`/products/details/${item.product_id.slug}`) #{item.product_id.title}
-                      td.cart-table__price #{item.product_id.priceNew.toLocaleString('vi-VN')} VND
+                      td.cart-table__price #{(item.product_id.priceNew || 0).toLocaleString('vi-VN')} VND
                       td
                         .cart-qty-control
                           button.cart-qty-btn(type="button" cart-qty-action="decrease" aria-label="Giam so luong")
@@ -49,12 +52,14 @@ block main
                             type="number"
                             value=item.quantity
                             min="1"
+                            max=item.product_id.stock
                             product-id=item.product_id._id
                             name="quantity"
                           )
                           button.cart-qty-btn(type="button" cart-qty-action="increase" aria-label="Tang so luong")
                             i.fa-solid.fa-plus
-                      td.cart-table__subtotal #{(item.product_id.priceNew * item.quantity).toLocaleString('vi-VN')} VND
+                      td.cart-table__stock #{item.product_id.stock}
+                      td.cart-table__subtotal #{( (item.product_id.priceNew || 0) * item.quantity).toLocaleString('vi-VN')} VND
                       td.text-right
                         a.btn.btn-sm.btn-outline-danger(href=`/carts/delete/${item.product_id._id}`)
                           i.fa-solid.fa-trash-can.me-1
@@ -86,7 +91,7 @@ block main
     else
       a.btn.btn-secondary.btn-block.mt-2(href="/orders")
               i.fa-solid.fa-box-archive.me-2
-              | Đơn hàng đã thanh toán
+              | Đơn hàng đã mua
       .cart-empty
         .cart-empty__icon
           i.fa-solid.fa-basket-shopping

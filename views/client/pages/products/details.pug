@@ -40,7 +40,7 @@ block main
 
               // Form Add to Cart
               .inner-action.bg-light.p-4.rounded-lg.border.mb-4
-                form(action=`/carts/add/${product.id}` method="POST")
+                form(action=`/carts/add/${product._id}` method="POST")
                   label.fw-bold.mb-2 Số lượng mua:
                   .d-flex.gap-3.align-items-center.mb-3
                     input(

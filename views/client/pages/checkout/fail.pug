@@ -1,10 +1,20 @@
 extends ../../layouts/default.pug
 
 block main
-  .container.mt-5.text-center
-    .alert.alert-danger
-      h3 #{pageTitle}
-      p Chi tiết lỗi: 
-        strong #{message}
-      p Vui lòng thử lại hoặc liên hệ hỗ trợ nếu bạn gặp sự cố.
-    a.btn.btn-outline-primary(href="/") Quay về trang chủ
+  .container.my-5
+    .row.justify-content-center
+      .col-md-8.col-lg-6
+        .card.border-0.shadow-sm.text-center.p-4.p-md-5
+          .mb-4
+            span.fa-stack.fa-2x.text-danger
+              i.fa-solid.fa-circle.fa-stack-2x.opacity-10
+              i.fa-solid.fa-triangle-exclamation.fa-stack-1x
+          h3.fw-bold.text-danger.mb-3 #{pageTitle}
+          .alert.alert-light.border.py-3.px-3.mb-4.rounded-3
+            p.mb-1.text-muted.small Chi tiết lỗi:
+            strong.text-dark #{message}
+          p.text-muted.mb-4 Vui lòng thử lại sau hoặc liên hệ với đội ngũ hỗ trợ nếu bạn vẫn gặp sự cố này.
+          div
+            a.btn.btn-primary.px-4.py-2(href="/")
+              i.fa-solid.fa-house.me-2
+              | Quay về trang chủ

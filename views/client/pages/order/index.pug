@@ -3,57 +3,63 @@ include ../../mixins/show-alert.pug
 include ../../mixins/box-head.pug
 
 block main
-  .container.my-4
+  .container.my-5
     +alert-success(3000)
     +alert-error(3000)
 
     +boxhead("Danh sách đơn hàng")
 
-    .card.mb-3.shadow-sm
-      .card-header.font-weight-bold.bg-white.py-3 
-        | Danh sách đơn hàng
-      .card-body
-        .table-responsive
-          table.table.table-hover.table-sm.align-middle
-            thead.thead-light
+    .card.border-0.shadow-sm.mb-5
+      .card-header.bg-white.py-3.fw-bold
+        i.fa-solid.fa-list.me-2.text-primary
+        | Danh sách đơn hàng của bạn
+      .card-body.p-0
+        .table-responsive.mb-0
+          table.table.table-hover.align-middle.mb-0
+            thead.table-light.text-uppercase.fs-7
               tr
-                th STT
-                th Họ tên
-                th Số điện thoại
-                th Địa chỉ
-                th Tổng tiền
-                th Trạng thái
-                th.text-center Hành động
+                th.py-3.text-center(style="width: 5%;") STT
+                th.py-3(style="width: 15%;") Họ tên
+                th.py-3(style="width: 12%;") Số điện thoại
+                th.py-3(style="width: 20%;") Địa chỉ
+                th.py-3(style="width: 12%;") Tổng tiền
+                th.py-3(style="width: 12%;") Trạng thái
+                th.py-3(style="width: 12%;") Ngày tạo
+                th.py-3.text-center(style="width: 12%;") Hành động
             tbody
               if orders && orders.length > 0
                 each item, index in orders
                   tr
-                    td.align-middle= index + 1
-                    td.align-middle.font-weight-bold= item.fullname
-                    td.align-middle= item.phone
-                    td.align-middle= item.address
-                    td.align-middle.text-danger.font-weight-bold #{item.totalPrice.toLocaleString()} VND
-                    td.align-middle
-                      if item.status == 'pending'
-                        span.badge.badge-warning Đang chờ
-                      else if item.status == 'confirmed'
-                        span.badge.badge-info Đã xác nhận
-                      else if item.status == 'shipped'
-                        span.badge.badge-primary Đang giao
-                      else if item.status == 'delivered'
-                        span.badge.badge-success Đã giao
-                      else
-                        span.badge.badge-danger Đã hủy
-                    td.align-middle.text-center
-                      a.btn.btn-info.btn-sm.text-white.mb-1(href=`/orders/details/${item._id}`) Chi tiết
-                      a.btn.btn-secondary.btn-sm.mb-1.ml-1(href=`/orders/edit/${item._id}`) Sửa thông tin
-                      button.btn.btn-danger.btn-sm.mb-1.ml-1(type="button" data-id=item._id button-cancel) Hủy đơn
+                    td.text-center.fw-bold #{index + 1}
+                    td.fw-semibold.text-dark #{item.userInfor ? item.userInfor.fullname : ''}
+                    td #{item.userInfor ? item.userInfor.phone : ''}
+                    td.text-truncate(style="max-width: 200px;" title=item.userInfor ? item.userInfor.address : '') #{item.userInfor ? item.userInfor.address : ''}
+                    td.text-danger.fw-bold #{item.totalPrice.toLocaleString('vi-VN')} VND
+                    td
+                      - 
+                        let statusClass = 'bg-secondary';
+                        let statusText = 'Đang chờ';
+                        if (item.status == 'pending') { statusClass = 'bg-warning text-dark'; statusText = 'Đang chờ'; }
+                        else if (item.status == 'confirmed') { statusClass = 'bg-info text-white'; statusText = 'Đã xác nhận'; }
+                        else if (item.status == 'shipped') { statusClass = 'bg-primary text-white'; statusText = 'Đang giao'; }
+                        else if (item.status == 'delivered') { statusClass = 'bg-success text-white'; statusText = 'Đã giao'; }
+                        else if (item.status == 'cancelled') { statusClass = 'bg-danger text-white'; statusText = 'Đã hủy'; }
+                      span.badge.px-2.py-1(class=statusClass) #{statusText}
+                    td.text-muted.small #{moment(item.createdAt).format('DD/MM/YYYY HH:mm')}
+                    td.text-center
+                      .d-flex.justify-content-center.gap-1.flex-wrap
+                        a.btn.btn-info.btn-sm.text-white(href=`/orders/details/${item._id}` title="Chi tiết")
+                          i.fa-solid.fa-eye
+                        a.btn.btn-secondary.btn-sm(href=`/orders/edit/${item._id}` title="Sửa")
+                          i.fa-solid.fa-pen
+                        button.btn.btn-danger.btn-sm(type="button" data-id=item._id button-cancel title="Hủy đơn")
+                          i.fa-solid.fa-xmark
               else
                 tr
-                  td(colspan="7" class="text-center py-4 text-muted") 
+                  td(colspan="8" class="text-center py-5 text-muted") 
+                    i.fa-solid.fa-box-open.fa-2x.mb-2.d-block.text-black-50
                     | Không có đơn hàng nào!  
 
-    //- Form ẩn phục vụ cho việc gửi request hủy đơn hàng qua JavaScript
     form(
       action=""
       method="POST"
