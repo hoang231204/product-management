@@ -67,6 +67,10 @@ app.use(
           "'self'",
           "https:",
           "wss:"
+        ],
+        formAction: [
+          "'self'",
+          "https://sandbox.vnpayment.vn"
         ]
       },
     },
