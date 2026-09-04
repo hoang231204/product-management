@@ -83,7 +83,7 @@ module.exports.loginPost = async (req, res) => {
         })
         await session.save()
         //RETURN KẾT QUẢ
-        res.cookie('token', accessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 })
+        res.cookie('token', accessToken, { httpOnly: true, maxAge: 15 * 60 * 1000, secure: true, sameSite: 'strict' })
         res.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'strict' })
         req.flash('success', 'Đăng nhập thành công')
         return res.redirect('/')
@@ -116,7 +116,7 @@ module.exports.refreshToken = async (req, res) => {
             expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         });
         //Cập nhật Cookie
-        res.cookie('token', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
+        res.cookie('token', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000, secure: true, sameSite: 'strict' });
         res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'strict' });
         req.flash('success', 'Đăng nhập thành công');
         return res.redirect('/'); 
