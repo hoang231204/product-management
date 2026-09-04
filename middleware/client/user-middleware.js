@@ -36,8 +36,8 @@ module.exports.checkLogin = async (req, res, next) =>{
                         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
                     });
                     //Cập nhật Cookie
-                    res.cookie('token', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
-                    res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+                    res.cookie('token', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000, secure: true, sameSite: 'strict' });
+                    res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'strict' });
                     }
             }catch (error) {
                 console.error('Error during token refresh:', error);
