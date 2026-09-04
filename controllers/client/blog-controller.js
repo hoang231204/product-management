@@ -30,8 +30,7 @@ module.exports.index = async (req, res) => {
       find.category_id = category._id;
       cacheKeySuffix = `:cat:${req.query.slugCategory}`;
     } else {
-      find.featured = '1';
-      cacheKeySuffix = ':featured';
+      cacheKeySuffix = ':all';
     }
 
     const page = req.query.page || 1;
