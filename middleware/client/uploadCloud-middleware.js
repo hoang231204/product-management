@@ -1,6 +1,6 @@
-
 const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
+const uploadRateLimit = require('../../helpers/cloudinary-upload-rate-limit');
 // const storageMulti = require('../../helpers/storeMulti')
 cloudinary.config({ 
   cloud_name: process.env.CLOUD_NAME, 
@@ -9,6 +9,9 @@ cloudinary.config({
 });
 
 module.exports.upload =async (req, res, next)=>{
+  await uploadRateLimit(req, res, () => {});
+  if (res.headersSent) return;
+
       if(req.file){
         let streamUpload = (req) => {
         return new Promise((resolve, reject) => {

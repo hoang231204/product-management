@@ -1,8 +1,12 @@
 const uploadToCloudinary = require("../../helpers/upload-cloudinary");
+const uploadRateLimit = require("../../helpers/cloudinary-upload-rate-limit");
 
 // Hàm cũ: Dành cho upload 1 file (upload.single)
 module.exports.upload = async (req, res, next) => {
   try {
+    await uploadRateLimit(req, res, () => {});
+    if (res.headersSent) return;
+
     if (req.file) {
       const link = await uploadToCloudinary(req.file.buffer);
       req.body[req.file.fieldname] = link;
@@ -15,6 +19,9 @@ module.exports.upload = async (req, res, next) => {
 
 module.exports.uploadFields = async (req, res, next) => {
   try {
+    await uploadRateLimit(req, res, () => {});
+    if (res.headersSent) return;
+
     if (req.files) {
       if (typeof req.files === 'object' && !Array.isArray(req.files)) {
         for (const fieldname in req.files) {
