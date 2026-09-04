@@ -32,33 +32,54 @@ module.exports.add= async (req,res)=>{
     }
 }
 //GET /cart
-module.exports.index = async (req,res)=>{
-    try{
+module.exports.index = async (req, res) => {
+    try {
         const cartId = req.cartId;
-        const cart = await Cart.findOne({ _id: cartId }).populate('products.product_id', 'title price thumbnail discountPercentage').lean();
-        if(!cart){
+        if (!cartId) {
             req.flash('error', 'Giỏ hàng không tồn tại');
             return res.redirect('/products');
         }
-        cart.products = cart.products.filter(item => item.product_id !== null);
-        cart.products.forEach(item => {
-            item.product_id.priceNew = calcuNewPrice.priceNew(item.product_id.price, item.product_id.discountPercentage);
-        });
-        cart.totalPrice = cart.products.reduce((total, item) => {
-            const itemPrice = item.product_id.priceNew * item.quantity;
-            return total + itemPrice;
-        }, 0);
-        res.render('client/pages/cart/index', 
-            {
+        const cart = await Cart.findOne({ _id: cartId }).lean();
+        if (!cart) {
+            req.flash('error', 'Giỏ hàng không tồn tại');
+            return res.redirect('/products');
+        }
+        cart.products = cart.products.filter(item => item.product_id);
+        if (cart.products.length === 0) {
+            cart.totalPrice = 0;
+            return res.render('client/pages/cart/index', {
                 cartDetail: cart,
                 pageTitle: 'Giỏ hàng của bạn'
             });
-    }
-    catch(error){
+        }
+        const validProductIds = cart.products.map(item => item.product_id);
+        const cartDetail = await Cart.findOne({ _id: cartId })
+            .populate({
+                path: 'products.product_id',
+                select: 'title price thumbnail discountPercentage slug stock',
+            })
+            .lean();
+        cartDetail.products = cartDetail.products.filter(item => item.product_id !== null && item.product_id !== undefined);
+        cartDetail.products.forEach(item => {
+            item.product_id.priceNew = calcuNewPrice.priceNew(
+                item.product_id.price, 
+                item.product_id.discountPercentage
+            );
+        });
+        cartDetail.totalPrice = cartDetail.products.reduce((total, item) => {
+            const itemPrice = item.product_id.priceNew * item.quantity;
+            return total + itemPrice;
+        }, 0);
+        res.render('client/pages/cart/index', {
+            cartDetail: cartDetail,
+            pageTitle: 'Giỏ hàng của bạn'
+        });
+    } catch (error) {
+        console.log("LỖI CHI TIẾT GIỎ HÀNG:", error);
         req.flash('error', 'Đã có lỗi xảy ra, vui lòng thử lại');
         res.redirect('/products');
     }
-}
+};
 module.exports.delete = async (req,res)=>{
     try{
         const cartId = req.cartId;
