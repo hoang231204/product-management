@@ -30,7 +30,24 @@ block main
                             | Thiệp và gói quà miễn phí
                 .col-lg-5.d-none.d-lg-flex.justify-content-center
                     .hero-flower__visual
-                        img.hero-flower__image(src="https://cellphones.com.vn/sforum/wp-content/uploads/2024/01/hinh-nen-hoa-hong-6.jpg")
+                        if websiteInfor && websiteInfor.banner
+                            img.hero-flower__image(
+                                    src=websiteInfor.banner
+                                    alt="Bó hoa hồng tươi"
+                                    width="640"
+                                    height="640"
+                                    fetchpriority="high"
+                                decoding="async"
+                            )
+                        else
+                            img.hero-flower__image(
+                                src="https://cellphones.com.vn/sforum/wp-content/uploads/2024/01/hinh-nen-hoa-hong-6.jpg"
+                                alt="Bó hoa hồng tươi"
+                                width="640"
+                                height="640"
+                                fetchpriority="high"
+                                decoding="async"
+                            )
                         span.hero-flower__badge Fresh Bloom
 
     // Featured Products
