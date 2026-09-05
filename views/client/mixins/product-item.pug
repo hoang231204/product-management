@@ -2,7 +2,7 @@ mixin product-item(item)
   .product-item
     .inner-image
       a(href=`/products/details/${item.slug}`)
-        img(src=item.thumbnail, alt=item.title)
+        img(src=item.thumbnail, alt=item.title, width="300", height="300", loading="lazy", decoding="async")
       if(item.featured == "1")
         .inner-featured Nổi bật
       if(item.discountPercentage && item.discountPercentage > 0)
@@ -23,7 +23,7 @@ mixin blog-item(item)
   .blog-item
     .inner-image
       a(href=`/blogs/details/${item.slug}`)
-        img(src=item.thumbnail, alt=item.title)
+        img(src=item.thumbnail, alt=item.title, width="400", height="300", loading="lazy", decoding="async")
     
     .p-3.d-flex.flex-column.flex-grow-1
       h3.inner-title.mb-2
