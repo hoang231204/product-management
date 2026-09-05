@@ -7,7 +7,8 @@ mixin boxSearch(keyword)
                 name="keyword"
                 class="form-control"
                 value=keyword
+                aria-label="Tìm kiếm sản phẩm"
             )
             .input-group-append
-                button(class="btn btn-primary" type="submit")
+                button(class="btn btn-primary" type="submit" aria-label="Tìm kiếm")
                     i.fa-solid.fa-magnifying-glass
