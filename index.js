@@ -17,9 +17,19 @@ const helmet = require('helmet');
 const path = require('path');
 const moment = require('moment');
 //Mongoose
-database.connect();
+app.use(async (req, res, next) => {
+  try {
+    await database.connect();
+    next();
+  } catch (error) {
+    console.error('[Database] Không thể kết nối MongoDB:', error.message);
+    next(error);
+  }
+});
 //Redis
-redis.connect();
+if (process.env.REDIS_URL) {
+  redis.connect();
+}
 //setting pug
 app.set('views', `${__dirname}/views`)
 app.set('view engine', 'pug')
@@ -122,10 +132,12 @@ app.use(/.*/, (req, res) => {
 });
 
 //message
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-  startOrderExpirationWorker();
-})
+if (require.main === module && !process.env.VERCEL) {
+  app.listen(port || 3000, () => {
+    console.log(`Example app listening on port ${port || 3000}`)
+    startOrderExpirationWorker();
+  })
+}
 
 //Graceful shutdown
 const gracefulShutdown = async () => {
@@ -137,3 +149,5 @@ const gracefulShutdown = async () => {
 
 process.on("SIGINT", gracefulShutdown);
 process.on("SIGTERM", gracefulShutdown);
+
+module.exports = app;

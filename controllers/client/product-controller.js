@@ -43,8 +43,9 @@ module.exports.index = async (req, res) => {
     })
   }
   catch (error) {
+    console.error('[Products] Không thể tải danh sách sản phẩm:', error);
     req.flash('error', 'Đã có lỗi xảy ra, vui lòng thử lại');
-    res.redirect('/products');
+    res.status(500).send('Không thể tải danh sách sản phẩm');
   }
 }
 

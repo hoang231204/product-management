@@ -1,10 +1,31 @@
 const mongoose = require('mongoose');
 
-module.exports.connect = async ()=>{
-    try {
-        await mongoose.connect(process.env.MONGO);
-        console.log("Conneted!")
-    } catch (error) {
-        console.log(error);
+const cached = global.mongoose || (global.mongoose = { conn: null, promise: null });
+
+module.exports.connect = async () => {
+    if (cached.conn && mongoose.connection.readyState === 1) {
+        return cached.conn;
     }
-}
+
+    if (mongoose.connection.readyState !== 1) {
+        cached.conn = null;
+        cached.promise = null;
+    }
+
+    if (!cached.promise) {
+        cached.promise = mongoose.connect(process.env.MONGO, {
+            bufferCommands: false,
+            serverSelectionTimeoutMS: 5000
+        });
+    }
+
+    try {
+        cached.conn = await cached.promise;
+        console.log("Connected!");
+        return cached.conn;
+    } catch (error) {
+        cached.promise = null;
+        cached.conn = null;
+        throw error;
+    }
+};
