@@ -2,19 +2,28 @@
 
 > A full-stack server-rendered ecommerce platform for managing products, orders, customers, content, and operations from a permission-based admin dashboard.
 
+This repository contains the `product-management` application. It is a server-rendered Node.js application; it does not require a separate frontend build step.
+
 Product Management is built with **Node.js**, **Express 5**, **MongoDB**, **Redis**, and **Pug**. The project models a practical commerce workflow end to end: a customer can discover products, manage a cart, place a COD or VNPay order, and track it; an administrator can manage the catalog, users, roles, content, settings, inventory, and order lifecycle.
 
-## Why This Project Stands Out
+## Project Highlights
 
-- **Complete business workflow:** product discovery, categories, cart, checkout, payment callback, order cancellation, and stock restoration.
-- **Two operational surfaces:** a customer storefront and a protected admin dashboard rendered with Pug.
-- **Granular RBAC:** roles are associated with explicit permissions such as `product_view`, `product_edit`, and `order_delete`.
-- **JWT authentication:** short-lived access tokens, HTTP-only cookies, refresh-token persistence, and refresh-token rotation for client and admin accounts.
-- **Security-focused input handling:** request validation, HTML sanitization, escaped Pug output, and controlled Mongoose query inputs.
-- **Production-minded integrations:** Redis cache-aside patterns, Cloudinary media storage, SMTP email, VNPay payment, and graceful shutdown.
-- **Concurrency awareness:** checkout uses MongoDB sessions, transactions, conditional stock updates, and rollback handling to reduce overselling risk.
-- **Checkout idempotency:** repeated COD requests within the configured two-minute window reuse the existing order; repeated unpaid VNPay requests reuse the existing payment order.
-- **Maintainable structure:** routes, controllers, models, middleware, validations, and helpers are separated by responsibility.
+- Full customer storefront and protected admin dashboard rendered with Pug.
+- End-to-end commerce workflow: catalog, cart, checkout, payment, orders, inventory, and content.
+- Role-based access control with granular permissions for admin operations.
+- Integrations for Redis, Cloudinary, SMTP email, and VNPay sandbox payments.
+- Modular MVC structure with separate routes, controllers, models, middleware, validations, and helpers.
+
+## Security & Performance
+
+- Short-lived JWT access tokens with HTTP-only refresh-token cookies and token rotation.
+- Role and permission checks protect admin routes and operations.
+- `express-validator`, `sanitize-html`, escaped Pug output, and controlled Mongoose queries reduce injection and XSS risk.
+- Helmet provides security headers and a configured Content Security Policy.
+- Redis cache-aside reads and explicit invalidation improve product-read performance.
+- Checkout uses MongoDB transactions, conditional stock updates, and recent-order checks to reduce overselling and duplicate orders.
+- A Redis-backed upload counter limits Cloudinary uploads to two files per IP per 60 seconds, with graceful degradation when Redis is unavailable.
+- An order-expiration worker runs every 60 seconds to release stock from expired unpaid orders.
 
 ## Feature Highlights
 
@@ -28,6 +37,20 @@ Product Management is built with **Node.js**, **Express 5**, **MongoDB**, **Redi
 - Order history, order details, cancellation, and delivery information updates.
 - VNPay return handling and refund request flow for eligible cancellations.
 
+Main customer URLs:
+
+| URL | Purpose |
+| --- | --- |
+| `/` | Homepage |
+| `/products` | Product listing and product details |
+| `/search` | Product search |
+| `/carts` | Cart |
+| `/checkout` | Checkout and payment |
+| `/users` | Registration, login, profile, and password recovery |
+| `/orders` | Order history and order details |
+| `/blogs` | Blog |
+| `/contact` | Contact page |
+
 ### Admin dashboard
 
 - Dashboard statistics and operational overview.
@@ -39,6 +62,8 @@ Product Management is built with **Node.js**, **Express 5**, **MongoDB**, **Redi
 - Blog post and post-category management.
 - General website settings and administrator profile management.
 - TinyMCE image upload through Cloudinary.
+
+The admin dashboard is available at `/admin`. Sign in at `/admin/auth/login`; protected admin pages require the account to have the corresponding role permissions.
 
 ### Platform capabilities
 
@@ -107,10 +132,10 @@ Browser
 
 - Node.js 20 or later and npm.
 - MongoDB database, local or hosted.
-- Redis instance. The application reads `REDIS_URL`.
-- Cloudinary account for image uploads.
-- SMTP credentials for email-based flows.
-- VNPay sandbox credentials if payment testing is required.
+- Redis instance. Redis is optional for local startup; when `REDIS_URL` is not set, the Redis helper defaults to `redis://localhost:6379` and cache/upload-counter features gracefully degrade when Redis is unavailable.
+- Cloudinary account for image uploads. Required for upload-related features.
+- SMTP credentials for email-based flows. Required for registration/password-recovery emails.
+- VNPay sandbox credentials if payment testing is required. COD checkout does not require VNPay.
 
 ### Installation
 
@@ -120,7 +145,7 @@ cd product-management
 npm install
 ```
 
-Create a local `.env` file. Never commit real credentials.
+Create a local `.env` file in this directory. Never commit real credentials. `PORT` defaults to `3000`, and `ACCESS_TOKEN_TTL` defaults to `15m` when omitted.
 
 ```env
 PORT=3000
@@ -144,13 +169,15 @@ VNP_RETURN_URL=http://localhost:3000/checkout/vnpay_return
 VNP_API_URL=https://sandbox.vnpayment.vn/merchant_webapi/api/transaction
 ```
 
+`MONGO` and `ACCESS_TOKEN_SECRET` should always be set. The Cloudinary, SMTP, and VNPay variables are only needed for the related features. `VNP_RETURN_URL` must be reachable by the browser after payment; for local testing, use the local checkout callback shown above.
+
 Start the development server:
 
 ```bash
 npm start
 ```
 
-Open `http://localhost:3000`. The admin routes are mounted under `/admin`.
+Open `http://localhost:3000`. The application connects to MongoDB lazily when a request arrives. Redis is initialized only when `REDIS_URL` is present; the helper itself still uses `localhost:6379` as its fallback when explicitly connected.
 
 ## Docker
 
@@ -160,7 +187,7 @@ The included image uses Node.js 20 Alpine and installs dependencies with `npm ci
 docker compose up --build
 ```
 
-Docker Compose loads environment variables from `.env` and exposes port `3000`. MongoDB and Redis are external dependencies; provide their connection details in `.env` before starting the container.
+Docker Compose loads environment variables from `.env`, mounts the source tree, and exposes port `3000`. MongoDB and Redis are external dependencies; provide `MONGO` and, when needed, `REDIS_URL` in `.env` before starting the container. The container runs `npm run start:docker`, which uses Nodemon polling for mounted files.
 
 ## Available Scripts
 
@@ -170,40 +197,18 @@ Docker Compose loads environment variables from `.env` and exposes port `3000`. 
 | `npm run start:docker` | Start Nodemon in polling mode for Docker-mounted source files |
 | `npm test` | Not implemented yet; currently exits with a placeholder error |
 
-## Security and Reliability Notes
-
-- **JWT authentication:** client and admin login handlers issue short-lived JWT access tokens. Protected middleware verifies the token, loads the current user/account, and rejects expired or invalid sessions.
-- **Refresh-token rotation:** refresh tokens are stored in the session collection, rotated when a new access token is issued, and cleared on logout.
-- **RBAC authorization:** admin middleware loads the account role, while protected controllers enforce granular permissions for products, orders, accounts, users, roles, posts, categories, and settings.
-- **Password security:** passwords are hashed with bcrypt and are never selected into authenticated user/account context queries.
-- **XSS mitigation:** Pug escapes interpolated values by default; request validators sanitize plain-text fields and allow only explicitly configured tags/attributes for rich text.
-- **NoSQL injection mitigation:** request data is validated with `express-validator`, normalized before persistence, and query inputs are passed through application-controlled Mongoose query shapes rather than concatenated query strings.
-- **HTTP security headers:** Helmet is enabled with a configured Content Security Policy and cross-origin policies.
-- **CSRF mitigation for refresh tokens:** refresh tokens are stored in cookies with `httpOnly`, `secure`, and `sameSite: 'strict'`. `sameSite: 'strict'` prevents browsers from sending the refresh-token cookie in cross-site requests, while `httpOnly` prevents client-side JavaScript from reading it and `secure` restricts transmission to HTTPS. The project uses cookie attributes to protect the refresh-token flow rather than synchronizer tokens or a `csurf` middleware; state-changing routes should still receive an application-wide CSRF policy before production.
-- Product reads use Redis cache helpers with explicit invalidation after relevant mutations.
-- Checkout uses MongoDB transactions and stock conditions where the database deployment supports transactions.
-- Checkout checks for an existing recent order before creating a new one, then atomically updates stock, creates the order, and clears the cart inside the transaction.
-- Conditional `bulkWrite` stock updates ensure the database only decrements inventory when the requested quantity is still available; failed writes abort the transaction and preserve the cart.
-- The order-expiration worker periodically handles unpaid orders and restores reserved inventory.
-- Cloudinary upload counting uses an atomic Redis counter across application instances, with a local fallback when Redis is temporarily unavailable.
-- Redis is currently used for cache-aside reads, invalidation, and the Cloudinary upload counter; it is not used for generic idempotency keys, distributed locks, sessions, or application-wide rate limiting.
-- Idempotency is currently scoped to the checkout flow and recent cart/order state; it is not a generic `Idempotency-Key` middleware for every write endpoint.
+The Node inspector is enabled by both start commands. When running locally, it is exposed on the default inspector port in addition to the HTTP port `3000`.
 
 ## Deployment Considerations
 
-The project includes `vercel.json`, but the current entry point starts a long-running Express server and a background worker. For production, deploy it to a long-running Node.js host such as a container platform or VM, or refactor the server entry point and worker before using a serverless runtime.
+The project includes `vercel.json` and exports the Express app for Vercel, but the current entry point also starts a long-running background worker when run directly. The worker is not a reliable fit for serverless execution because serverless instances are short-lived. For production, deploy the application and worker on a long-running Node.js host such as a container platform or VM, or separate/refactor the worker before using a serverless runtime.
 
-For production readiness, also configure:
+Before production, also configure:
 
 - Separate production secrets and a managed MongoDB/Redis deployment.
-- Secure cookie flags and an environment-based session secret.
-- CSRF protection for cookie-authenticated state-changing forms.
-- Rate limiting and automated integration tests for authentication, checkout, payment callbacks, and order authorization.
+- Secure cookie flags, an environment-based session secret, and CSRF protection for cookie-authenticated state-changing forms.
+- Rate limiting and integration tests for authentication, checkout, payment callbacks, and order authorization.
 - Monitoring for payment callbacks, worker failures, cache availability, and stock consistency.
-
-## Engineering Notes
-
-This project is intentionally structured as a portfolio-quality business application rather than a collection of isolated CRUD examples. It demonstrates how a backend coordinates authentication, authorization, persistence, caching, file storage, email, payment, background processing, and server-rendered UX in one coherent system.
 
 ## Contributing
 
