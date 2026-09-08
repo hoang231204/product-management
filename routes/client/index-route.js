@@ -11,22 +11,22 @@ const ProductCategoryMiddleware = require('../../middleware/client/product-categ
 const cartMiddleware = require('../../middleware/client/cart-middleware')
 const userMiddleware = require('../../middleware/client/user-middleware')
 const websiteInfor = require('../../middleware/client/website-infor')
-module.exports = (app)=>{{
+module.exports = (app) => {
     app.use(websiteInfor)
-    app.use(ProductCategoryMiddleware.category)
     app.use(userMiddleware.checkLogin)
-    app.use(cartMiddleware.cart)
     app.use((req, res, next) => {
         res.locals.currentPath = req.path;
         next();
     })
-    app.use("/",homeRouter)
-    app.use("/products",productRouter)
+    app.use(ProductCategoryMiddleware.category)
+    app.use('/users', userRouter)
+
+    app.use("/",cartMiddleware.cart,homeRouter)
+    app.use("/products",cartMiddleware.cart,productRouter)
     app.use('/search',searchRouter)
-    app.use('/carts',cartRouter)
-    app.use('/checkout',checkoutRouter)
-    app.use('/users',userRouter)
-    app.use('/orders',orderRouter)
+    app.use('/carts',cartMiddleware.cart,cartRouter)
+    app.use('/checkout',cartMiddleware.cart,checkoutRouter)
+    app.use('/orders',cartMiddleware.cart,orderRouter)
     app.use('/blogs',blogRouter)
     app.use('/contact',contactRouter)
-}}
+}
