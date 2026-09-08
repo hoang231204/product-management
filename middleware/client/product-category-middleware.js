@@ -4,26 +4,22 @@ const cacheService = require('../../helpers/cache-service');
 
 module.exports.category = async (req, res, next) =>{
     try {
-        // Cache cây danh mục — chạy trên MỌI request client nên impact rất lớn
-        const cacheKey = "categories:tree";
-        const cachedData = await cacheService.get(cacheKey);
+        const cachedData = await cacheService.getOrSet(
+            "categories:tree",
+            900,
+            async () => {
+                const categories = await Category.find({deleted: false})
+                    .select('title slug parent_id status')
+                    .lean();
+                return {
+                    categories,
+                    categoryTree: tree(categories)
+                };
+            }
+        );
 
-        if (cachedData) {
-            res.locals.categories = cachedData.categories;
-            res.locals.categoryTree = cachedData.categoryTree;
-            return next();
-        }
-
-        const categories = await Category.find({deleted: false}).select('title slug parent_id status').lean();
-        if(!categories) {
-            return next();
-        }
-        const categoryTree = tree(categories);
-        res.locals.categories = categories;
-        res.locals.categoryTree = categoryTree;
-
-        // Lưu cache 15 phút
-        await cacheService.set(cacheKey, { categories, categoryTree }, 900);
+        res.locals.categories = cachedData.categories;
+        res.locals.categoryTree = cachedData.categoryTree;
         next();
     } catch (error) {
         // Fallback: query trực tiếp nếu có lỗi
