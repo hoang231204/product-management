@@ -15,7 +15,8 @@ module.exports.index =  async (req, res) => {
             return res.render('client/pages/products/index', {
                 pageTitle: `"${keyword}"| Tìm kiếm`,
                 products: cachedProducts,
-                categoryTree: res.locals.categoryTree
+                categoryTree: res.locals.categoryTree,
+                objectPagination: null
             });
         }
 
@@ -31,7 +32,8 @@ module.exports.index =  async (req, res) => {
         res.render('client/pages/products/index', {
             pageTitle: `"${keyword}"| Tìm kiếm`,
             products: products,
-            categoryTree: res.locals.categoryTree
+            categoryTree: res.locals.categoryTree,
+            objectPagination: null
         });
         }else{
             res.redirect('/products');
