@@ -1,4 +1,5 @@
 const redis = require("../config/redis");
+const pending = new Map();
 /**
  * Lấy dữ liệu từ cache
  * @param {string} key - Cache key
@@ -10,10 +11,8 @@ const get = async (key) => {
     const client = redis.getClient();
     const data = await client.get(key);
     if (data) {
-      console.log(`[Cache] HIT: ${key}`);
       return JSON.parse(data);
     }
-    console.log(`[Cache] MISS: ${key}`);
     return null;
   } catch (error) {
     console.error(`[Cache] Lỗi khi GET key "${key}":`, error.message);
@@ -33,7 +32,6 @@ const set = async (key, data, ttlSeconds = 300) => {
     if (!redis.getIsConnected()) return false;
     const client = redis.getClient();
     await client.setex(key, ttlSeconds, JSON.stringify(data));
-    console.log(`[Cache] SET: ${key} (TTL: ${ttlSeconds}s)`);
     return true;
   } catch (error) {
     console.error(`[Cache] Lỗi khi SET key "${key}":`, error.message);
@@ -117,13 +115,23 @@ const getOrSet = async (key, ttlSeconds, fetchFn) => {
     return cached;
   }
 
-  // Cache miss → gọi fetchFn
-  const freshData = await fetchFn();
+  if (pending.has(key)) {
+    return pending.get(key);
+  }
 
-  // Lưu vào cache (fire-and-forget, không block response)
-  set(key, freshData, ttlSeconds);
+  const request = (async () => {
+    const freshData = await fetchFn();
+    await set(key, freshData, ttlSeconds);
+    return freshData;
+  })();
 
-  return freshData;
+  pending.set(key, request);
+
+  try {
+    return await request;
+  } finally {
+    pending.delete(key);
+  }
 };
 
 /**
