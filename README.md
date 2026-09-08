@@ -25,6 +25,83 @@ Product Management is built with **Node.js**, **Express 5**, **MongoDB**, **Redi
 - A Redis-backed upload counter limits Cloudinary uploads to two files per IP per 60 seconds, with graceful degradation when Redis is unavailable.
 - An order-expiration worker runs every 60 seconds to release stock from expired unpaid orders.
 
+## E-Commerce Web Application
+
+A production-ready, high-performance full-stack e-commerce platform built with **Node.js, Express, Pug (SSR), MongoDB, and Redis**, fully containerized using **Docker**.
+
+### Key Features
+
+- **Server-Side Rendering:** Fast initial page loads and SEO-friendly views using Pug.
+- **Distributed Caching:** Redis cache-aside integration reduces database load on high-traffic routes.
+- **Automated Performance Testing:** k6 load-testing scripts cover core customer routes.
+- **Security and Maintenance:** Helmet, validation, sanitization, secure cookies, and dependency auditing.
+
+### Performance Testing
+
+The project includes k6 scripts under the `k6/` directory:
+
+| Script | Route |
+| --- | --- |
+| `k6/k6-smoke-get-login.js` | `GET /users/login` |
+| `k6/k6-smoke-post-login.js` | `POST /users/login` |
+| `k6/k6-smoke-search.js` | `GET /search?keyword=hoa` |
+| `k6/k6-smoke-products.js` | `GET /products` |
+| `k6/k6-smoke-product-pagination.js` | `GET /products?page=1/2` |
+| `k6/k6-smoke-product-detail.js` | `GET /products/details/:slugProduct` |
+| `k6/k6-smoke-carts.js` | `GET /carts` |
+
+Start the application before running a test:
+
+```powershell
+docker compose up -d
+```
+
+Run a k6 test from the project root:
+
+```powershell
+& "C:\Program Files\k6\k6.exe" run .\k6\k6-smoke-get-login.js
+```
+
+Other route tests:
+
+```powershell
+& "C:\Program Files\k6\k6.exe" run .\k6\k6-smoke-post-login.js
+& "C:\Program Files\k6\k6.exe" run .\k6\k6-smoke-search.js
+& "C:\Program Files\k6\k6.exe" run .\k6\k6-smoke-products.js
+& "C:\Program Files\k6\k6.exe" run .\k6\k6-smoke-product-pagination.js
+& "C:\Program Files\k6\k6.exe" run .\k6\k6-smoke-carts.js
+```
+
+Product detail testing requires a valid product slug:
+
+```powershell
+$env:PRODUCT_SLUG="your-product-slug"
+& "C:\Program Files\k6\k6.exe" run .\k6\k6-smoke-product-detail.js
+```
+
+POST login testing requires a test account:
+
+```powershell
+$env:TEST_EMAIL="test@example.com"
+$env:TEST_PASSWORD="password123"
+& "C:\Program Files\k6\k6.exe" run .\k6\k6-smoke-post-login.js
+```
+
+Confirm that the application is ready before starting a load test:
+
+```powershell
+Invoke-WebRequest http://127.0.0.1:3001/
+```
+
+### Verified Benchmark Results
+
+| Route | Load | p95 latency | Error rate |
+| --- | ---: | ---: | ---: |
+| Homepage (`/`) | 10 VUs | 53.33 ms | 0.00% |
+| Search (`/search`) | 10 VUs | 42.37 ms | 0.00% |
+
+> Benchmark results depend on hardware, database location, cache state, network latency, and dataset size. Run the scripts in the current environment before publishing new measurements.
+
 ## Feature Highlights
 
 ### Customer storefront
