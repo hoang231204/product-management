@@ -7,7 +7,12 @@ module.exports.connect = async () => {
         return cached.conn;
     }
 
-    if (mongoose.connection.readyState !== 1) {
+    if (cached.promise) {
+        cached.conn = await cached.promise;
+        return cached.conn;
+    }
+
+    if (mongoose.connection.readyState === 0) {
         cached.conn = null;
         cached.promise = null;
     }
@@ -21,7 +26,6 @@ module.exports.connect = async () => {
 
     try {
         cached.conn = await cached.promise;
-        console.log("Connected!");
         return cached.conn;
     } catch (error) {
         cached.promise = null;
