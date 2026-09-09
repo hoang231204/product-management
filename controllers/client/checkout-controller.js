@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const querystring = require('qs');
 const moment = require('moment');
 const calcuNewPrice = require('../../helpers/calcu-new-price');
+const calculateCartHelper = require('../../helpers/calculate-cart');
 // Hàm sắp xếp key (bắt buộc cho VNPay)
 function sortObject(obj) {
     let sorted = {};
@@ -23,31 +24,28 @@ function sortObject(obj) {
     return sorted;
 }
 // GET /checkout
-module.exports.checkout = async (req, res) =>{
-    try{
+module.exports.checkout = async (req, res) => {
+    try {
         const cartId = req.cartId;
-        const cart = await Cart.findOne({ _id: cartId }).populate('products.product_id', 'title price thumbnail discountPercentage').lean();
-        if(!cart){
+        const cart = await Cart.findOne({ _id: cartId })
+            .populate('products.product_id', 'title price thumbnail discountPercentage')
+            .lean();
+            
+        if (!cart) {
             req.flash('error', 'Giỏ hàng không tồn tại');
             return res.redirect('/products');
         }
-        cart.products = cart.products.filter(item => item.product_id && typeof item.product_id === 'object' && item.product_id._id);
-        cart.products.forEach(item => {
-            const price = item.product_id.price || 0;
-            const discount = item.product_id.discountPercentage || 0;
-            item.product_id.priceNew = calcuNewPrice.priceNew(price, discount);
+
+        // Gọi helper để xử lý tính toán giá và lọc sản phẩm
+        const calculated = calculateCart(cart.products);
+        cart.products = calculated.products;
+        cart.totalPrice = calculated.totalPrice;
+
+        res.render('client/pages/checkout/index', {
+            cartDetail: cart,
+            pageTitle: 'Thanh toán'
         });
-        cart.totalPrice = cart.products.reduce((total, item) => {
-            const itemPrice = (item.product_id.priceNew || 0) * item.quantity;
-            return total + itemPrice;
-        }, 0);
-        res.render('client/pages/checkout/index', 
-            {
-                cartDetail: cart,
-                pageTitle: 'Thanh toán'
-            });
-    }
-    catch(error){
+    } catch (error) {
         req.flash('error', 'Đã có lỗi xảy ra, vui lòng thử lại');
         res.redirect('/products');
     }
@@ -131,16 +129,11 @@ module.exports.checkoutCash = async (req, res) => {
         }
 
         // --- BƯỚC 5: TÍNH TOÁN GIÁ VÀ TẠO ĐƠN HÀNG ---
-        cart.products.forEach(item => {
-            item.product_id.priceNew = calcuNewPrice.priceNew(item.product_id.price, item.product_id.discountPercentage);
-        });
+        const calculated = calculateCartHelper(cart.products);
+        cart.products = calculated.products;
+        cart.totalPrice = calculated.totalPrice;
 
-        cart.totalPrice = cart.products.reduce((total, item) => {
-            const itemPrice = item.product_id.priceNew * item.quantity;
-            return total + itemPrice;
-        }, 0);
-
-        const products = cart.products.map(item => ({
+        const productsForOrder = cart.products.map(item => ({
             product_id: item.product_id._id,
             price: item.product_id.price,
             discountPercentage: item.product_id.discountPercentage,
@@ -150,7 +143,7 @@ module.exports.checkoutCash = async (req, res) => {
         const order = new Order({
             cart_id: cartId,
             userInfor: userInfor,
-            products: products,
+            products: productsForOrder,
             totalPrice: cart.totalPrice,
             paymentMethod: 'COD',
             paymentStatus: 'unpaid'
@@ -261,16 +254,11 @@ module.exports.checkoutVnpay = async (req, res) => {
         }
 
         // --- BƯỚC 5: TÍNH TOÁN GIÁ VÀ TẠO ĐƠN HÀNG ---
-        cart.products.forEach(item => {
-            item.product_id.priceNew = calcuNewPrice.priceNew(item.product_id.price, item.product_id.discountPercentage);
-        });
+        const calculated = calculateCartHelper(cart.products);
+        cart.products = calculated.products;
+        cart.totalPrice = calculated.totalPrice;
 
-        cart.totalPrice = cart.products.reduce((total, item) => {
-            const itemPrice = item.product_id.priceNew * item.quantity;
-            return total + itemPrice;
-        }, 0);
-
-        const products = cart.products.map(item => ({
+        const productsForOrder = cart.products.map(item => ({
             product_id: item.product_id._id,
             price: item.product_id.price,
             discountPercentage: item.product_id.discountPercentage,
@@ -280,7 +268,7 @@ module.exports.checkoutVnpay = async (req, res) => {
         const order = new Order({
             cart_id: cartId,
             userInfor: userInfor,
-            products: products,
+            products: productsForOrder,
             totalPrice: cart.totalPrice,
             paymentMethod: 'VNPAY', 
             paymentStatus: 'unpaid' 
