@@ -9,7 +9,7 @@
   "scripts": {
     "start": "nodemon --inspect index.js",
     "start:docker": "nodemon -L --inspect index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "audit": "npm audit",
     "audit:moderate": "npm audit --audit-level=moderate",
     "audit:high": "npm audit --audit-level=high",
@@ -44,6 +44,7 @@
     "tinymce": "^8.4.0"
   },
   "devDependencies": {
+    "jest": "^30.5.1",
     "nodemon": "^3.1.11"
   }
 }
