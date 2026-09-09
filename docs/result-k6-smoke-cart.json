@@ -1,0 +1,126 @@
+D:\backend\SANPHAM\product-management>"C:\Program Files\k6\k6.exe" run .\k6-smoke.js
+[+] up 3/3
+
+ ✔ Container express_app                Running                              0.0s
+
+ ✔ Container product_management_mongodb Healthy                              0.5s
+
+ ✔ Container product_management_redis   Healthy                              0.5s
+
+
+
+         /\      Grafana   /‾‾/  
+
+    /\  /  \     |\  __   /  /   
+
+   /  \/    \    | |/ /  /   ‾‾\ 
+
+  /          \   |   (  |  (‾)  |
+
+ / __________ \  |_|\_\  \_____/ 
+
+
+
+
+
+     execution: local
+
+        script: .\k6-smoke.js
+
+        output: -
+
+
+
+     scenarios: (100.00%) 1 scenario, 20 max VUs, 1m20s max duration (incl. graceful stop):
+
+              * default: Up to 20 looping VUs for 50s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+
+
+
+
+
+  █ THRESHOLDS 
+
+
+
+    http_req_duration{route:cart-page}
+
+    ✓ 'p(95)<500' p(95)=13.09ms
+
+
+
+    http_req_failed{route:cart-page}
+
+    ✓ 'rate<0.01' rate=0.00%
+
+
+
+
+
+  █ TOTAL RESULTS 
+
+
+
+    checks_total.......: 1482    29.261188/s
+
+    checks_succeeded...: 100.00% 1482 out of 1482
+
+    checks_failed......: 0.00%   0 out of 1482
+
+
+
+    ✓ cart page status is 200
+
+    ✓ cart page has response body
+
+    ✓ cart page response is fast
+
+
+
+    HTTP
+
+    http_req_duration..............: avg=9.22ms min=5.95ms med=8.46ms max=152.36ms p(90)=10.8ms p(95)=13.09ms
+
+      { expected_response:true }...: avg=9.22ms min=5.95ms med=8.46ms max=152.36ms p(90)=10.8ms p(95)=13.09ms
+
+      { route:cart-page }..........: avg=9.22ms min=5.95ms med=8.46ms max=152.36ms p(90)=10.8ms p(95)=13.09ms
+
+    http_req_failed................: 0.00%  0 out of 494
+
+      { route:cart-page }..........: 0.00%  0 out of 494
+
+    http_reqs......................: 494    9.753729/s
+
+
+
+    EXECUTION
+
+    iteration_duration.............: avg=1s     min=1s     med=1s     max=1.15s    p(90)=1.01s  p(95)=1.01s  
+
+    iterations.....................: 494    9.753729/s
+
+    vus............................: 1      min=1        max=20
+
+    vus_max........................: 20     min=20       max=20
+
+
+
+    NETWORK
+
+    data_received..................: 3.3 MB 65 kB/s
+
+    data_sent......................: 37 kB  732 B/s
+
+
+
+
+
+
+
+
+
+running (0m50.6s), 00/20 VUs, 494 complete and 0 interrupted iterations
+
+default ✓ [======================================] 00/20 VUs  50s

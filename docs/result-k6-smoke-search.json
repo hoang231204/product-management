@@ -1,0 +1,121 @@
+D:\backend\SANPHAM\product-management>"C:\Program Files\k6\k6.exe" run .\k6-smoke.js"C:\Program Files\k6\k6.exe" run .\k6-smoke.js
+
+[+] up 3/3
+
+ ✔ Container express_app                Running                              0.0s
+
+ ✔ Container product_management_mongodb Healthy                              0.5s
+
+ ✔ Container product_management_redis   Healthy                              0.5s
+
+
+
+         /\      Grafana   /‾‾/  
+
+    /\  /  \     |\  __   /  /   
+
+   /  \/    \    | |/ /  /   ‾‾\ 
+
+  /          \   |   (  |  (‾)  |
+
+ / __________ \  |_|\_\  \_____/ 
+
+
+
+
+
+     execution: local
+
+        script: .\k6-smoke.js
+
+        output: -
+
+
+
+     scenarios: (100.00%) 1 scenario, 50 max VUs, 1m20s max duration (incl. graceful stop):
+
+              * default: Up to 50 looping VUs for 50s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+
+
+
+
+
+  █ THRESHOLDS 
+
+
+
+    http_req_duration
+
+    ✓ 'p(95)<500' p(95)=9.42ms
+
+
+
+    http_req_failed
+
+    ✓ 'rate<0.01' rate=0.00%
+
+
+
+
+
+  █ TOTAL RESULTS 
+
+
+
+    checks_total.......: 2416    47.762659/s
+
+    checks_succeeded...: 100.00% 2416 out of 2416
+
+    checks_failed......: 0.00%   0 out of 2416
+
+
+
+    ✓ search status is 200
+
+    ✓ search response is fast
+
+
+
+    HTTP
+
+    http_req_duration..............: avg=7.06ms min=4.08ms med=6.78ms max=34.23ms p(90)=8.67ms p(95)=9.42ms
+
+      { expected_response:true }...: avg=7.06ms min=4.08ms med=6.78ms max=34.23ms p(90)=8.67ms p(95)=9.42ms
+
+    http_req_failed................: 0.00%  0 out of 1208
+
+    http_reqs......................: 1208   23.88133/s
+
+
+
+    EXECUTION
+
+    iteration_duration.............: avg=1s     min=1s     med=1s     max=1.03s p(90)=1s     p(95)=1s    
+
+    iterations.....................: 1208   23.88133/s
+
+    vus............................: 3      min=1         max=50
+
+    vus_max........................: 50     min=50        max=50
+
+
+
+    NETWORK
+
+    data_received..................: 6.9 MB 136 kB/s
+
+    data_sent......................: 106 kB 2.1 kB/s
+
+
+
+
+
+
+
+
+
+running (0m50.6s), 00/50 VUs, 1208 complete and 0 interrupted iterations
+
+default ✓ [======================================] 00/50 VUs  50s

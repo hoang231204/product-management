@@ -1,0 +1,123 @@
+PS D:\backend\SANPHAM\product-management> $env:TEST_EMAIL="email-test@example.com"
+
+>> $env:TEST_PASSWORD="password123"
+
+>> 
+
+>> & "C:\Program Files\k6\k6.exe" run .\k6-smoke.js
+
+
+
+         /\      Grafana   /‾‾/  
+
+    /\  /  \     |\  __   /  /   
+
+   /  \/    \    | |/ /  /   ‾‾\ 
+
+  /          \   |   (  |  (‾)  |
+
+ / __________ \  |_|\_\  \_____/ 
+
+
+
+
+
+     execution: local
+
+        script: .\k6-smoke.js
+
+        output: -
+
+
+
+     scenarios: (100.00%) 1 scenario, 20 max VUs, 1m20s max duration (incl. graceful stop):
+
+              * default: Up to 20 looping VUs for 50s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+
+
+
+
+
+  █ THRESHOLDS 
+
+
+
+    http_req_duration
+
+    ✓ 'p(95)<1000' p(95)=9.28ms
+
+
+
+    http_req_failed
+
+    ✓ 'rate<0.01' rate=0.00%
+
+
+
+
+
+  █ TOTAL RESULTS 
+
+
+
+    checks_total.......: 1482   29.414641/s
+
+    checks_succeeded...: 66.66% 988 out of 1482
+
+    checks_failed......: 33.33% 494 out of 1482
+
+
+
+    ✓ login returns 302
+
+    ✗ redirects to home
+
+      ↳  0% — ✓ 0 / ✗ 494
+
+    ✓ login response is fast
+
+
+
+    HTTP
+
+    http_req_duration..............: avg=6.46ms min=4.12ms med=6.18ms max=16.27ms p(90)=8.31ms p(95)=9.28ms
+
+      { expected_response:true }...: avg=6.46ms min=4.12ms med=6.18ms max=16.27ms p(90)=8.31ms p(95)=9.28ms
+
+    http_req_failed................: 0.00%  0 out of 494
+
+    http_reqs......................: 494    9.80488/s
+
+
+
+    EXECUTION
+
+    iteration_duration.............: avg=1s     min=1s     med=1s     max=1.01s   p(90)=1s     p(95)=1.01s 
+
+    iterations.....................: 494    9.80488/s
+
+    vus............................: 1      min=1        max=20
+
+    vus_max........................: 20     min=20       max=20
+
+
+
+    NETWORK
+
+    data_received..................: 750 kB 15 kB/s
+
+    data_sent......................: 100 kB 2.0 kB/s
+
+
+
+
+
+
+
+
+
+running (0m50.4s), 00/20 VUs, 494 complete and 0 interrupted iterations
+
+default ✓ [======================================] 00/20 VUs  50s
