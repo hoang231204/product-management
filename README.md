@@ -92,6 +92,26 @@ Confirm that the application is ready before starting a load test:
 ```powershell
 Invoke-WebRequest http://127.0.0.1:3001/
 ```
+## Unit Testing
+
+The project includes unit test suites built with **Jest** to ensure the reliability of core business logic helpers.
+
+### Tested Modules
+
+Unit tests cover critical helper functions located in the `tests/` directory:
+- **Price Calculation (`priceNew`):** Verifies correct discount percentages application and mathematical rounding.
+- **Cart Processing (`calculate-cart`):** Validates product filtering, data structure validation, and total price computations with mocked dependencies.
+- **Pagination (`pagination`):** Ensures correct limit handling, skip offsets, and total page calculations based on query parameters.
+
+### Running Unit Tests
+
+Execute all unit test suites using npm:
+
+```bash
+npm test
+npx jest tests/pagination.test.js
+npx jest tests/priceNew.test.js
+npx jest tests/processProducts.test.js
 
 ### Verified Benchmark Results
 
@@ -272,7 +292,8 @@ Docker Compose loads environment variables from `.env`, mounts the source tree, 
 | --- | --- |
 | `npm start` | Start the development server with Nodemon and the Node inspector |
 | `npm run start:docker` | Start Nodemon in polling mode for Docker-mounted source files |
-| `npm test` | Not implemented yet; currently exits with a placeholder error |
+| `npm test` | Run Jest unit test suites for core business helpers |
+| `npm audit` | Run npm audit |
 
 The Node inspector is enabled by both start commands. When running locally, it is exposed on the default inspector port in addition to the HTTP port `3000`.
 
