@@ -121,6 +121,7 @@ npm test
 npx jest tests/pagination.test.js
 npx jest tests/priceNew.test.js
 npx jest tests/processProducts.test.js
+```
 ## Feature Highlights
 ### Customer storefront
 - Homepage, product listing, categories, search, product details, blog, and contact page.
