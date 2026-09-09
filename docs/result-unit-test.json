@@ -1,0 +1,14 @@
+D:\backend\SANPHAM\product-management> npm test
+
+> product-management@1.0.0 test
+> jest
+
+ PASS  tests/pagination.test.js
+ PASS  tests/processProducts.test.js
+ PASS  tests/priceNew.test.js
+
+Test Suites: 3 passed, 3 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        0.914 s, estimated 4 s
+Ran all test suites.
