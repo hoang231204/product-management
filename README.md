@@ -92,6 +92,15 @@ Confirm that the application is ready before starting a load test:
 ```powershell
 Invoke-WebRequest http://127.0.0.1:3001/
 ```
+
+### Verified Benchmark Results
+
+| Route | Load | p95 latency | Error rate |
+| --- | ---: | ---: | ---: |
+| Homepage (`/`) | 10 VUs | 53.33 ms | 0.00% |
+| Search (`/search`) | 10 VUs | 42.37 ms | 0.00% |
+
+> Benchmark results depend on hardware, database location, cache state, network latency, and dataset size. Run the scripts in the current environment before publishing new measurements.
 ## Unit Testing
 
 The project includes unit test suites built with **Jest** to ensure the reliability of core business logic helpers.
@@ -112,20 +121,9 @@ npm test
 npx jest tests/pagination.test.js
 npx jest tests/priceNew.test.js
 npx jest tests/processProducts.test.js
-
-### Verified Benchmark Results
-
-| Route | Load | p95 latency | Error rate |
-| --- | ---: | ---: | ---: |
-| Homepage (`/`) | 10 VUs | 53.33 ms | 0.00% |
-| Search (`/search`) | 10 VUs | 42.37 ms | 0.00% |
-
-> Benchmark results depend on hardware, database location, cache state, network latency, and dataset size. Run the scripts in the current environment before publishing new measurements.
-
+```
 ## Feature Highlights
-
 ### Customer storefront
-
 - Homepage, product listing, categories, search, product details, blog, and contact page.
 - Registration, login, JWT access/refresh token flow, logout, and password reset by email OTP.
 - Profile updates and email-change verification flow.
