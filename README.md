@@ -111,6 +111,10 @@ Unit tests cover critical helper functions located in the `tests/` directory:
 - **Price Calculation (`priceNew`):** Verifies correct discount percentages application and mathematical rounding.
 - **Cart Processing (`calculate-cart`):** Validates product filtering, data structure validation, and total price computations with mocked dependencies.
 - **Pagination (`pagination`):** Ensures correct limit handling, skip offsets, and total page calculations based on query parameters.
+- **Category Tree (`create-tree`):** Validates hierarchical category recursion and dynamic index assignment.
+- **Status Filtering (`filter-status`):** Ensures correct status mapping and active class binding across modules (products, orders, blogs, users).
+- **Search (`search`):** Verifies case-insensitive regular expression generation for keyword matching.
+- **Category Filtering (`filter-category`):** Tests database fetch integration, "All" option insertion, and active slug state.
 
 ### Running Unit Tests
 
@@ -121,6 +125,10 @@ npm test
 npx jest tests/pagination.test.js
 npx jest tests/priceNew.test.js
 npx jest tests/processProducts.test.js
+npx jest tests/createTree.test.js
+npx jest tests/filterStatus.test.js
+npx jest tests/search.test.js
+npx jest tests/filterCategory.test.js
 ```
 ## Feature Highlights
 ### Customer storefront
