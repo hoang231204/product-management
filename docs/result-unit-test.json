@@ -3,12 +3,22 @@ D:\backend\SANPHAM\product-management> npm test
 > product-management@1.0.0 test
 > jest
 
- PASS  tests/pagination.test.js
- PASS  tests/processProducts.test.js
+
+ PASS  tests/createTree.test.js
+
+
  PASS  tests/priceNew.test.js
 
-Test Suites: 3 passed, 3 total
-Tests:       8 passed, 8 total
+ PASS  tests/processProducts.test.js
+
+ PASS  tests/pagination.test.js
+
+ PASS  tests/search.test.js
+ PASS  tests/filterStatus.test.js
+ PASS  tests/filterCategory.test.js (7.049 s)
+
+Test Suites: 7 passed, 7 total
+Tests:       24 passed, 24 total
 Snapshots:   0 total
-Time:        0.914 s, estimated 4 s
+Time:        7.526 s
 Ran all test suites.
